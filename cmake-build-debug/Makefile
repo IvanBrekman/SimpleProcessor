@@ -129,6 +129,126 @@ SimpleProcessor/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/build
 .PHONY : SimpleProcessor/fast
 
+CPU/cpu.o: CPU/cpu.cpp.o
+.PHONY : CPU/cpu.o
+
+# target to build an object file
+CPU/cpu.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/CPU/cpu.cpp.o
+.PHONY : CPU/cpu.cpp.o
+
+CPU/cpu.i: CPU/cpu.cpp.i
+.PHONY : CPU/cpu.i
+
+# target to preprocess a source file
+CPU/cpu.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/CPU/cpu.cpp.i
+.PHONY : CPU/cpu.cpp.i
+
+CPU/cpu.s: CPU/cpu.cpp.s
+.PHONY : CPU/cpu.s
+
+# target to generate assembly for a file
+CPU/cpu.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/CPU/cpu.cpp.s
+.PHONY : CPU/cpu.cpp.s
+
+asm/asm.o: asm/asm.cpp.o
+.PHONY : asm/asm.o
+
+# target to build an object file
+asm/asm.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/asm/asm.cpp.o
+.PHONY : asm/asm.cpp.o
+
+asm/asm.i: asm/asm.cpp.i
+.PHONY : asm/asm.i
+
+# target to preprocess a source file
+asm/asm.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/asm/asm.cpp.i
+.PHONY : asm/asm.cpp.i
+
+asm/asm.s: asm/asm.cpp.s
+.PHONY : asm/asm.s
+
+# target to generate assembly for a file
+asm/asm.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/asm/asm.cpp.s
+.PHONY : asm/asm.cpp.s
+
+compiler.o: compiler.cpp.o
+.PHONY : compiler.o
+
+# target to build an object file
+compiler.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/compiler.cpp.o
+.PHONY : compiler.cpp.o
+
+compiler.i: compiler.cpp.i
+.PHONY : compiler.i
+
+# target to preprocess a source file
+compiler.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/compiler.cpp.i
+.PHONY : compiler.cpp.i
+
+compiler.s: compiler.cpp.s
+.PHONY : compiler.s
+
+# target to generate assembly for a file
+compiler.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/compiler.cpp.s
+.PHONY : compiler.cpp.s
+
+dis/dis.o: dis/dis.cpp.o
+.PHONY : dis/dis.o
+
+# target to build an object file
+dis/dis.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/dis/dis.cpp.o
+.PHONY : dis/dis.cpp.o
+
+dis/dis.i: dis/dis.cpp.i
+.PHONY : dis/dis.i
+
+# target to preprocess a source file
+dis/dis.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/dis/dis.cpp.i
+.PHONY : dis/dis.cpp.i
+
+dis/dis.s: dis/dis.cpp.s
+.PHONY : dis/dis.s
+
+# target to generate assembly for a file
+dis/dis.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/dis/dis.cpp.s
+.PHONY : dis/dis.cpp.s
+
+helper.o: helper.cpp.o
+.PHONY : helper.o
+
+# target to build an object file
+helper.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/helper.cpp.o
+.PHONY : helper.cpp.o
+
+helper.i: helper.cpp.i
+.PHONY : helper.i
+
+# target to preprocess a source file
+helper.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/helper.cpp.i
+.PHONY : helper.cpp.i
+
+helper.s: helper.cpp.s
+.PHONY : helper.s
+
+# target to generate assembly for a file
+helper.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/helper.cpp.s
+.PHONY : helper.cpp.s
+
 libs/baselib.o: libs/baselib.cpp.o
 .PHONY : libs/baselib.o
 
@@ -282,6 +402,21 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... SimpleProcessor"
+	@echo "... CPU/cpu.o"
+	@echo "... CPU/cpu.i"
+	@echo "... CPU/cpu.s"
+	@echo "... asm/asm.o"
+	@echo "... asm/asm.i"
+	@echo "... asm/asm.s"
+	@echo "... compiler.o"
+	@echo "... compiler.i"
+	@echo "... compiler.s"
+	@echo "... dis/dis.o"
+	@echo "... dis/dis.i"
+	@echo "... dis/dis.s"
+	@echo "... helper.o"
+	@echo "... helper.i"
+	@echo "... helper.s"
 	@echo "... libs/baselib.o"
 	@echo "... libs/baselib.i"
 	@echo "... libs/baselib.s"

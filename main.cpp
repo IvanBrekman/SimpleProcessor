@@ -10,36 +10,21 @@
 #include "libs/file_funcs.h"
 
 #include "processor.h"
+#include "helper.h"
+#include "asm/asm.h"
 
 int main(int argc, char** argv) {
-    Stack st = {};
-    stack_ctor(st);
+    printf("%zd", sizeof(char*));
+    Command cmd = {};
+    cmd.sgn = { 3, 4 };
+    cmd.argv[0] = 1;
+    cmd.argv[1] = 3;
+    cmd.argv[2] = 4;
 
-    print_stack(&st);
-    printf("\n");
+    print_command(&cmd);
 
-    Text str_commands = get_text_from_file("../commands.txt");
-
-    int n_commands = (int)str_commands.lines;
-    Text* commands = get_commands(&str_commands);
-
-    printf("All commands:\n");
-    for (int i = 0; i < n_commands; i++) {
-        print_text(&commands[i], ", ");
-    }
-
-    int cmd_analyzer = analyze_commands(commands, n_commands);
-    if (cmd_analyzer) {
-        int exit_code = execute_commands(commands, n_commands, &st);
-
-        if (exit_code != 0) {
-            printf(RED "Program falls with exit code %d (%s)" NATURAL, exit_code, exit_code_desc(exit_code));
-        } else {
-            printf(BLUE "Program finished with exit code 0" NATURAL);
-        }
-    } else {
-        printf(RED "Incorrect commands detected!\n" NATURAL);
-    }
+    printf("\n----------------\n\n");
+    assembly("../commands.txt", "a.cat");
 
     return 0;
 }

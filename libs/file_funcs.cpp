@@ -23,7 +23,7 @@
 //! \note function need string size, because if you want to
 //!       replace '\0' symbol strlen function wont work correctly
 int replace(char* string, size_t size, char old_symbol, char new_symbol, int n_replace) {
-    assert(string != NULL);
+    assert(VALID_PTR(string, char));
 
     int n_rep = 0;
 

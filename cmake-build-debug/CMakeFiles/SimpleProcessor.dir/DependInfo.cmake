@@ -8,6 +8,11 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
+  "/home/ivanbrekman/CLionProjects/SimpleProcessor/CPU/cpu.cpp" "/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles/SimpleProcessor.dir/CPU/cpu.cpp.o"
+  "/home/ivanbrekman/CLionProjects/SimpleProcessor/asm/asm.cpp" "/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles/SimpleProcessor.dir/asm/asm.cpp.o"
+  "/home/ivanbrekman/CLionProjects/SimpleProcessor/compiler.cpp" "/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles/SimpleProcessor.dir/compiler.cpp.o"
+  "/home/ivanbrekman/CLionProjects/SimpleProcessor/dis/dis.cpp" "/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles/SimpleProcessor.dir/dis/dis.cpp.o"
+  "/home/ivanbrekman/CLionProjects/SimpleProcessor/helper.cpp" "/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles/SimpleProcessor.dir/helper.cpp.o"
   "/home/ivanbrekman/CLionProjects/SimpleProcessor/libs/baselib.cpp" "/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles/SimpleProcessor.dir/libs/baselib.cpp.o"
   "/home/ivanbrekman/CLionProjects/SimpleProcessor/libs/file_funcs.cpp" "/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles/SimpleProcessor.dir/libs/file_funcs.cpp.o"
   "/home/ivanbrekman/CLionProjects/SimpleProcessor/libs/stack.cpp" "/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles/SimpleProcessor.dir/libs/stack.cpp.o"
