@@ -74,6 +74,7 @@ char* datetime(char* calendar_date);
 
 int is_number(char* string);
 int digits_number(int number, int radix=10);
+int extract_bit(int number, int bit);
 
 char* to_string(int number);
 

@@ -13,8 +13,14 @@ const int BITS_TO_ARGV = 2;                             // Max argv amount depen
 const int MAX_ARGV     = 4;
 
 enum exit_codes {
-    OK    =  0,
-    BREAK = -1
+    OK             =  0,
+    BREAK          = -1,
+    INVALID_SYNTAX = -2
+};
+enum compile_errors {
+    UNKNOWN_COMMAND      = -1,
+    INCORRECT_ARG_AMOUNT = -2,
+    INCORRECT_ARG_TYPE   = -3
 };
 enum commands {                                         // Commands depended
     HLT     =  0,
@@ -41,6 +47,8 @@ struct BinCommand {
     signature_ sgn = {};
     int argv[MAX_ARGV] = {};
 };
+
+const char* compile_error_desc(int error_code);
 
 void print_command (BinCommand* cmd);
 void print_commands(BinCommand* cmds, int n_commands);

@@ -20,6 +20,7 @@ CMakeFiles/SimpleProcessor.dir/arch/helper.cpp.o: \
  ../libs/baselib.h \
  ../libs/file_funcs.h
 CMakeFiles/SimpleProcessor.dir/asm/asm.cpp.o: \
+ ../arch/commands.h \
  ../arch/helper.h \
  ../asm/asm.cpp \
  ../asm/asm.h \

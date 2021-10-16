@@ -10,6 +10,7 @@
 #include "../libs/file_funcs.h"
 
 #include "../arch/helper.h"
+#include "../arch/commands.h"
 #include "asm.h"
 
 int assembly(const char* source_file, const char* executable_file) {
@@ -24,6 +25,17 @@ int assembly(const char* source_file, const char* executable_file) {
     printf("All commands:\n");
     for (int i = 0; i < n_commands; i++) {
         print_text(&text_commands[i], ", ");
+    }
+
+    int error = 0;
+    Text wrong_command = check_tcom(text_commands, n_commands, &error);
+    if (error != 0) {
+        printf(RED "Incorrect command \"");
+        print_text(&wrong_command, ", ", "");
+        printf("\"\n%s\n" NATURAL, compile_error_desc(error));
+
+        assert(0 && "Invalid syntax");
+        return INVALID_SYNTAX;
     }
 
     BinCommand* mcodes = get_mcodes_from_tcom(text_commands, n_commands);
@@ -66,6 +78,38 @@ Text*       get_tcom(const Text* data) {
     }
 
     return commands;
+}
+Text        check_tcom(const Text* tcom, int n_commands, int* error) {
+    for (int i = 0; i < n_commands; i++) {
+        Text cmd = tcom[i];
+
+        int cmd_code = command_type((const char*)cmd.text[0].ptr);
+        if (cmd_code == UNKNOWN) {
+            *error = UNKNOWN_COMMAND;
+            return cmd;
+        }
+
+        if ((cmd.lines - 1) != ALL_COMMANDS[cmd_code].argc) {
+            *error = INCORRECT_ARG_AMOUNT;
+            return cmd;
+        }
+
+        for (int arg = 1; arg < cmd.lines; arg++) {
+            if (is_number(cmd.text[arg].ptr)) {
+                if (extract_bit(ALL_COMMANDS[cmd_code].arg_types[arg - 1], 0) == 0) { // if num is not allowed type
+                    *error = INCORRECT_ARG_TYPE;
+                    return cmd;
+                }
+            } else {
+                if (extract_bit(ALL_COMMANDS[cmd_code].arg_types[arg - 1], 1) == 0) { // if register is not allowed type
+                    *error = INCORRECT_ARG_TYPE;
+                    return cmd;
+                }
+            }
+        }
+    }
+
+    return tcom[0];
 }
 BinCommand* get_mcodes_from_tcom(const Text* commands, int n_commands) {
     BinCommand* bit_cmd = (BinCommand*)calloc(n_commands, sizeof(BinCommand));

@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <cstring>
 #include <cstdlib>
+#include <cstdio>
 
 int isbadreadptr(void* ptr) {
     int nullfd = open("/dev/random", O_WRONLY);
@@ -43,6 +44,12 @@ int digits_number(int number, int radix) {
     }
 
     return digits;
+}
+
+int extract_bit(int number, int bit) {
+    printf("number: %d\n"
+           "bit %d: %d\n", number, bit, (number >> bit) & 1);
+    return (number >> bit) & 1;
 }
 char* to_string(int number) {
     int d_num = digits_number(number, 10);

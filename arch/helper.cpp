@@ -11,6 +11,19 @@
 #include "helper.h"
 #include "commands.h"
 
+const char* compile_error_desc(int error_code) {
+    switch (error_code) {
+        case UNKNOWN_COMMAND:
+            return "Unknown command";
+        case INCORRECT_ARG_AMOUNT:
+            return "Invalid arguments amount for this command";
+        case INCORRECT_ARG_TYPE:
+            return "Incorrect argument type for this command";
+        default:
+            return "Unknown error";
+    }
+}
+
 void print_command (BinCommand* cmd) {
     printf("   argc  cmd      argv\n");
 
