@@ -2,15 +2,13 @@
 // Created by ivanbrekman on 15.10.2021.
 //
 
+#include <cassert>
 #include <cstdlib>
 #include <cstring>
-#include <cassert>
 
 #include "../libs/baselib.h"
 #include "../libs/file_funcs.h"
 
-#include "../processor.h"
-#include "../libs/stack.h"
 #include "../helper.h"
 #include "asm.h"
 
@@ -28,10 +26,10 @@ int assembly(const char* source_file, const char* executable_file) {
         print_text(&text_commands[i], ", ");
     }
 
-    Command* bit_commands = get_mcodes_from_tcom(text_commands, n_commands);
-    print_commands(bit_commands, n_commands);
+    Command* mcodes = get_mcodes_from_tcom(text_commands, n_commands);
+    print_commands(mcodes, n_commands);
 
-    write_mcodes(bit_commands, n_commands, executable_file);
+    write_mcodes(mcodes, n_commands, executable_file);
 
     printf("-------------------------\n\n");
     int n_com = -1;
@@ -40,6 +38,10 @@ int assembly(const char* source_file, const char* executable_file) {
     printf("commands num: %d\n", n_com);
     print_commands(cmd, n_com);
 
+    printf("-------------------------\n\n");
+
+    FREE_PTR(text_commands, Text);
+    FREE_PTR(mcodes, Command);
     return 1;
 }
 

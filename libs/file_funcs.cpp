@@ -61,26 +61,28 @@ void free_string(struct String* string) {
 
 //! Function prints text from struct
 //! \param data pointer to struct
-void print_text(const Text* data, char* sep, char* end) {
-    assert(data != NULL);
+void print_text(const Text* data, const char* sep, const char* end) {
+    assert(VALID_PTR(data, Text));
 
     printf("[ ");
     for (int i = 0; i < data->lines; i++) {
-        printf("%s%s", data->text[i].ptr, sep);
+        printf("\"%s\"", data->text[i].ptr);
+        if (i + 1 < data->lines) printf("%s", sep);
     }
-    printf("]%s", end);
+    printf(" ]%s", end);
 }
 //! Function prints array of strings
 //! \param array pointer to array of strings
 //! \param size  size of array
-void print_strings(const char** array, size_t size, char* sep, char* end) {
-    assert(array != 0);
+void print_strings(const char** array, size_t size, const char* sep, const char* end) {
+    assert(VALID_PTR(array, char*));
 
     printf("[ ");
     for (int i = 0; i < size; i++) {
-        printf("%s%s", array[i], sep);
+        printf("\"%s\"", array[i]);
+        if (i + 1 < size) printf("%s", sep);
     }
-    printf("]%s", end);
+    printf(" ]%s", end);
 }
 
 //! Function load pointers of beginnings of strings to an array
@@ -89,8 +91,8 @@ void print_strings(const char** array, size_t size, char* sep, char* end) {
 //! \param data_size  data size
 //! \return           1
 int load_string_pointers(Text* text) {
-    assert(text->text != NULL);
-    assert(text->data != NULL);
+    assert(VALID_PTR(text->text, String));
+    assert(VALID_PTR(text->data, char));
 
     char* start_ptr = (char*)text->data;
 
@@ -111,6 +113,40 @@ int load_string_pointers(Text* text) {
 
     return 1;
 }
+//! Function convert array of strings to Text
+//! \param strings   ptr to array of strings
+//! \param n_strings number of strings
+//! \return          Text representation of array of strings
+Text convert_to_text(const char** strings, int n_strings) {
+    assert(VALID_PTR(strings, char*));
+
+    int sum_length = 0;
+    int* lengths = (int*) calloc(n_strings, sizeof(int));
+    for (int i = 0; i < n_strings; i++) {
+        int length = (int) strlen(strings[i]) + 1;
+        lengths[i] = length;
+        sum_length += length;
+    }
+
+    char* data = (char*) calloc(sum_length, sizeof(char));
+    int ptr = 0;
+    for (int i = 0; i < n_strings; i++) {
+        ptr += lengths[i];
+        strcat(data, strings[i]);
+        strcat(data, " ");
+    }
+    data[ptr] = '\0';
+
+    Text text = {};
+    text.data = data;
+    text.data_size = ptr + 1;
+    text.lines = replace(data, text.data_size, ' ', '\0');
+
+    text.text = (String*)calloc(text.lines, sizeof(String));
+    load_string_pointers(&text);
+
+    return text;
+}
 
 //! Function opens file
 //! \param filename path to file to open (absolute or relative)
@@ -118,11 +154,11 @@ int load_string_pointers(Text* text) {
 //! \return         pointer to opened file (FILE*)
 //! \note call assert if function cannot open file on the path filename
 FILE* open_file(const char* filename, const char mode[]) {
-    assert(filename != NULL);
+    assert(VALID_PTR(filename, char));
 
     FILE* file = fopen(filename, mode);
 
-    assert(file != NULL);
+    assert(VALID_PTR(file, FILE));
 
     return file;
 }
@@ -131,7 +167,7 @@ FILE* open_file(const char* filename, const char mode[]) {
 //! \param filename path to file (absolute or relative)
 //! \return         size of file (in bytes)
 int file_size(const char* filename) {
-    assert(filename != NULL);
+    assert(VALID_PTR(filename, char));
 
     struct stat buff = {};
     stat(filename, &buff);
@@ -143,7 +179,7 @@ int file_size(const char* filename) {
 //! \param filename pointer to string of path to file
 //! \return         object of Text structure
 Text get_text_from_file(const char* filename) {
-    assert(filename != NULL);
+    assert(VALID_PTR(filename, char));
 
     FILE* file = open_file(filename, "r");
 
@@ -177,11 +213,12 @@ Text get_text_from_file(const char* filename) {
 //! \param filename pointer to string of path to file (absolute or relative)
 //! \param mode     mode with which open file
 //! \param data     pointer to object of Text structure, where will strings come from
+//! \param text_sep string which different Text strings will be separated
 //! \return         number of written strings
-int write_text_to_file(const char* filename, const char mode[], const struct Text* data) {
-    assert(filename != NULL);
-    assert(mode != NULL);
-    assert(data != NULL);
+int write_text_to_file(const char* filename, const char mode[], const Text* data, const char* text_sep) {
+    assert(VALID_PTR(filename, char));
+    assert(VALID_PTR(mode, char));
+    assert(VALID_PTR(data, Text));
 
     FILE* file = open_file(filename, mode);
 
@@ -193,8 +230,9 @@ int write_text_to_file(const char* filename, const char mode[], const struct Tex
     int n_wr_strings = 0;
     for (n_wr_strings = 0; n_wr_strings < data->lines; n_wr_strings++) {
         fputs(data->text[n_wr_strings].ptr, file);
-        fputs("\n", file);
+        if (n_wr_strings + 1 < data->lines) fputs(text_sep, file);
     }
+    fputs("\n", file);
 
     fclose(file);
     return n_wr_strings;
@@ -203,12 +241,13 @@ int write_text_to_file(const char* filename, const char mode[], const struct Tex
 //! \param filename pointer to string of path to file (absolute or relative)
 //! \param mode     mode with which open file
 //! \param data     pointer to object of Text structure, where will strings come from
+//! \param buf_sep  string which different Text strings will be separated
 //! \return         number of written strings
 //! \note '\0' indicates line ending in buffer, so all lines in buffer must end in '\0'
-int write_buffer_to_file(const char* filename, const char mode[], const struct Text* data) {
-    assert(filename != NULL);
-    assert(mode != NULL);
-    assert(data != NULL);
+int write_buffer_to_file(const char* filename, const char mode[], const struct Text* data, const char* buf_sep) {
+    assert(VALID_PTR(filename, char));
+    assert(VALID_PTR(mode, char));
+    assert(VALID_PTR(data, Text));
 
     FILE* file = open_file(filename, mode);
 
@@ -221,11 +260,12 @@ int write_buffer_to_file(const char* filename, const char mode[], const struct T
     char* start_ptr = data->data;
     for (n_wr_strings = 0; n_wr_strings < data->lines; n_wr_strings++) {
         fputs(start_ptr, file);
-        fputs("\n", file);
+        if (n_wr_strings + 1 < data->lines) fputs(buf_sep, file);
 
         char* end_ptr = strchr(start_ptr, '\0');
         start_ptr = end_ptr + 1;
     }
+    fputs("\n", file);
 
     fclose(file);
     return n_wr_strings;
@@ -235,11 +275,12 @@ int write_buffer_to_file(const char* filename, const char mode[], const struct T
 //! \param mode      mode with which open file
 //! \param data      pointer to array of char*
 //! \param n_strings number of elements in data
+//! \param str_sep  string which different data strings will be separated
 //! \return          number of written strings
-int write_strings_to_file(const char* filename, const char mode[], const char** data, int n_strings) {
-    assert(filename != NULL);
-    assert(mode != NULL);
-    assert(data != NULL);
+int write_strings_to_file(const char* filename, const char mode[], const char** data, int n_strings, const char* str_sep) {
+    assert(VALID_PTR(filename, char));
+    assert(VALID_PTR(mode, char));
+    assert(VALID_PTR(data, char*));
 
     FILE* file = open_file(filename, mode);
 
@@ -251,8 +292,9 @@ int write_strings_to_file(const char* filename, const char mode[], const char** 
     int n_wr_strings = 0;
     for (n_wr_strings = 0; n_wr_strings < n_strings; n_wr_strings++) {
         fputs(data[n_wr_strings], file);
-        fputs("\n", file);
+        if (n_wr_strings + 1 < n_strings) fputs(str_sep, file);
     }
+    fputs("\n", file);
 
     fclose(file);
     return n_wr_strings;

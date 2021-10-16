@@ -15,6 +15,10 @@
                                 (ptr) != NULL && (ptr) != (type*)poisons::UNINITIALIZED_PTR && (ptr) != (type*)poisons::FREED_PTR &&    \
                                 !isbadreadptr((void*)(ptr))                                                                             \
                              )
+#define FREE_PTR(ptr, type) {                   \
+    free((ptr));                                \
+    (ptr) = (type*)poisons::UNINITIALIZED_PTR;  \
+}
 
 #define BLACK       "\033[1;30m"
 #define RED         "\033[1;31m"
@@ -69,5 +73,8 @@ int isbadreadptr(void* ptr);
 char* datetime(char* calendar_date);
 
 int is_number(char* string);
+int digits_number(int number, int radix=10);
+
+char* to_string(int number);
 
 #endif //BASELIB_H

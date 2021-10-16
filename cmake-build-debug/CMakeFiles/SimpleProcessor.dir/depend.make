@@ -6,12 +6,9 @@ CMakeFiles/SimpleProcessor.dir/CPU/cpu.cpp.o: \
 CMakeFiles/SimpleProcessor.dir/asm/asm.cpp.o: \
  ../asm/asm.cpp \
  ../asm/asm.h \
- ../config.h \
  ../helper.h \
  ../libs/baselib.h \
- ../libs/file_funcs.h \
- ../libs/stack.h \
- ../processor.h
+ ../libs/file_funcs.h
 CMakeFiles/SimpleProcessor.dir/compiler.cpp.o: \
  ../compiler.cpp \
  ../config.h \
@@ -20,7 +17,11 @@ CMakeFiles/SimpleProcessor.dir/compiler.cpp.o: \
  ../libs/stack.h \
  ../processor.h
 CMakeFiles/SimpleProcessor.dir/dis/dis.cpp.o: \
- ../dis/dis.cpp
+ ../dis/dis.cpp \
+ ../dis/dis.h \
+ ../helper.h \
+ ../libs/baselib.h \
+ ../libs/file_funcs.h
 CMakeFiles/SimpleProcessor.dir/helper.cpp.o: \
  ../helper.cpp \
  ../helper.h \
@@ -40,6 +41,7 @@ CMakeFiles/SimpleProcessor.dir/libs/stack.cpp.o: \
 CMakeFiles/SimpleProcessor.dir/main.cpp.o: \
  ../asm/asm.h \
  ../config.h \
+ ../dis/dis.h \
  ../helper.h \
  ../libs/baselib.h \
  ../libs/file_funcs.h \

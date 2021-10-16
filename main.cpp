@@ -12,6 +12,7 @@
 #include "processor.h"
 #include "helper.h"
 #include "asm/asm.h"
+#include "dis/dis.h"
 
 int main(int argc, char** argv) {
     printf("%zd", sizeof(char*));
@@ -24,7 +25,8 @@ int main(int argc, char** argv) {
     print_command(&cmd);
 
     printf("\n----------------\n\n");
-    assembly("../commands.txt", "a.cat");
+    //assembly("../commands.txt", "a.cat");
+    disassembly("a.cat", "a.txt");
 
     return 0;
 }

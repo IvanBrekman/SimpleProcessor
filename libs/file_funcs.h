@@ -25,16 +25,17 @@ int replace(char* string, size_t size, char old_symbol, char new_symbol, int n_r
 void free_text(Text* data);
 void free_string(String* string);
 
-int load_string_pointers(Text* text);
-void print_text(const Text* data, char* sep=" ", char* end="\n");
-void print_strings(const char** array, size_t size, char* sep=" ", char* end="\n");
+int  load_string_pointers(Text* text);
+Text convert_to_text(const char** strings, int n_strings);
+void print_text(const Text* data, const char* sep=", ", const char* end="\n");
+void print_strings(const char** array, size_t size, const char* sep=", ", const char* end="\n");
 
 FILE* open_file(const char* filename, const char mode[]);
 int file_size(const char* filename);
 Text get_text_from_file(const char* filename);
 
-int write_text_to_file(const char* filename, const char mode[], const Text* data);
-int write_buffer_to_file(const char* filename, const char mode[], const Text* data);
-int write_strings_to_file(const char* filename, const char mode[], const char** data, int n_strings);
+int    write_text_to_file(const char* filename, const char mode[], const Text* data, const char* text_sep="\n");
+int  write_buffer_to_file(const char* filename, const char mode[], const Text* data, const char*  buf_sep="\n");
+int write_strings_to_file(const char* filename, const char mode[], const char** data, int n_strings, const char* str_sep="\n");
 
 #endif //SIMPLEPROCESSOR_FILE_FUNCS_H

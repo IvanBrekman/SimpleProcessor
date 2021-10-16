@@ -35,3 +35,24 @@ int is_number(char* string) {
     }
     return 1;
 }
+int digits_number(int number, int radix) {
+    int digits = 0;
+    while (number > 0) {
+        number /= radix;
+        digits++;
+    }
+
+    return digits;
+}
+char* to_string(int number) {
+    int d_num = digits_number(number, 10);
+    char* str_num = (char*) calloc(d_num + 1, sizeof(char));
+
+    for (int i = d_num - 1; number > 0; i--) {
+        str_num[i] = '0' + (number % 10);
+        number /= 10;
+    }
+    str_num[d_num] = '\0';
+
+    return str_num;
+}
