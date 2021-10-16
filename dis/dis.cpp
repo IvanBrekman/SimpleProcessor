@@ -10,6 +10,15 @@
 
 #include "dis.h"
 
+int main(int argc, char** argv) {
+    if (argc < 3) {
+        printf(RED "Cant parse executable file path or source file path\n" NATURAL);
+        return INVALID_SYNTAX;
+    }
+
+    disassembly(argv[1], argv[2]);
+}
+
 int disassembly(const char* executable_file, const char* source_file) {
     assert(VALID_PTR(source_file,     char) && "Incorrect source_file ptr");
     assert(VALID_PTR(executable_file, char) && "Incorrect executable_file ptr");

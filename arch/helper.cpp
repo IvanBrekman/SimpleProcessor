@@ -85,8 +85,8 @@ int         write_mcodes(const BinCommand* mcodes, int n_commands, const char* e
     assert(VALID_PTR(exe_file, FILE) && "Cant open file with mode wb");
 
     int wr_com = (int)fwrite(mcodes, sizeof(BinCommand), n_commands, exe_file);
-    printf("Written elems: %d\n"
-           "n_commands:    %d\n"
+    printf("Written elems:    %d\n"
+           "n_commands:       %d\n"
            "size BinCommand:  %zd\n", wr_com, n_commands, sizeof(BinCommand));
 
     fclose(exe_file);

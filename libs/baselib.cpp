@@ -47,8 +47,6 @@ int digits_number(int number, int radix) {
 }
 
 int extract_bit(int number, int bit) {
-    printf("number: %d\n"
-           "bit %d: %d\n", number, bit, (number >> bit) & 1);
     return (number >> bit) & 1;
 }
 char* to_string(int number) {

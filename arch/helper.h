@@ -15,7 +15,7 @@ const int MAX_ARGV     = 4;
 enum exit_codes {
     OK             =  0,
     BREAK          = -1,
-    INVALID_SYNTAX = -2
+    INVALID_SYNTAX = -2,
 };
 enum compile_errors {
     UNKNOWN_COMMAND      = -1,

@@ -13,6 +13,15 @@
 #include "../arch/commands.h"
 #include "asm.h"
 
+int main(int argc, char** argv) {
+    if (argc < 3) {
+        printf(RED "Cant parse source file path or executable file path\n" NATURAL);
+        return INVALID_SYNTAX;
+    }
+
+    assembly(argv[1], argv[2]);
+}
+
 int assembly(const char* source_file, const char* executable_file) {
     assert(VALID_PTR(source_file,     char) && "Incorrect source_file ptr");
     assert(VALID_PTR(executable_file, char) && "Incorrect executable_file ptr");
@@ -42,15 +51,6 @@ int assembly(const char* source_file, const char* executable_file) {
     print_commands(mcodes, n_commands);
 
     write_mcodes(mcodes, n_commands, executable_file);
-
-    printf("-------------------------\n\n");
-    int n_com = -1;
-    BinCommand* cmd = read_mcodes(executable_file, &n_com);
-
-    printf("commands num: %d\n", n_com);
-    print_commands(cmd, n_com);
-
-    printf("-------------------------\n\n");
 
     FREE_PTR(text_commands, Text);
     FREE_PTR(mcodes, BinCommand);

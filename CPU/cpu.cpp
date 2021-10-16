@@ -2,10 +2,21 @@
 // Created by ivanbrekman on 15.10.2021.
 //
 
-#include "../arch/helper.h"
-#include "cpu.h"
-#include "../arch/commands.h"
 #include "../libs/baselib.h"
+
+#include "../arch/helper.h"
+#include "../arch/commands.h"
+
+#include "cpu.h"
+
+int main(int argc, char** argv) {
+    if (argc < 2) {
+        printf(RED "Cant parse executable file path\n" NATURAL);
+        return INVALID_SYNTAX;
+    }
+
+    execute(argv[1]);
+}
 
 int execute(const char* execute_file) {
     init_stack();

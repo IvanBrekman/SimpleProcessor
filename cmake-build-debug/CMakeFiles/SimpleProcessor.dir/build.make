@@ -79,48 +79,22 @@ CMakeFiles/SimpleProcessor.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SimpleProcessor.dir/main.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ivanbrekman/CLionProjects/SimpleProcessor/main.cpp -o CMakeFiles/SimpleProcessor.dir/main.cpp.s
 
-CMakeFiles/SimpleProcessor.dir/asm/asm.cpp.o: CMakeFiles/SimpleProcessor.dir/flags.make
-CMakeFiles/SimpleProcessor.dir/asm/asm.cpp.o: ../asm/asm.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/SimpleProcessor.dir/asm/asm.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/SimpleProcessor.dir/asm/asm.cpp.o -c /home/ivanbrekman/CLionProjects/SimpleProcessor/asm/asm.cpp
+CMakeFiles/SimpleProcessor.dir/run_cpu.cpp.o: CMakeFiles/SimpleProcessor.dir/flags.make
+CMakeFiles/SimpleProcessor.dir/run_cpu.cpp.o: ../run_cpu.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/SimpleProcessor.dir/run_cpu.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/SimpleProcessor.dir/run_cpu.cpp.o -c /home/ivanbrekman/CLionProjects/SimpleProcessor/run_cpu.cpp
 
-CMakeFiles/SimpleProcessor.dir/asm/asm.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/SimpleProcessor.dir/asm/asm.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ivanbrekman/CLionProjects/SimpleProcessor/asm/asm.cpp > CMakeFiles/SimpleProcessor.dir/asm/asm.cpp.i
+CMakeFiles/SimpleProcessor.dir/run_cpu.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/SimpleProcessor.dir/run_cpu.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ivanbrekman/CLionProjects/SimpleProcessor/run_cpu.cpp > CMakeFiles/SimpleProcessor.dir/run_cpu.cpp.i
 
-CMakeFiles/SimpleProcessor.dir/asm/asm.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SimpleProcessor.dir/asm/asm.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ivanbrekman/CLionProjects/SimpleProcessor/asm/asm.cpp -o CMakeFiles/SimpleProcessor.dir/asm/asm.cpp.s
-
-CMakeFiles/SimpleProcessor.dir/CPU/cpu.cpp.o: CMakeFiles/SimpleProcessor.dir/flags.make
-CMakeFiles/SimpleProcessor.dir/CPU/cpu.cpp.o: ../CPU/cpu.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/SimpleProcessor.dir/CPU/cpu.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/SimpleProcessor.dir/CPU/cpu.cpp.o -c /home/ivanbrekman/CLionProjects/SimpleProcessor/CPU/cpu.cpp
-
-CMakeFiles/SimpleProcessor.dir/CPU/cpu.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/SimpleProcessor.dir/CPU/cpu.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ivanbrekman/CLionProjects/SimpleProcessor/CPU/cpu.cpp > CMakeFiles/SimpleProcessor.dir/CPU/cpu.cpp.i
-
-CMakeFiles/SimpleProcessor.dir/CPU/cpu.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SimpleProcessor.dir/CPU/cpu.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ivanbrekman/CLionProjects/SimpleProcessor/CPU/cpu.cpp -o CMakeFiles/SimpleProcessor.dir/CPU/cpu.cpp.s
-
-CMakeFiles/SimpleProcessor.dir/dis/dis.cpp.o: CMakeFiles/SimpleProcessor.dir/flags.make
-CMakeFiles/SimpleProcessor.dir/dis/dis.cpp.o: ../dis/dis.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/SimpleProcessor.dir/dis/dis.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/SimpleProcessor.dir/dis/dis.cpp.o -c /home/ivanbrekman/CLionProjects/SimpleProcessor/dis/dis.cpp
-
-CMakeFiles/SimpleProcessor.dir/dis/dis.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/SimpleProcessor.dir/dis/dis.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ivanbrekman/CLionProjects/SimpleProcessor/dis/dis.cpp > CMakeFiles/SimpleProcessor.dir/dis/dis.cpp.i
-
-CMakeFiles/SimpleProcessor.dir/dis/dis.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SimpleProcessor.dir/dis/dis.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ivanbrekman/CLionProjects/SimpleProcessor/dis/dis.cpp -o CMakeFiles/SimpleProcessor.dir/dis/dis.cpp.s
+CMakeFiles/SimpleProcessor.dir/run_cpu.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/SimpleProcessor.dir/run_cpu.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ivanbrekman/CLionProjects/SimpleProcessor/run_cpu.cpp -o CMakeFiles/SimpleProcessor.dir/run_cpu.cpp.s
 
 CMakeFiles/SimpleProcessor.dir/arch/helper.cpp.o: CMakeFiles/SimpleProcessor.dir/flags.make
 CMakeFiles/SimpleProcessor.dir/arch/helper.cpp.o: ../arch/helper.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/SimpleProcessor.dir/arch/helper.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/SimpleProcessor.dir/arch/helper.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/SimpleProcessor.dir/arch/helper.cpp.o -c /home/ivanbrekman/CLionProjects/SimpleProcessor/arch/helper.cpp
 
 CMakeFiles/SimpleProcessor.dir/arch/helper.cpp.i: cmake_force
@@ -133,7 +107,7 @@ CMakeFiles/SimpleProcessor.dir/arch/helper.cpp.s: cmake_force
 
 CMakeFiles/SimpleProcessor.dir/arch/commands.cpp.o: CMakeFiles/SimpleProcessor.dir/flags.make
 CMakeFiles/SimpleProcessor.dir/arch/commands.cpp.o: ../arch/commands.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/SimpleProcessor.dir/arch/commands.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/SimpleProcessor.dir/arch/commands.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/SimpleProcessor.dir/arch/commands.cpp.o -c /home/ivanbrekman/CLionProjects/SimpleProcessor/arch/commands.cpp
 
 CMakeFiles/SimpleProcessor.dir/arch/commands.cpp.i: cmake_force
@@ -146,7 +120,7 @@ CMakeFiles/SimpleProcessor.dir/arch/commands.cpp.s: cmake_force
 
 CMakeFiles/SimpleProcessor.dir/libs/file_funcs.cpp.o: CMakeFiles/SimpleProcessor.dir/flags.make
 CMakeFiles/SimpleProcessor.dir/libs/file_funcs.cpp.o: ../libs/file_funcs.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/SimpleProcessor.dir/libs/file_funcs.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/SimpleProcessor.dir/libs/file_funcs.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/SimpleProcessor.dir/libs/file_funcs.cpp.o -c /home/ivanbrekman/CLionProjects/SimpleProcessor/libs/file_funcs.cpp
 
 CMakeFiles/SimpleProcessor.dir/libs/file_funcs.cpp.i: cmake_force
@@ -159,7 +133,7 @@ CMakeFiles/SimpleProcessor.dir/libs/file_funcs.cpp.s: cmake_force
 
 CMakeFiles/SimpleProcessor.dir/libs/stack.cpp.o: CMakeFiles/SimpleProcessor.dir/flags.make
 CMakeFiles/SimpleProcessor.dir/libs/stack.cpp.o: ../libs/stack.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/SimpleProcessor.dir/libs/stack.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/SimpleProcessor.dir/libs/stack.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/SimpleProcessor.dir/libs/stack.cpp.o -c /home/ivanbrekman/CLionProjects/SimpleProcessor/libs/stack.cpp
 
 CMakeFiles/SimpleProcessor.dir/libs/stack.cpp.i: cmake_force
@@ -172,7 +146,7 @@ CMakeFiles/SimpleProcessor.dir/libs/stack.cpp.s: cmake_force
 
 CMakeFiles/SimpleProcessor.dir/libs/baselib.cpp.o: CMakeFiles/SimpleProcessor.dir/flags.make
 CMakeFiles/SimpleProcessor.dir/libs/baselib.cpp.o: ../libs/baselib.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/SimpleProcessor.dir/libs/baselib.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/SimpleProcessor.dir/libs/baselib.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/SimpleProcessor.dir/libs/baselib.cpp.o -c /home/ivanbrekman/CLionProjects/SimpleProcessor/libs/baselib.cpp
 
 CMakeFiles/SimpleProcessor.dir/libs/baselib.cpp.i: cmake_force
@@ -186,9 +160,7 @@ CMakeFiles/SimpleProcessor.dir/libs/baselib.cpp.s: cmake_force
 # Object files for target SimpleProcessor
 SimpleProcessor_OBJECTS = \
 "CMakeFiles/SimpleProcessor.dir/main.cpp.o" \
-"CMakeFiles/SimpleProcessor.dir/asm/asm.cpp.o" \
-"CMakeFiles/SimpleProcessor.dir/CPU/cpu.cpp.o" \
-"CMakeFiles/SimpleProcessor.dir/dis/dis.cpp.o" \
+"CMakeFiles/SimpleProcessor.dir/run_cpu.cpp.o" \
 "CMakeFiles/SimpleProcessor.dir/arch/helper.cpp.o" \
 "CMakeFiles/SimpleProcessor.dir/arch/commands.cpp.o" \
 "CMakeFiles/SimpleProcessor.dir/libs/file_funcs.cpp.o" \
@@ -199,9 +171,7 @@ SimpleProcessor_OBJECTS = \
 SimpleProcessor_EXTERNAL_OBJECTS =
 
 SimpleProcessor: CMakeFiles/SimpleProcessor.dir/main.cpp.o
-SimpleProcessor: CMakeFiles/SimpleProcessor.dir/asm/asm.cpp.o
-SimpleProcessor: CMakeFiles/SimpleProcessor.dir/CPU/cpu.cpp.o
-SimpleProcessor: CMakeFiles/SimpleProcessor.dir/dis/dis.cpp.o
+SimpleProcessor: CMakeFiles/SimpleProcessor.dir/run_cpu.cpp.o
 SimpleProcessor: CMakeFiles/SimpleProcessor.dir/arch/helper.cpp.o
 SimpleProcessor: CMakeFiles/SimpleProcessor.dir/arch/commands.cpp.o
 SimpleProcessor: CMakeFiles/SimpleProcessor.dir/libs/file_funcs.cpp.o
@@ -209,7 +179,7 @@ SimpleProcessor: CMakeFiles/SimpleProcessor.dir/libs/stack.cpp.o
 SimpleProcessor: CMakeFiles/SimpleProcessor.dir/libs/baselib.cpp.o
 SimpleProcessor: CMakeFiles/SimpleProcessor.dir/build.make
 SimpleProcessor: CMakeFiles/SimpleProcessor.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking CXX executable SimpleProcessor"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX executable SimpleProcessor"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/SimpleProcessor.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

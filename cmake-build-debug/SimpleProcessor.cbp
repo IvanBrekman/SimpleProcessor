@@ -82,12 +82,6 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/CPU/cpu.cpp">
-			<Option target="SimpleProcessor"/>
-		</Unit>
-		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/CPU/cpu.h">
-			<Option target="SimpleProcessor"/>
-		</Unit>
 		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/arch/commands.cpp">
 			<Option target="SimpleProcessor"/>
 		</Unit>
@@ -98,18 +92,6 @@
 			<Option target="SimpleProcessor"/>
 		</Unit>
 		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/arch/helper.h">
-			<Option target="SimpleProcessor"/>
-		</Unit>
-		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/asm/asm.cpp">
-			<Option target="SimpleProcessor"/>
-		</Unit>
-		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/asm/asm.h">
-			<Option target="SimpleProcessor"/>
-		</Unit>
-		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/dis/dis.cpp">
-			<Option target="SimpleProcessor"/>
-		</Unit>
-		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/dis/dis.h">
 			<Option target="SimpleProcessor"/>
 		</Unit>
 		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/libs/baselib.cpp">
@@ -131,6 +113,12 @@
 			<Option target="SimpleProcessor"/>
 		</Unit>
 		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/main.cpp">
+			<Option target="SimpleProcessor"/>
+		</Unit>
+		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/run_cpu.cpp">
+			<Option target="SimpleProcessor"/>
+		</Unit>
+		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/run_cpu.h">
 			<Option target="SimpleProcessor"/>
 		</Unit>
 		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/CMakeLists.txt">
