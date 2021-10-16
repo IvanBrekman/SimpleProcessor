@@ -12,16 +12,6 @@
 const int BITS_TO_ARGV = 2;                             // Max argv amount dependent
 const int MAX_ARGV     = 4;
 
-struct CommandParameters {
-    const char* name;
-    int code;
-
-    int argc;
-    int* arg_types[MAX_ARGV];
-
-    int (*execute_func) (int argc, int* argv);
-};
-
 enum exit_codes {
     OK    =  0,
     BREAK = -1
@@ -39,10 +29,7 @@ enum commands {                                         // Commands depended
     DUMP    =  7,
     PRINT   =  8,
 
-    UNKNOWN =  9
-};
-static const char* COMMANDS[] = {                       // Commands dependent
-        "hlt", "push", "pop", "add", "sub", "mul", "verify", "dump", "print", "unknown"
+    UNKNOWN =  -1
 };
 
 struct signature_ {
@@ -58,7 +45,7 @@ struct BinCommand {
 void print_command (BinCommand* cmd);
 void print_commands(BinCommand* cmds, int n_commands);
 
-int         command_type(const char* command);          // Commands depended
+int         command_type(const char* command);
 const char* command_desc(int command);
 
 

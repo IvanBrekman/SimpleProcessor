@@ -17,7 +17,6 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/home/ivanbrekman/CLionProjects/SimpleProcessor/libs/file_funcs.cpp" "/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles/SimpleProcessor.dir/libs/file_funcs.cpp.o"
   "/home/ivanbrekman/CLionProjects/SimpleProcessor/libs/stack.cpp" "/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles/SimpleProcessor.dir/libs/stack.cpp.o"
   "/home/ivanbrekman/CLionProjects/SimpleProcessor/main.cpp" "/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles/SimpleProcessor.dir/main.cpp.o"
-  "/home/ivanbrekman/CLionProjects/SimpleProcessor/tests/baselib_test.cpp" "/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles/SimpleProcessor.dir/tests/baselib_test.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

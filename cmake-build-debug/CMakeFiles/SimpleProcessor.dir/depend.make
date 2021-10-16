@@ -3,7 +3,10 @@
 
 CMakeFiles/SimpleProcessor.dir/CPU/cpu.cpp.o: \
  ../CPU/cpu.cpp \
- ../arch/helper.h
+ ../CPU/cpu.h \
+ ../arch/commands.h \
+ ../arch/helper.h \
+ ../libs/baselib.h
 CMakeFiles/SimpleProcessor.dir/arch/commands.cpp.o: \
  ../arch/commands.cpp \
  ../arch/helper.h \
@@ -11,6 +14,7 @@ CMakeFiles/SimpleProcessor.dir/arch/commands.cpp.o: \
  ../libs/baselib.h \
  ../libs/stack.h
 CMakeFiles/SimpleProcessor.dir/arch/helper.cpp.o: \
+ ../arch/commands.h \
  ../arch/helper.cpp \
  ../arch/helper.h \
  ../libs/baselib.h \
@@ -39,13 +43,10 @@ CMakeFiles/SimpleProcessor.dir/libs/stack.cpp.o: \
  ../libs/stack.cpp \
  ../libs/stack.h
 CMakeFiles/SimpleProcessor.dir/main.cpp.o: \
+ ../CPU/cpu.h \
  ../arch/helper.h \
  ../asm/asm.h \
  ../config.h \
  ../dis/dis.h \
  ../libs/file_funcs.h \
  ../main.cpp
-CMakeFiles/SimpleProcessor.dir/tests/baselib_test.cpp.o: \
- ../libs/baselib.h \
- ../tests/baselib_test.cpp \
- ../tests/baselib_test.h

@@ -7,7 +7,9 @@
 
 #include "../libs/baselib.h"
 #include "../libs/file_funcs.h"
+
 #include "helper.h"
+#include "commands.h"
 
 void print_command (BinCommand* cmd) {
     printf("   argc  cmd      argv\n");
@@ -30,20 +32,16 @@ void print_commands(BinCommand* cmds, int n_commands) {
 int         command_type(const char* command) {
     assert(VALID_PTR(command, char) && "Invalid BinCommand ptr");
 
-    if (strcmp(command, "push")   == 0) return PUSH;
-    if (strcmp(command, "pop")    == 0) return POP;
-    if (strcmp(command, "add")    == 0) return ADD;
-    if (strcmp(command, "sub")    == 0) return SUB;
-    if (strcmp(command, "mul")    == 0) return MUL;
-    if (strcmp(command, "verify") == 0) return VERIFY;
-    if (strcmp(command, "dump")   == 0) return DUMP;
-    if (strcmp(command, "print")  == 0) return PRINT;
-    if (strcmp(command, "hlt")    == 0) return HLT;
+    for (CommandParameters cmd_par : ALL_COMMANDS) {
+        if (strcmp(command, cmd_par.name) == 0) {
+            return cmd_par.code;
+        }
+    }
 
     return UNKNOWN;
 }
 const char* command_desc(int command) {
-    return COMMANDS[command];
+    return ALL_COMMANDS[command].name;
 }
 
 BinCommand* read_mcodes(const char* executable_file, int* n_commands) {

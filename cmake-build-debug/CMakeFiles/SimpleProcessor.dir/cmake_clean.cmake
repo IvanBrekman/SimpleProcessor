@@ -8,7 +8,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/SimpleProcessor.dir/libs/file_funcs.cpp.o"
   "CMakeFiles/SimpleProcessor.dir/libs/stack.cpp.o"
   "CMakeFiles/SimpleProcessor.dir/main.cpp.o"
-  "CMakeFiles/SimpleProcessor.dir/tests/baselib_test.cpp.o"
   "SimpleProcessor"
   "SimpleProcessor.pdb"
 )

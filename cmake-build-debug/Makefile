@@ -345,30 +345,6 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/main.cpp.s
 .PHONY : main.cpp.s
 
-tests/baselib_test.o: tests/baselib_test.cpp.o
-.PHONY : tests/baselib_test.o
-
-# target to build an object file
-tests/baselib_test.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/tests/baselib_test.cpp.o
-.PHONY : tests/baselib_test.cpp.o
-
-tests/baselib_test.i: tests/baselib_test.cpp.i
-.PHONY : tests/baselib_test.i
-
-# target to preprocess a source file
-tests/baselib_test.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/tests/baselib_test.cpp.i
-.PHONY : tests/baselib_test.cpp.i
-
-tests/baselib_test.s: tests/baselib_test.cpp.s
-.PHONY : tests/baselib_test.s
-
-# target to generate assembly for a file
-tests/baselib_test.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/tests/baselib_test.cpp.s
-.PHONY : tests/baselib_test.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -405,9 +381,6 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
-	@echo "... tests/baselib_test.o"
-	@echo "... tests/baselib_test.i"
-	@echo "... tests/baselib_test.s"
 .PHONY : help
 
 

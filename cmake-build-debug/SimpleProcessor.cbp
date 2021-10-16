@@ -133,12 +133,6 @@
 		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/main.cpp">
 			<Option target="SimpleProcessor"/>
 		</Unit>
-		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/tests/baselib_test.cpp">
-			<Option target="SimpleProcessor"/>
-		</Unit>
-		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/tests/baselib_test.h">
-			<Option target="SimpleProcessor"/>
-		</Unit>
 		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
