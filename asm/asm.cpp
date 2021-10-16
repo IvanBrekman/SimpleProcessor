@@ -9,7 +9,7 @@
 #include "../libs/baselib.h"
 #include "../libs/file_funcs.h"
 
-#include "../helper.h"
+#include "../arch/helper.h"
 #include "asm.h"
 
 int assembly(const char* source_file, const char* executable_file) {
@@ -26,14 +26,14 @@ int assembly(const char* source_file, const char* executable_file) {
         print_text(&text_commands[i], ", ");
     }
 
-    Command* mcodes = get_mcodes_from_tcom(text_commands, n_commands);
+    BinCommand* mcodes = get_mcodes_from_tcom(text_commands, n_commands);
     print_commands(mcodes, n_commands);
 
     write_mcodes(mcodes, n_commands, executable_file);
 
     printf("-------------------------\n\n");
     int n_com = -1;
-    Command* cmd = read_mcodes(executable_file, &n_com);
+    BinCommand* cmd = read_mcodes(executable_file, &n_com);
 
     printf("commands num: %d\n", n_com);
     print_commands(cmd, n_com);
@@ -41,11 +41,11 @@ int assembly(const char* source_file, const char* executable_file) {
     printf("-------------------------\n\n");
 
     FREE_PTR(text_commands, Text);
-    FREE_PTR(mcodes, Command);
+    FREE_PTR(mcodes, BinCommand);
     return 1;
 }
 
-Text* get_tcom(const Text* data) {
+Text*       get_tcom(const Text* data) {
     assert(VALID_PTR(data, Text) && "Invalid data ptr");
 
     Text* commands = (Text*)calloc(data->lines, sizeof(Text));
@@ -67,12 +67,12 @@ Text* get_tcom(const Text* data) {
 
     return commands;
 }
-Command* get_mcodes_from_tcom(const Text* commands, int n_commands) {
-    Command* bit_cmd = (Command*)calloc(n_commands, sizeof(Command));
+BinCommand* get_mcodes_from_tcom(const Text* commands, int n_commands) {
+    BinCommand* bit_cmd = (BinCommand*)calloc(n_commands, sizeof(BinCommand));
 
     for (int i = 0; i < n_commands; i++) {
         Text text_cmd = commands[i];
-        Command cmd = {};
+        BinCommand cmd = {};
         cmd.sgn = { (unsigned)text_cmd.lines - 1, (unsigned)command_type(text_cmd.text[0].ptr) };
         for (int arg = 1; arg < text_cmd.lines; arg++) {
             cmd.argv[arg - 1] = atoi(text_cmd.text[arg].ptr);

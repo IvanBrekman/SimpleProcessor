@@ -5,11 +5,11 @@
 #include <cstdio>
 #include <cstring>
 
-#include "libs/baselib.h"
-#include "libs/file_funcs.h"
+#include "../libs/baselib.h"
+#include "../libs/file_funcs.h"
 #include "helper.h"
 
-void print_command(Command* cmd) {
+void print_command (BinCommand* cmd) {
     printf("   argc  cmd      argv\n");
 
     printf("| { %02d | %03d } , ", cmd->sgn.argc, cmd->sgn.cmd);
@@ -20,7 +20,7 @@ void print_command(Command* cmd) {
     }
     printf(" } |  %s\n", command_desc(cmd->sgn.cmd));
 }
-void print_commands(Command* cmds, int n_commands) {
+void print_commands(BinCommand* cmds, int n_commands) {
     printf("Commands:\n");
     for (int i = 0; i < n_commands; i++) {
         print_command(&cmds[i]);
@@ -28,7 +28,7 @@ void print_commands(Command* cmds, int n_commands) {
 }
 
 int         command_type(const char* command) {
-    assert(VALID_PTR(command, char) && "Invalid Command ptr");
+    assert(VALID_PTR(command, char) && "Invalid BinCommand ptr");
 
     if (strcmp(command, "push")   == 0) return PUSH;
     if (strcmp(command, "pop")    == 0) return POP;
@@ -46,38 +46,38 @@ const char* command_desc(int command) {
     return COMMANDS[command];
 }
 
-Command* read_mcodes(const char* executable_file, int* n_commands) {
+BinCommand* read_mcodes(const char* executable_file, int* n_commands) {
     assert(VALID_PTR(executable_file, char) && "Incorrect executable_file ptr");
 
     FILE* exe_file = fopen(executable_file, "rb");
     assert(VALID_PTR(exe_file, FILE) && "Cant open file with mode wb");
 
     int fsize = file_size(executable_file);
-    assert(fsize % sizeof(Command) == 0 && "Executable file is damaged");
+    assert(fsize % sizeof(BinCommand) == 0 && "Executable file is damaged");
 
-    *n_commands = fsize / (int)sizeof(Command);
-    Command* commands = (Command*) calloc(*n_commands, sizeof(Command));
+    *n_commands = fsize / (int)sizeof(BinCommand);
+    BinCommand* commands = (BinCommand*) calloc(*n_commands, sizeof(BinCommand));
 
-    int bytes = (int)fread(commands, sizeof(Command), *n_commands, exe_file);
+    int wr_com = (int)fread(commands, sizeof(BinCommand), *n_commands, exe_file);
 
-    printf("Read elems: %d\n", bytes);
-    assert(bytes * sizeof(Command) == fsize && "File size and number of read bytes arent equal");
+    printf("Read elems: %d\n", wr_com);
+    assert(wr_com * sizeof(BinCommand) == fsize && "File size and number of read bytes arent equal");
 
     fclose(exe_file);
     return commands;
 }
-int write_mcodes(const Command* mcodes, int n_commands, const char* executable_file) {
-    assert(VALID_PTR(mcodes, Command)       && "Incorrect mcodes ptr");
+int         write_mcodes(const BinCommand* mcodes, int n_commands, const char* executable_file) {
+    assert(VALID_PTR(mcodes, BinCommand) && "Incorrect mcodes ptr");
     assert(VALID_PTR(executable_file, char) && "Incorrect executable_file ptr");
 
     FILE* exe_file = fopen(executable_file, "wb");
     assert(VALID_PTR(exe_file, FILE) && "Cant open file with mode wb");
 
-    int bytes = (int)fwrite(mcodes, sizeof(Command), n_commands, exe_file);
+    int wr_com = (int)fwrite(mcodes, sizeof(BinCommand), n_commands, exe_file);
     printf("Written elems: %d\n"
            "n_commands:    %d\n"
-           "size Command:  %zd\n", bytes, n_commands, sizeof(Command));
+           "size BinCommand:  %zd\n", wr_com, n_commands, sizeof(BinCommand));
 
     fclose(exe_file);
-    return bytes;
+    return wr_com;
 }

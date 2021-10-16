@@ -5,4 +5,6 @@
 #ifndef SIMPLEPROCESSOR_CPU_H
 #define SIMPLEPROCESSOR_CPU_H
 
+int execute(const char* execute_file);
+
 #endif //SIMPLEPROCESSOR_CPU_H

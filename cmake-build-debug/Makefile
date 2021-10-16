@@ -153,6 +153,54 @@ CPU/cpu.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/CPU/cpu.cpp.s
 .PHONY : CPU/cpu.cpp.s
 
+arch/commands.o: arch/commands.cpp.o
+.PHONY : arch/commands.o
+
+# target to build an object file
+arch/commands.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/arch/commands.cpp.o
+.PHONY : arch/commands.cpp.o
+
+arch/commands.i: arch/commands.cpp.i
+.PHONY : arch/commands.i
+
+# target to preprocess a source file
+arch/commands.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/arch/commands.cpp.i
+.PHONY : arch/commands.cpp.i
+
+arch/commands.s: arch/commands.cpp.s
+.PHONY : arch/commands.s
+
+# target to generate assembly for a file
+arch/commands.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/arch/commands.cpp.s
+.PHONY : arch/commands.cpp.s
+
+arch/helper.o: arch/helper.cpp.o
+.PHONY : arch/helper.o
+
+# target to build an object file
+arch/helper.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/arch/helper.cpp.o
+.PHONY : arch/helper.cpp.o
+
+arch/helper.i: arch/helper.cpp.i
+.PHONY : arch/helper.i
+
+# target to preprocess a source file
+arch/helper.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/arch/helper.cpp.i
+.PHONY : arch/helper.cpp.i
+
+arch/helper.s: arch/helper.cpp.s
+.PHONY : arch/helper.s
+
+# target to generate assembly for a file
+arch/helper.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/arch/helper.cpp.s
+.PHONY : arch/helper.cpp.s
+
 asm/asm.o: asm/asm.cpp.o
 .PHONY : asm/asm.o
 
@@ -177,30 +225,6 @@ asm/asm.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/asm/asm.cpp.s
 .PHONY : asm/asm.cpp.s
 
-compiler.o: compiler.cpp.o
-.PHONY : compiler.o
-
-# target to build an object file
-compiler.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/compiler.cpp.o
-.PHONY : compiler.cpp.o
-
-compiler.i: compiler.cpp.i
-.PHONY : compiler.i
-
-# target to preprocess a source file
-compiler.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/compiler.cpp.i
-.PHONY : compiler.cpp.i
-
-compiler.s: compiler.cpp.s
-.PHONY : compiler.s
-
-# target to generate assembly for a file
-compiler.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/compiler.cpp.s
-.PHONY : compiler.cpp.s
-
 dis/dis.o: dis/dis.cpp.o
 .PHONY : dis/dis.o
 
@@ -224,30 +248,6 @@ dis/dis.s: dis/dis.cpp.s
 dis/dis.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/dis/dis.cpp.s
 .PHONY : dis/dis.cpp.s
-
-helper.o: helper.cpp.o
-.PHONY : helper.o
-
-# target to build an object file
-helper.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/helper.cpp.o
-.PHONY : helper.cpp.o
-
-helper.i: helper.cpp.i
-.PHONY : helper.i
-
-# target to preprocess a source file
-helper.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/helper.cpp.i
-.PHONY : helper.cpp.i
-
-helper.s: helper.cpp.s
-.PHONY : helper.s
-
-# target to generate assembly for a file
-helper.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/helper.cpp.s
-.PHONY : helper.cpp.s
 
 libs/baselib.o: libs/baselib.cpp.o
 .PHONY : libs/baselib.o
@@ -345,30 +345,6 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/main.cpp.s
 .PHONY : main.cpp.s
 
-processor.o: processor.cpp.o
-.PHONY : processor.o
-
-# target to build an object file
-processor.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/processor.cpp.o
-.PHONY : processor.cpp.o
-
-processor.i: processor.cpp.i
-.PHONY : processor.i
-
-# target to preprocess a source file
-processor.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/processor.cpp.i
-.PHONY : processor.cpp.i
-
-processor.s: processor.cpp.s
-.PHONY : processor.s
-
-# target to generate assembly for a file
-processor.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/SimpleProcessor.dir/build.make CMakeFiles/SimpleProcessor.dir/processor.cpp.s
-.PHONY : processor.cpp.s
-
 tests/baselib_test.o: tests/baselib_test.cpp.o
 .PHONY : tests/baselib_test.o
 
@@ -405,18 +381,18 @@ help:
 	@echo "... CPU/cpu.o"
 	@echo "... CPU/cpu.i"
 	@echo "... CPU/cpu.s"
+	@echo "... arch/commands.o"
+	@echo "... arch/commands.i"
+	@echo "... arch/commands.s"
+	@echo "... arch/helper.o"
+	@echo "... arch/helper.i"
+	@echo "... arch/helper.s"
 	@echo "... asm/asm.o"
 	@echo "... asm/asm.i"
 	@echo "... asm/asm.s"
-	@echo "... compiler.o"
-	@echo "... compiler.i"
-	@echo "... compiler.s"
 	@echo "... dis/dis.o"
 	@echo "... dis/dis.i"
 	@echo "... dis/dis.s"
-	@echo "... helper.o"
-	@echo "... helper.i"
-	@echo "... helper.s"
 	@echo "... libs/baselib.o"
 	@echo "... libs/baselib.i"
 	@echo "... libs/baselib.s"
@@ -429,9 +405,6 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
-	@echo "... processor.o"
-	@echo "... processor.i"
-	@echo "... processor.s"
 	@echo "... tests/baselib_test.o"
 	@echo "... tests/baselib_test.i"
 	@echo "... tests/baselib_test.s"

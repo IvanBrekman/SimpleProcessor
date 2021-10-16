@@ -88,28 +88,28 @@
 		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/CPU/cpu.h">
 			<Option target="SimpleProcessor"/>
 		</Unit>
+		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/arch/commands.cpp">
+			<Option target="SimpleProcessor"/>
+		</Unit>
+		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/arch/commands.h">
+			<Option target="SimpleProcessor"/>
+		</Unit>
+		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/arch/helper.cpp">
+			<Option target="SimpleProcessor"/>
+		</Unit>
+		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/arch/helper.h">
+			<Option target="SimpleProcessor"/>
+		</Unit>
 		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/asm/asm.cpp">
 			<Option target="SimpleProcessor"/>
 		</Unit>
 		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/asm/asm.h">
 			<Option target="SimpleProcessor"/>
 		</Unit>
-		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/compiler.cpp">
-			<Option target="SimpleProcessor"/>
-		</Unit>
-		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/compiler.h">
-			<Option target="SimpleProcessor"/>
-		</Unit>
 		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/dis/dis.cpp">
 			<Option target="SimpleProcessor"/>
 		</Unit>
 		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/dis/dis.h">
-			<Option target="SimpleProcessor"/>
-		</Unit>
-		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/helper.cpp">
-			<Option target="SimpleProcessor"/>
-		</Unit>
-		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/helper.h">
 			<Option target="SimpleProcessor"/>
 		</Unit>
 		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/libs/baselib.cpp">
@@ -131,12 +131,6 @@
 			<Option target="SimpleProcessor"/>
 		</Unit>
 		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/main.cpp">
-			<Option target="SimpleProcessor"/>
-		</Unit>
-		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/processor.cpp">
-			<Option target="SimpleProcessor"/>
-		</Unit>
-		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/processor.h">
 			<Option target="SimpleProcessor"/>
 		</Unit>
 		<Unit filename="/home/ivanbrekman/CLionProjects/SimpleProcessor/tests/baselib_test.cpp">

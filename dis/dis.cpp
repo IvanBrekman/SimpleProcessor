@@ -6,7 +6,7 @@
 
 #include "../libs/baselib.h"
 #include "../libs/file_funcs.h"
-#include "../helper.h"
+#include "../arch/helper.h"
 
 #include "dis.h"
 
@@ -15,7 +15,7 @@ int disassembly(const char* executable_file, const char* source_file) {
     assert(VALID_PTR(executable_file, char) && "Incorrect executable_file ptr");
 
     int n_commands;
-    Command* mcodes = read_mcodes(executable_file, &n_commands);
+    BinCommand* mcodes = read_mcodes(executable_file, &n_commands);
 
     Text* tcom = get_tcom_from_mcodes(mcodes, n_commands);
     for (int i = 0; i < n_commands; i++) {
@@ -25,13 +25,15 @@ int disassembly(const char* executable_file, const char* source_file) {
         print_text((const Text*)&tcom[i]);
         write_buffer_to_file(source_file, i == 0 ? "w" : "a", (const Text*)&tcom[i], " ");
     }
+
+    return 1;
 }
 
-Text* get_tcom_from_mcodes(Command* mcodes, int n_commands) {
+Text* get_tcom_from_mcodes(BinCommand* mcodes, int n_commands) {
     Text* tcom = (Text*) calloc(n_commands, sizeof(Text));
 
     for (int i = 0; i < n_commands; i++) {
-        Command mcode = mcodes[i];
+        BinCommand mcode = mcodes[i];
         int n_args = 1 + (int)mcode.sgn.argc;
 
         char** array = (char**) calloc(n_args, sizeof(char*));
