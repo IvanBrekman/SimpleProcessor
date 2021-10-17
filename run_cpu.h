@@ -8,14 +8,19 @@
 #include "libs/baselib.h"
 #include "libs/file_funcs.h"
 
-#define CHECK_SYSTEM_CALL(system_call, source_file, executable_file) { \
-    if (file_last_change(source_file) > file_last_change(executable_file)) { \
-        system_call;                                                        \
-    } else {                                                           \
-        printf("Skip system call \"%s\"\n", #system_call);\
-    }                                                            \
+#define CHECK_SYSTEM_CALL(system_call, source_file, executable_file) {              \
+    if (file_last_change(source_file) > file_last_change(executable_file)) {        \
+        int exit_code = system_call;                                                \
+        if (exit_code != 0) {                                                       \
+            printf(RED "program finished with exit code %d" NATURAL, exit_code);    \
+            assert(0 && "Bad exit code");                                           \
+        }                                                                           \
+    } else {                                                                        \
+        printf("Skip system call \"%s\"\n", #system_call);                          \
+    }                                                                               \
 }
 
+static const char* decompile_output = "commands_disassembled.txt";
 static const char* compile_strings[] = {
         "gcc asm/asm.cpp libs/baselib.cpp libs/file_funcs.cpp libs/stack.cpp arch/helper.cpp arch/commands.cpp -lm -o asm/asm.cat",
         "gcc dis/dis.cpp libs/baselib.cpp libs/file_funcs.cpp libs/stack.cpp arch/helper.cpp arch/commands.cpp -lm -o dis/dis.cat",

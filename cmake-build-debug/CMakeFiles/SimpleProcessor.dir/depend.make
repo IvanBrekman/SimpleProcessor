@@ -9,6 +9,7 @@ CMakeFiles/SimpleProcessor.dir/arch/commands.cpp.o: \
  ../libs/stack.h
 CMakeFiles/SimpleProcessor.dir/arch/helper.cpp.o: \
  ../arch/commands.h \
+ ../arch/commands_definition.h \
  ../arch/helper.cpp \
  ../arch/helper.h \
  ../libs/baselib.h \

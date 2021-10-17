@@ -19,29 +19,16 @@ struct CommandParameters {
 
 int init_stack();
 
-int execute_hlt   (int argc, int* argv);
+#define COMMAND_DEFINITION(name, code, argc_m, argv_m, func, body) int func(int argc, int* argv);
+    #include "commands_definition.h"
+#undef COMMAND_DEFINITION
 
-int execute_push  (int argc, int* argv);
-int execute_pop   (int argc, int* argv);
-
-int execute_add   (int argc, int* argv);
-int execute_sub   (int argc, int* argv);
-int execute_mul   (int argc, int* argv);
-
-int execute_verify(int argc, int* argv);
-int execute_dump  (int argc, int* argv);
-int execute_print (int argc, int* argv);
-
+#define COMMAND_DEFINITION(name, code, argc, argv, func, body) { name, code, argc, argv, func },
 const CommandParameters ALL_COMMANDS[] {
-    { "hlt",    0, 0, {   }, execute_hlt    },
-    { "push",   1, 1, { 1 }, execute_push   },
-    { "pop",    2, 0, {   }, execute_pop    },
-    { "add",    3, 0, {   }, execute_add    },
-    { "sub",    4, 0, {   }, execute_sub    },
-    { "mul",    5, 0, {   }, execute_mul    },
-    { "verify", 6, 0, {   }, execute_verify },
-    { "dump",   7, 0, {   }, execute_dump   },
-    { "print",  8, 0, {   }, execute_print  }
+    #include "commands_definition.h"
 };
+#undef COMMAND_DEFINITION
+
+const int UNKNOWN = -1;
 
 #endif //SIMPLEPROCESSOR_COMMANDS_H

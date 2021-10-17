@@ -13,4 +13,3 @@ add
 print
 verify
 dump
-hlt

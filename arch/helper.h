@@ -22,21 +22,6 @@ enum compile_errors {
     INCORRECT_ARG_AMOUNT = -2,
     INCORRECT_ARG_TYPE   = -3
 };
-enum commands {                                         // Commands depended
-    HLT     =  0,
-    PUSH    =  1,
-    POP     =  2,
-
-    ADD     =  3,
-    SUB     =  4,
-    MUL     =  5,
-
-    VERIFY  =  6,
-    DUMP    =  7,
-    PRINT   =  8,
-
-    UNKNOWN =  -1
-};
 
 struct signature_ {
     unsigned argc : BITS_TO_ARGV;

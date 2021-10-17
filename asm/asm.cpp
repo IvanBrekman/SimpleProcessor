@@ -44,7 +44,7 @@ int assembly(const char* source_file, const char* executable_file) {
         printf("\"\n%s\n" NATURAL, compile_error_desc(error));
 
         assert(0 && "Invalid syntax");
-        return INVALID_SYNTAX;
+        return exit_codes::INVALID_SYNTAX;
     }
 
     BinCommand* mcodes = get_mcodes_from_tcom(text_commands, n_commands);
