@@ -12,4 +12,5 @@ sub
 add
 print
 verify
+cat
 dump

@@ -34,9 +34,9 @@ int run_cpu(const char* source_file, const char* executable_file) {
     printf("execute command:   %s\n", command_execute);
 
     printf(BLUE "text\n" NATURAL);
-    CHECK_SYSTEM_CALL(system(compile_strings[0]), "asm/asm.cpp", "asm/asm.cat");
-    CHECK_SYSTEM_CALL(system(compile_strings[1]), "dis/dis.cpp", "dis/dis.cat");
-    CHECK_SYSTEM_CALL(system(compile_strings[2]), "CPU/cpu.cpp", "CPU/cpu.cat");
+    CHECK_PROCESSOR_SYSTEM_CALL(system(compile_strings[0]), "asm/asm.cat");
+    CHECK_PROCESSOR_SYSTEM_CALL(system(compile_strings[1]), "dis/dis.cat");
+    CHECK_PROCESSOR_SYSTEM_CALL(system(compile_strings[2]), "CPU/cpu.cat");
 
     CHECK_SYSTEM_CALL(system(command_compile),   source_file, executable_file);
     CHECK_SYSTEM_CALL(system(command_decompile), source_file, decompile_output);

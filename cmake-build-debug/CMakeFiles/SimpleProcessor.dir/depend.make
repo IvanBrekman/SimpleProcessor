@@ -3,6 +3,7 @@
 
 CMakeFiles/SimpleProcessor.dir/arch/commands.cpp.o: \
  ../arch/commands.cpp \
+ ../arch/commands_definition.h \
  ../arch/helper.h \
  ../config.h \
  ../libs/baselib.h \

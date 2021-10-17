@@ -3,7 +3,6 @@
 //
 
 #include <malloc.h>
-#include "../config.h"
 
 #include "../libs/baselib.h"
 #include "../libs/stack.h"
