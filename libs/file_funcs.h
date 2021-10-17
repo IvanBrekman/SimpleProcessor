@@ -30,8 +30,10 @@ Text convert_to_text(const char** strings, int n_strings);
 void print_text(const Text* data, const char* sep=", ", const char* end="\n");
 void print_strings(const char** array, size_t size, const char* sep=", ", const char* end="\n");
 
+int  file_size       (const char* filename);
+long file_last_change(const char* filename);
+
 FILE* open_file(const char* filename, const char mode[]);
-int file_size(const char* filename);
 Text get_text_from_file(const char* filename);
 
 int    write_text_to_file(const char* filename, const char mode[], const Text* data, const char* text_sep="\n");

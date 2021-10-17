@@ -148,6 +148,29 @@ Text convert_to_text(const char** strings, int n_strings) {
     return text;
 }
 
+//! Function defines size of file
+//! \param filename path to file (absolute or relative)
+//! \return         size of file (in bytes)
+int  file_size       (const char* filename) {
+    assert(VALID_PTR(filename, char));
+
+    struct stat buff = {};
+    stat(filename, &buff);
+
+    return (int)buff.st_size;
+}
+//! Function defines last time of changes in file (with big accuracy)
+//! \param  filename path to file (absolute or relative)
+//! \return          time of last changes (in nanoseconds)
+long file_last_change(const char* filename) {
+    assert(VALID_PTR(filename, char));
+
+    struct stat buff = {};
+    stat(filename, &buff);
+
+    return 1000000000 * buff.st_mtim.tv_sec + buff.st_mtim.tv_nsec;
+}
+
 //! Function opens file
 //! \param filename path to file to open (absolute or relative)
 //! \param mode     mode with which open file
@@ -162,19 +185,6 @@ FILE* open_file(const char* filename, const char mode[]) {
 
     return file;
 }
-
-//! Function defines size of file
-//! \param filename path to file (absolute or relative)
-//! \return         size of file (in bytes)
-int file_size(const char* filename) {
-    assert(VALID_PTR(filename, char));
-
-    struct stat buff = {};
-    stat(filename, &buff);
-
-    return (int)buff.st_size;
-}
-
 //! Function reads strings from file
 //! \param filename pointer to string of path to file
 //! \return         object of Text structure

@@ -25,8 +25,12 @@ CMakeFiles/SimpleProcessor.dir/libs/stack.cpp.o: \
  ../libs/stack.cpp \
  ../libs/stack.h
 CMakeFiles/SimpleProcessor.dir/main.cpp.o: \
+ ../libs/baselib.h \
+ ../libs/file_funcs.h \
  ../main.cpp \
  ../run_cpu.h
 CMakeFiles/SimpleProcessor.dir/run_cpu.cpp.o: \
+ ../libs/baselib.h \
+ ../libs/file_funcs.h \
  ../run_cpu.cpp \
  ../run_cpu.h

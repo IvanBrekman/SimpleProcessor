@@ -5,9 +5,14 @@
 #include <cstring>
 #include <cstdio>
 #include <cstdlib>
+
+#include "libs/baselib.h"
 #include "run_cpu.h"
 
 int run_cpu(const char* source_file, const char* executable_file) {
+    system("cd /home/ivanbrekman/CLionProjects/SimpleProcessor");
+    system("dir");
+
     char* command_compile   = (char*) calloc(strlen(execute_strings[0]) + strlen(source_file) + 1 + strlen(executable_file) + 1, sizeof(char));
     strcpy(command_compile, execute_strings[0]);
     strcat(command_compile, source_file);
@@ -27,12 +32,15 @@ int run_cpu(const char* source_file, const char* executable_file) {
     strcat(command_execute, executable_file);
     printf("execute command:   %s\n", command_execute);
 
-    system(compile_strings[0]);
-    system(compile_strings[1]);
-    system(compile_strings[2]);
+    printf(BLUE "text\n" NATURAL);
+    CHECK_SYSTEM_CALL(system(compile_strings[0]), "asm/asm.cpp", "asm/asm.cat");
+    CHECK_SYSTEM_CALL(system(compile_strings[1]), "dis/dis.cpp", "dis/dis.cat");
+    CHECK_SYSTEM_CALL(system(compile_strings[2]), "CPU/cpu.cpp", "CPU/cpu.cat");
 
-    system(command_compile);
-    system(command_decompile);
+    CHECK_SYSTEM_CALL(system(command_compile),   source_file, executable_file);
+    CHECK_SYSTEM_CALL(system(command_decompile), source_file, executable_file);
+    //printf(RED "text\n" NATURAL);
+
     system(command_execute);
 
     return 1;
