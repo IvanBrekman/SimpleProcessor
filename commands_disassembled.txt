@@ -1,0 +1,16 @@
+push 10
+push 20
+out
+add
+out
+push 10
+mul
+push 12
+push 1
+out
+sub
+add
+out
+verify
+dump
+hlt

@@ -1,1 +1,0 @@
-/usr/bin/c++ -g CMakeFiles/SimpleProcessor.dir/main.cpp.o CMakeFiles/SimpleProcessor.dir/run_cpu.cpp.o CMakeFiles/SimpleProcessor.dir/arch/helper.cpp.o CMakeFiles/SimpleProcessor.dir/arch/commands.cpp.o CMakeFiles/SimpleProcessor.dir/libs/file_funcs.cpp.o CMakeFiles/SimpleProcessor.dir/libs/stack.cpp.o CMakeFiles/SimpleProcessor.dir/libs/baselib.cpp.o -o SimpleProcessor 

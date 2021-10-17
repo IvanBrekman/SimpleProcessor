@@ -1,3 +1,0 @@
-/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/ivanbrekman/CLionProjects/SimpleProcessor/cmake-build-debug/CMakeFiles/SimpleProcessor.dir
