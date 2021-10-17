@@ -16,11 +16,12 @@ enum exit_codes {
     OK             =  0,
     BREAK          = -1,
     INVALID_SYNTAX = -2,
+    EXIT           = -3
 };
 enum compile_errors {
-    UNKNOWN_COMMAND      = -1,
-    INCORRECT_ARG_AMOUNT = -2,
-    INCORRECT_ARG_TYPE   = -3
+    UNKNOWN_COMMAND      = -15,
+    INCORRECT_ARG_AMOUNT = -16,
+    INCORRECT_ARG_TYPE   = -17
 };
 
 struct signature_ {

@@ -148,7 +148,7 @@ int   Stack_error(const Stack* stack) {
 //! Function with errors description
 //! \param error_code code of error
 //! \return           error description
-char* Stack_error_desc(int error_code) {
+const char* Stack_error_desc(int error_code) {
     switch (error_code) {
         case 0:
             return "No error";
@@ -370,7 +370,7 @@ int  print_stack(const Stack* stack, int* error) {
 
     return stack->size;
 }
-void Stack_dump_(const Stack* stack, const StackInfo* current_info, char reason[]) {
+void Stack_dump_(const Stack* stack, const StackInfo* current_info, const char reason[]) {
     printf((ORANGE "|--------------------             Stack  Dump             --------------------|\n" NATURAL));
     PRINT_DATE(BLUE);
     printf("%s\n", reason);
@@ -447,7 +447,13 @@ void Stack_dump_(const Stack* stack, const StackInfo* current_info, char reason[
         printf("\t\t Data left_canary  = %llX (%s)\n",   *l_canary, *l_canary == CANARY ? (GREEN "ok" NATURAL) : (RED "BAD" NATURAL));
         printf("\t\t Data right_canary = %llX (%s)\n\n", *r_canary, *r_canary == CANARY ? (GREEN "ok" NATURAL) : (RED "BAD" NATURAL));
 
-        for (int i = 0; i < stack->capacity; i++) {
+        int end_index = stack->capacity - 1;
+        for (; end_index >= 0; end_index--) {
+            if (stack->data[end_index] != 0) {
+                break;
+            }
+        }
+        for (int i = 0; i <= end_index + 1; i++) {
             printf("\t\t%s", i < stack->size ? (BLUE "*") : " ");
             printf("[%d]", i);
             if (i < stack->size) printf(NATURAL);
@@ -456,6 +462,7 @@ void Stack_dump_(const Stack* stack, const StackInfo* current_info, char reason[
             else if(stack->data[i] == poisons::FREED_ELEMENT)     printf((RED " (freed)"         NATURAL));
             printf("\n");
         }
+        if (end_index != stack->capacity - 1) printf("\t\t    ...\n\t\t [%d] = %d\n", stack->capacity - 1, stack->data[stack->capacity - 1]);
         printf("    }\n");
     } else {
         printf(" - " RED "Invalid ptr\n" NATURAL);
@@ -464,7 +471,7 @@ void Stack_dump_(const Stack* stack, const StackInfo* current_info, char reason[
     printf("}\n");
     printf(ORANGE "|--------------------COMPILATION DATE %s %s--------------------|" NATURAL "\n", __DATE__, __TIME__);
 }
-void Stack_dump_file_(const Stack* stack, const StackInfo* current_info, char reason[], const char* log_file) {
+void Stack_dump_file_(const Stack* stack, const StackInfo* current_info, const char reason[], const char* log_file) {
     FILE* log = fopen(log_file, "a");
 
     fprintf(log, "|--------------------             Stack  Dump             --------------------|\n");

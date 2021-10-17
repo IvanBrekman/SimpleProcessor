@@ -13,7 +13,7 @@
 #define $(code) ( printf("%s:%d >>> %s...\n", __FILE__, __LINE__, #code), code )
 
 #define CANARY 0xDEADA2EA // DEAD AREA
-#define CAP_STEP    32
+#define CAP_STEP     8
 #define CAP_BORDER 256
 
 #define TYPE "int"
@@ -108,7 +108,7 @@ int Stack_ctor_(Stack* stack, const StackInfo* info, int* error=NULL);
 int Stack_dtor_(Stack* stack, int* error=NULL);
 
 int   Stack_error(const Stack* stack);
-char* Stack_error_desc(int error_code);
+const char* Stack_error_desc(int error_code);
 
 unsigned long long Stack_hash_(const Stack* stack);
 unsigned long long Stack_hash_ptr_(const void* ptr, size_t size);
@@ -120,7 +120,7 @@ stack_el_t top(const Stack* stack, int* error=NULL);
 int change_capacity(Stack* stack, int new_capacity, int* error=NULL);
 
 int  print_stack     (const Stack* stack, int* error=NULL);
-void Stack_dump_     (const Stack* stack, const StackInfo* current_info, char reason[]);
-void Stack_dump_file_(const Stack* stack, const StackInfo* current_info, char reason[], const char* log_file);
+void Stack_dump_     (const Stack* stack, const StackInfo* current_info, const char reason[]);
+void Stack_dump_file_(const Stack* stack, const StackInfo* current_info, const char reason[], const char* log_file);
 
 #endif //SIMPLEPROCESSOR_STACK_H

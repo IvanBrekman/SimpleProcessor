@@ -17,35 +17,42 @@ static const char* TRACKED_PROGRAMS[] = {
         "dis/dis.cpp", "dis/dis.h",
         "CPU/cpu.cpp", "CPU/cpu.h",
 
-        "lib/baselib.cpp",    "lib/baselib.h",
-        "lib/file_funcs.cpp", "lib/file_funcs.h",
-        "lib/stack.cpp",      "lib/stack.h",
+        "libs/baselib.cpp",    "libs/baselib.h",
+        "libs/file_funcs.cpp", "libs/file_funcs.h",
+        "libs/stack.cpp",      "libs/stack.h",
 };
 
-#define CHECK_PROCESSOR_SYSTEM_CALL(system_call, executable_file) {                         \
+#define CHECK_TRACKED_PROGRAMS(system_call, executable_file) { \
     for (const char* tracked_program : TRACKED_PROGRAMS) {                                        \
         if (file_last_change(tracked_program) > file_last_change(executable_file)) {        \
             int exit_code = system_call;                                                    \
             if (exit_code != 0) {                                                           \
                 printf(RED "program finished with exit code %d" NATURAL, exit_code);        \
                 assert(0 && "Bad exit code");                                               \
-            }                                                                               \
-            break;                                                                          \
+            }                                                       \
+        updated = 1; \
+        break;                                                                          \
         }                                                                                   \
-    }                                                                                       \
-    printf("Skip processor system call \"%s\"\n", #system_call);                            \
+    }                                                                \
+}
+#define CHECK_PROCESSOR_SYSTEM_CALL(system_call, executable_file) { \
+    int updated = 0;\
+    CHECK_TRACKED_PROGRAMS(system_call, executable_file);                                                                                    \
+    if (!updated) printf("Skip processor system call \"%s\"\n", #system_call);                            \
 }
 
-#define CHECK_SYSTEM_CALL(system_call, source_file, executable_file) {                      \
-    if (file_last_change(source_file) > file_last_change(executable_file)) {                \
-        int exit_code = system_call;                                                        \
-        if (exit_code != 0) {                                                               \
-            printf(RED "program finished with exit code %d" NATURAL, exit_code);            \
-            assert(0 && "Bad exit code");                                                   \
-        }                                                                                   \
-    } else {                                                                                \
-        printf("Skip system call \"%s\"\n", #system_call);                                  \
-    }                                                                                       \
+#define CHECK_SYSTEM_CALL(system_call, source_file, executable_file) { \
+    int updated = 0;\
+    CHECK_TRACKED_PROGRAMS(system_call, executable_file);                                                                                    \
+    if (file_last_change(source_file) > file_last_change(executable_file)) {                      \
+        int exit_code = system_call;                                                    \
+        if (exit_code != 0) {                                                           \
+            printf(RED "program finished with exit code %d" NATURAL, exit_code);        \
+            assert(0 && "Bad exit code");                                               \
+        }                                                       \
+        updated = 1;                                                                   \
+    }                                                                  \
+    if (!updated) printf("Skip system call \"%s\"\n", #system_call);                            \
 }
 
 static const char* decompile_output = "commands_disassembled.txt";

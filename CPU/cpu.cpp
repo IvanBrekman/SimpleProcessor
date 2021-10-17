@@ -26,7 +26,7 @@ int execute(const char* execute_file) {
 
     execute_commands(mcodes, n_commands);
 
-    return 1;
+    return 0;
 }
 
 int execute_commands(BinCommand* mcodes, int n_commands) {
@@ -37,10 +37,18 @@ int execute_commands(BinCommand* mcodes, int n_commands) {
         int exit_code = command.execute_func((int)b_command.sgn.argc, b_command.argv);
 
         if (exit_code != 0) {
-            printf(RED "Program aborted with exit code %d\n" NATURAL, exit_code);
-            assert(0 && "Intentional abort");
+            switch (exit_code)
+            {
+            case exit_codes::BREAK:
+                printf(RED "Program aborted with exit code %d\n" NATURAL, exit_code);
+                assert(0 && "Intentional abort");break;
+            case exit_codes::EXIT:
+                return 0;
+            default:
+                break;
+            }
         }
     }
 
-    return 1;
+    return 0;
 }

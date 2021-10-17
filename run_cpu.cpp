@@ -11,9 +11,6 @@
 #include "run_cpu.h"
 
 int run_cpu(const char* source_file, const char* executable_file) {
-    system("cd /home/ivanbrekman/CLionProjects/SimpleProcessor");
-    system("dir");
-
     char* command_compile   = (char*) calloc(strlen(execute_strings[0]) + strlen(source_file) + 1 + strlen(executable_file) + 1, sizeof(char));
     strcpy(command_compile, execute_strings[0]);
     strcat(command_compile, source_file);
@@ -31,7 +28,7 @@ int run_cpu(const char* source_file, const char* executable_file) {
     char* command_execute   = (char*) calloc(strlen(execute_strings[2]) + strlen(source_file) + 1, sizeof(char));
     strcpy(command_execute, execute_strings[2]);
     strcat(command_execute, executable_file);
-    printf("execute command:   %s\n", command_execute);
+    printf("execute command:   %s\n\n", command_execute);
 
     printf(BLUE "text\n" NATURAL);
     CHECK_PROCESSOR_SYSTEM_CALL(system(compile_strings[0]), "asm/asm.cat");
@@ -44,5 +41,5 @@ int run_cpu(const char* source_file, const char* executable_file) {
 
     system(command_execute);
 
-    return 1;
+    return 0;
 }

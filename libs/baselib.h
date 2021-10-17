@@ -5,10 +5,6 @@
 #ifndef BASELIB_H
 #define BASELIB_H
 
-#if !defined(TYPE)
-    #define TYPE "void"
-#endif
-
 #define dbg(code) do{ printf("%s:%d\n", __FILE__, __LINE__); code }while(0)
 #define LOCATION(var) { TYPE, #var, __FILE__, __FUNCTION__, __LINE__ }
 #define VALID_PTR(ptr, type) (                                                                                                          \
