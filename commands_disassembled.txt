@@ -13,4 +13,5 @@ add
 out
 verify
 dump
+cat
 hlt

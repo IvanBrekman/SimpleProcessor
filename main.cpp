@@ -6,13 +6,14 @@
 #include <cstdlib>
 #include <climits>
 
+#include "config.h"
 #include "run_cpu.h"
 #include "libs/file_funcs.h"
 
 // gcc main.cpp run_cpu.cpp libs/baselib.cpp libs/file_funcs.cpp -o main.out
 int main(int argc, char** argv) {
-    char* source_file     = (char*) calloc(50, sizeof(char));
-    char* executable_file = (char*) calloc(50, sizeof(char));
+    char* source_file     = (char*) calloc(MAX_FILEPATH_SIZE, sizeof(char));
+    char* executable_file = (char*) calloc(MAX_FILEPATH_SIZE, sizeof(char));
 
     if (argc >= 3) {
         source_file     = argv[1];

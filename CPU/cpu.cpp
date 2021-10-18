@@ -33,6 +33,11 @@ int execute_commands(BinCommand* mcodes, int n_commands) {
     for (int i = 0; i < n_commands; i++) {
         BinCommand b_command = mcodes[i];
         CommandParameters command = ALL_COMMANDS[b_command.sgn.cmd];
+        int com_size = sizeof(ALL_COMMANDS) / sizeof(ALL_COMMANDS[0]);
+        if (b_command.sgn.cmd >= com_size) {
+            printf(RED "Incorrect command code (%d)\n" NATURAL, b_command.sgn.cmd);
+            return exit_codes::INVALID_SYNTAX;
+        }
 
         int exit_code = command.execute_func((int)b_command.sgn.argc, b_command.argv);
 
