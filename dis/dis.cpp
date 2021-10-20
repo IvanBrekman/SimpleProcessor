@@ -3,6 +3,7 @@
 //
 
 #include <cstdlib>
+#include <cerrno>
 
 #include "../libs/baselib.h"
 #include "../libs/file_funcs.h"
@@ -12,30 +13,40 @@
 
 int main(int argc, char** argv) {
     if (argc < 3) {
-        printf(RED "Cant parse executable file path or source file path\n" NATURAL);
-        return INVALID_SYNTAX;
+        printf(RED "Cant parse executable file path or source file path" NATURAL "\n");
+        return exit_codes::INVALID_SYNTAX;
     }
 
-    disassembly(argv[1], argv[2]);
+    LOG(printf("------start disassembly------\n"););
+    int exit_code = disassembly(argv[1], argv[2]);
+    LOG(printf("------end   disassembly------\n\n"););
+
+    return exit_code;
 }
 
 int disassembly(const char* executable_file, const char* source_file) {
-    assert(VALID_PTR(source_file,     char) && "Incorrect source_file ptr");
-    assert(VALID_PTR(executable_file, char) && "Incorrect executable_file ptr");
+    assert(VALID_PTR(source_file)     && "Incorrect source_file ptr");
+    assert(VALID_PTR(executable_file) && "Incorrect executable_file ptr");
 
-    int n_commands;
+    int n_commands = -1;
+    errno = 0;
     BinCommand* mcodes = read_mcodes(executable_file, &n_commands);
+    if (errno != 0) {
+        printf(RED  "Error while reading mashine codes from executable file\n%s\n" NATURAL, error_desc(errno));
+        return exit_codes::INVALID_SYNTAX;
+    }
 
     Text* tcom = get_tcom_from_mcodes(mcodes, n_commands);
+    LOG(printf("All commands (dis)\n");
+        for (int i = 0; i < n_commands; i++) {
+            print_text((const Text*)&tcom[i]);
+        }
+    );
     for (int i = 0; i < n_commands; i++) {
-        print_text(&tcom[i]);
-    }
-    for (int i = 0; i < n_commands; i++) {
-        print_text((const Text*)&tcom[i]);
         write_buffer_to_file(source_file, i == 0 ? "w" : "a", (const Text*)&tcom[i], " ");
     }
 
-    return 1;
+    return exit_codes::OK;
 }
 
 Text* get_tcom_from_mcodes(BinCommand* mcodes, int n_commands) {

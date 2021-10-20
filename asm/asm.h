@@ -10,7 +10,7 @@
 int assembly(const char* source_file, const char* executable_file);
 
 Text*       get_tcom(const Text* data);
-Text        check_tcom(const Text* tcom, int n_commands, int* error);
+Text        check_tcom(const Text* tcom, int n_commands);
 BinCommand* get_mcodes_from_tcom(const Text* commands, int n_commands);
 
 #endif //SIMPLEPROCESSOR_ASM_H

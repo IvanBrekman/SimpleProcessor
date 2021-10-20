@@ -5,6 +5,7 @@
 #include <cassert>
 #include <cstdlib>
 #include <cstring>
+#include <cerrno>
 
 #include "../libs/baselib.h"
 #include "../libs/file_funcs.h"
@@ -19,46 +20,51 @@ int main(int argc, char** argv) {
         return INVALID_SYNTAX;
     }
 
-    assembly(argv[1], argv[2]);
+    LOG(printf("------start assembly------\n"););
+    int exit_code = assembly(argv[1], argv[2]);
+    LOG(printf("------end   assembly------\n\n"););
+
+    return exit_code;
 }
 
 int assembly(const char* source_file, const char* executable_file) {
-    assert(VALID_PTR(source_file,     char) && "Incorrect source_file ptr");
-    assert(VALID_PTR(executable_file, char) && "Incorrect executable_file ptr");
+    assert(VALID_PTR(source_file)     && "Incorrect source_file ptr");
+    assert(VALID_PTR(executable_file) && "Incorrect executable_file ptr");
 
     Text text = get_text_from_file(source_file);
 
     int      n_commands = (int)text.lines;
     Text* text_commands = get_tcom(&text);
 
-    printf("All commands:\n");
-    for (int i = 0; i < n_commands; i++) {
-        print_text(&text_commands[i], ", ");
-    }
+    LOG(printf("All commands (asm):\n");
+        for (int i = 0; i < n_commands; i++) {
+            print_text(&text_commands[i], ", ");
+        }
+        printf("\n");
+    );
 
-    int error = 0;
-    Text wrong_command = check_tcom(text_commands, n_commands, &error);
-    if (error != 0) {
+    errno = 0;
+    Text wrong_command = check_tcom(text_commands, n_commands);
+    if (errno != 0) {
         printf(RED "Incorrect command \"");
         print_text(&wrong_command, ", ", "");
-        printf("\"\n%s\n" NATURAL, compile_error_desc(error));
+        printf("\"\n%s\n" NATURAL, error_desc(errno));
 
-        assert(0 && "Invalid syntax");
         return exit_codes::INVALID_SYNTAX;
     }
 
     BinCommand* mcodes = get_mcodes_from_tcom(text_commands, n_commands);
-    print_commands(mcodes, n_commands);
+    LOG(print_commands(mcodes, n_commands););
 
     write_mcodes(mcodes, n_commands, executable_file);
 
     FREE_PTR(text_commands, Text);
     FREE_PTR(mcodes, BinCommand);
-    return 1;
+    return exit_codes::OK;
 }
 
 Text*       get_tcom(const Text* data) {
-    assert(VALID_PTR(data, Text) && "Invalid data ptr");
+    assert(VALID_PTR(data) && "Invalid data ptr");
 
     Text* commands = (Text*)calloc(data->lines, sizeof(Text));
 
@@ -79,30 +85,30 @@ Text*       get_tcom(const Text* data) {
 
     return commands;
 }
-Text        check_tcom(const Text* tcom, int n_commands, int* error) {
+Text        check_tcom(const Text* tcom, int n_commands) {
     for (int i = 0; i < n_commands; i++) {
         Text cmd = tcom[i];
 
         int cmd_code = command_type((const char*)cmd.text[0].ptr);
         if (cmd_code == UNKNOWN) {
-            *error = UNKNOWN_COMMAND;
+            errno = UNKNOWN_COMMAND;
             return cmd;
         }
 
         if ((cmd.lines - 1) != ALL_COMMANDS[cmd_code].argc) {
-            *error = INCORRECT_ARG_AMOUNT;
+            errno = INCORRECT_ARG_AMOUNT;
             return cmd;
         }
 
         for (int arg = 1; arg < cmd.lines; arg++) {
             if (is_number(cmd.text[arg].ptr)) {
                 if (extract_bit(ALL_COMMANDS[cmd_code].arg_types[arg - 1], 0) == 0) { // if num is not allowed type
-                    *error = INCORRECT_ARG_TYPE;
+                    errno = INCORRECT_ARG_TYPE;
                     return cmd;
                 }
             } else {
                 if (extract_bit(ALL_COMMANDS[cmd_code].arg_types[arg - 1], 1) == 0) { // if register is not allowed type
-                    *error = INCORRECT_ARG_TYPE;
+                    errno = INCORRECT_ARG_TYPE;
                     return cmd;
                 }
             }

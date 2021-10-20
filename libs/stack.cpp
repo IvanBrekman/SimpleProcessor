@@ -22,13 +22,13 @@
 //! \return      1, if all is good
 int Stack_ctor_(Stack* stack, const StackInfo* info, int* error) {
     if (VALIDATE_LEVEL >= WEAK_VALIDATE) {
-        assert(VALID_PTR(stack, Stack));
-        assert(VALID_PTR(info, StackInfo));
+        assert(VALID_PTR(stack));
+        assert(VALID_PTR(info));
     }
-    if (!VALID_PTR(stack, Stack) && VALID_PTR(error, int)) {
+    if (!VALID_PTR(stack) && VALID_PTR(error)) {
         *error = errors::ST_INVALID_PTR;
     }
-    if (!VALID_PTR(info, StackInfo) && VALID_PTR(error, int)) {
+    if (!VALID_PTR(info) && VALID_PTR(error)) {
         *error = errors::ST_INFO_INVALID_PTR;
     }
 
@@ -87,13 +87,13 @@ int Stack_dtor_(Stack* stack, int* error) {
 //! \param stack pointer to stack
 //! \return      error code (0 if all is good)
 int   Stack_error(const Stack* stack) {
-    if (!VALID_PTR(stack, Stack)) {
+    if (!VALID_PTR(stack)) {
         return errors::ST_INVALID_PTR;
     }
-    if (!VALID_PTR(stack->data, stack_el_t)) {
+    if (!VALID_PTR(stack->data)) {
         return errors::ST_DATA_INVALID_PTR;
     }
-    if (!VALID_PTR(stack->info_, StackInfo)) {
+    if (!VALID_PTR(stack->info_)) {
         return errors::ST_INFO_INVALID_PTR;
     }
     if (stack->size < 0) {
@@ -335,7 +335,7 @@ int change_capacity(Stack* stack, int new_capacity, int* error) {
 
     stack->data = (stack_el_t*)((char*)stack->data - sizeof(long long));
     stack_el_t* stack_data_ptr = (stack_el_t*)realloc(stack->data, new_capacity * sizeof(stack_el_t) + 2 * sizeof(long long));
-    if (!VALID_PTR(stack_data_ptr, stack_el_t)) {
+    if (!VALID_PTR(stack_data_ptr)) {
         *error = errors::NOT_ENOUGH_MEMORY;
         return errors::NOT_ENOUGH_MEMORY;
     }
@@ -378,7 +378,7 @@ void Stack_dump_(const Stack* stack, const StackInfo* current_info, const char r
     int err = Stack_error(stack);
     if (err) printf(RED "%s (%d)\n" NATURAL, Stack_error_desc(err), err);
 
-    if (!VALID_PTR(stack, Stack)) {
+    if (!VALID_PTR(stack)) {
         printf((RED "Cannot find Stack obj at %p\n" NATURAL), stack);
         printf((ORANGE "|--------------------COMPILATION DATE %s %s--------------------|\n" NATURAL), __DATE__, __TIME__);
         return;
@@ -394,7 +394,7 @@ void Stack_dump_(const Stack* stack, const StackInfo* current_info, const char r
            current_info->func
            );
 
-    if (VALID_PTR(stack->info_, StackInfo)) {
+    if (VALID_PTR(stack->info_)) {
         printf("\tStack definition: \"" ORANGE_UNL "%s" NATURAL "\" from %s:%d, " CYAN "%s" NATURAL " function\n",
                stack->info_->name, stack->info_->file,
                stack->info_->line, stack->info_->func);
@@ -414,12 +414,12 @@ void Stack_dump_(const Stack* stack, const StackInfo* current_info, const char r
 
         printf("\tHash data (saved) = %llu\n",   stack->hash_data);
         printf("\tHash data (calc)  = ");
-        if (VALID_PTR(stack->data, stack_el_t)) printf("%llu\n\n", Stack_hash_ptr_(stack->data, stack->capacity));
+        if (VALID_PTR(stack->data)) printf("%llu\n\n", Stack_hash_ptr_(stack->data, stack->capacity));
         else                                    printf(RED "cant calculate (invalid ptr)\n\n" NATURAL);
 
         printf("\tHash info (saved) = %llu\n",   stack->hash_info);
         printf("\tHash info (calc)  = ");
-        if (VALID_PTR(stack->info_, StackInfo)) printf("%llu\n\n", Stack_hash_ptr_(stack->info_, sizeof(*stack->info_)));
+        if (VALID_PTR(stack->info_)) printf("%llu\n\n", Stack_hash_ptr_(stack->info_, sizeof(*stack->info_)));
         else                                    printf(RED "cant calculate (invalid ptr)\n\n" NATURAL);
     }
 
@@ -439,7 +439,7 @@ void Stack_dump_(const Stack* stack, const StackInfo* current_info, const char r
 
     printf("\tdata[" CYAN "%p" NATURAL "]", stack->data);
 
-    if (VALID_PTR(stack->data, stack_el_t)) {
+    if (VALID_PTR(stack->data)) {
         printf("\n\t{\n");
 
         long long* l_canary = (long long*)((char*)stack->data - sizeof(long long));
@@ -481,7 +481,7 @@ void Stack_dump_file_(const Stack* stack, const StackInfo* current_info, const c
     int err = Stack_error(stack);
     if (err) fprintf(log, "%s (%d)\n", Stack_error_desc(err), err);
 
-    if (!VALID_PTR(stack, Stack)) {
+    if (!VALID_PTR(stack)) {
         fprintf(log, "Cannot find Stack obj at %p\n"
                      "|--------------------COMPILATION DATE %s %s--------------------|\n",
                      stack, __DATE__, __TIME__);
@@ -498,7 +498,7 @@ void Stack_dump_file_(const Stack* stack, const StackInfo* current_info, const c
             current_info->func
             );
 
-    if (VALID_PTR(stack->info_, StackInfo)) {
+    if (VALID_PTR(stack->info_)) {
         fprintf(log, "\tStack definition: \"%s\" from %s:%d, %s function\n{\n",
                 stack->info_->name, stack->info_->file,
                 stack->info_->line, stack->info_->func
@@ -517,12 +517,12 @@ void Stack_dump_file_(const Stack* stack, const StackInfo* current_info, const c
 
         fprintf(log, "\tHash data (saved) = %llu\n",   stack->hash_data);
         fprintf(log, "\tHash data (calc)  = ");
-        if (VALID_PTR(stack->data, stack_el_t)) fprintf(log, "%llu\n\n", Stack_hash_ptr_(stack->data, stack->capacity));
+        if (VALID_PTR(stack->data)) fprintf(log, "%llu\n\n", Stack_hash_ptr_(stack->data, stack->capacity));
         else                                    fprintf(log, "cant calculate (damaged stack data)\n\n");
 
         fprintf(log, "\tHash info (saved) = %llu\n",   stack->hash_info);
         fprintf(log, "\tHash info (calc)  = ");
-        if (VALID_PTR(stack->info_, StackInfo)) fprintf(log, "%llu\n\n", Stack_hash_ptr_(stack->info_, sizeof(*stack->info_)));
+        if (VALID_PTR(stack->info_)) fprintf(log, "%llu\n\n", Stack_hash_ptr_(stack->info_, sizeof(*stack->info_)));
         else                                    fprintf(log, "cant calculate (invalid ptr)\n\n");
     }
 
@@ -542,7 +542,7 @@ void Stack_dump_file_(const Stack* stack, const StackInfo* current_info, const c
 
     fprintf(log, "\tdata[%p]", stack->data);
 
-    if (VALID_PTR(stack->data, stack_el_t)) {
+    if (VALID_PTR(stack->data)) {
         fprintf(log, "\n\t{\n");
 
         long long* l_canary = (long long*)((char*)stack->data - sizeof(long long));

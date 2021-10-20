@@ -23,7 +23,7 @@
 //! \note function need string size, because if you want to
 //!       replace '\0' symbol strlen function wont work correctly
 int replace(char* string, size_t size, char old_symbol, char new_symbol, int n_replace) {
-    assert(VALID_PTR(string, char));
+    assert(VALID_PTR(string));
 
     int n_rep = 0;
 
@@ -62,7 +62,7 @@ void free_string(struct String* string) {
 //! Function prints text from struct
 //! \param data pointer to struct
 void print_text(const Text* data, const char* sep, const char* end) {
-    assert(VALID_PTR(data, Text));
+    assert(VALID_PTR(data));
 
     printf("[ ");
     for (int i = 0; i < data->lines; i++) {
@@ -75,7 +75,7 @@ void print_text(const Text* data, const char* sep, const char* end) {
 //! \param array pointer to array of strings
 //! \param size  size of array
 void print_strings(const char** array, size_t size, const char* sep, const char* end) {
-    assert(VALID_PTR(array, char*));
+    assert(VALID_PTR(array));
 
     printf("[ ");
     for (int i = 0; i < size; i++) {
@@ -91,8 +91,8 @@ void print_strings(const char** array, size_t size, const char* sep, const char*
 //! \param data_size  data size
 //! \return           1
 int load_string_pointers(Text* text) {
-    assert(VALID_PTR(text->text, String));
-    assert(VALID_PTR(text->data, char));
+    assert(VALID_PTR(text->text));
+    assert(VALID_PTR(text->data));
 
     char* start_ptr = (char*)text->data;
 
@@ -118,7 +118,7 @@ int load_string_pointers(Text* text) {
 //! \param n_strings number of strings
 //! \return          Text representation of array of strings
 Text convert_to_text(const char** strings, int n_strings) {
-    assert(VALID_PTR(strings, char*));
+    assert(VALID_PTR(strings));
 
     int sum_length = 0;
     int* lengths = (int*) calloc(n_strings, sizeof(int));
@@ -152,7 +152,7 @@ Text convert_to_text(const char** strings, int n_strings) {
 //! \param filename path to file (absolute or relative)
 //! \return         size of file (in bytes)
 int  file_size       (const char* filename) {
-    assert(VALID_PTR(filename, char));
+    assert(VALID_PTR(filename));
 
     struct stat buff = {};
     stat(filename, &buff);
@@ -163,7 +163,7 @@ int  file_size       (const char* filename) {
 //! \param  filename path to file (absolute or relative)
 //! \return          time of last changes (in nanoseconds)
 long file_last_change(const char* filename) {
-    assert(VALID_PTR(filename, char));
+    assert(VALID_PTR(filename));
 
     struct stat buff = {};
     stat(filename, &buff);
@@ -177,11 +177,11 @@ long file_last_change(const char* filename) {
 //! \return         pointer to opened file (FILE*)
 //! \note call assert if function cannot open file on the path filename
 FILE* open_file(const char* filename, const char mode[]) {
-    assert(VALID_PTR(filename, char));
+    assert(VALID_PTR(filename));
 
     FILE* file = fopen(filename, mode);
 
-    assert(VALID_PTR(file, FILE));
+    assert(VALID_PTR(file));
 
     return file;
 }
@@ -189,7 +189,7 @@ FILE* open_file(const char* filename, const char mode[]) {
 //! \param filename pointer to string of path to file
 //! \return         object of Text structure
 Text get_text_from_file(const char* filename) {
-    assert(VALID_PTR(filename, char));
+    assert(VALID_PTR(filename));
 
     FILE* file = open_file(filename, "r");
 
@@ -226,9 +226,9 @@ Text get_text_from_file(const char* filename) {
 //! \param text_sep string which different Text strings will be separated
 //! \return         number of written strings
 int write_text_to_file(const char* filename, const char mode[], const Text* data, const char* text_sep) {
-    assert(VALID_PTR(filename, char));
-    assert(VALID_PTR(mode, char));
-    assert(VALID_PTR(data, Text));
+    assert(VALID_PTR(filename));
+    assert(VALID_PTR(mode));
+    assert(VALID_PTR(data));
 
     FILE* file = open_file(filename, mode);
 
@@ -255,9 +255,9 @@ int write_text_to_file(const char* filename, const char mode[], const Text* data
 //! \return         number of written strings
 //! \note '\0' indicates line ending in buffer, so all lines in buffer must end in '\0'
 int write_buffer_to_file(const char* filename, const char mode[], const struct Text* data, const char* buf_sep) {
-    assert(VALID_PTR(filename, char));
-    assert(VALID_PTR(mode, char));
-    assert(VALID_PTR(data, Text));
+    assert(VALID_PTR(filename));
+    assert(VALID_PTR(mode));
+    assert(VALID_PTR(data));
 
     FILE* file = open_file(filename, mode);
 
@@ -288,9 +288,9 @@ int write_buffer_to_file(const char* filename, const char mode[], const struct T
 //! \param str_sep  string which different data strings will be separated
 //! \return          number of written strings
 int write_strings_to_file(const char* filename, const char mode[], const char** data, int n_strings, const char* str_sep) {
-    assert(VALID_PTR(filename, char));
-    assert(VALID_PTR(mode, char));
-    assert(VALID_PTR(data, char*));
+    assert(VALID_PTR(filename));
+    assert(VALID_PTR(mode));
+    assert(VALID_PTR(data));
 
     FILE* file = open_file(filename, mode);
 

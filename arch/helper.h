@@ -9,6 +9,14 @@
 #include <cstdio>
 #include <cassert>
 
+#include "../config.h"
+
+#define LOG(code) {         \
+    if (LOG_PRINTF == 1) {  \
+        code;               \
+    }                       \
+}
+
 const int BITS_TO_ARGV = 2;                             // Max argv amount dependent
 const int MAX_ARGV     = 4;
 
@@ -16,12 +24,18 @@ enum exit_codes {
     OK             =  0,
     BREAK          = -1,
     INVALID_SYNTAX = -2,
-    EXIT           = -3
+    EXIT           = -3,
+    NO_OBVIOUS_END = -4
 };
 enum compile_errors {
     UNKNOWN_COMMAND      = -15,
     INCORRECT_ARG_AMOUNT = -16,
     INCORRECT_ARG_TYPE   = -17
+};
+enum binary_errors {
+    DAMAGED_BINARY       = -63,
+    READ_PARTIAL_HEADER  = -64,
+    INCORRECT_VERSION    = -65
 };
 
 struct signature_ {
@@ -34,7 +48,7 @@ struct BinCommand {
     int argv[MAX_ARGV] = {};
 };
 
-const char* compile_error_desc(int error_code);
+const char* error_desc(int error_code);
 
 void print_command (BinCommand* cmd);
 void print_commands(BinCommand* cmds, int n_commands);

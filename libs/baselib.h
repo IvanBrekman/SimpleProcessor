@@ -7,10 +7,10 @@
 
 #define dbg(code) do{ printf("%s:%d\n", __FILE__, __LINE__); code }while(0)
 #define LOCATION(var) { TYPE, #var, __FILE__, __FUNCTION__, __LINE__ }
-#define VALID_PTR(ptr, type) (                                                                                                          \
-                                (ptr) != NULL && (ptr) != (type*)poisons::UNINITIALIZED_PTR && (ptr) != (type*)poisons::FREED_PTR &&    \
-                                !isbadreadptr((void*)(ptr))                                                                             \
-                             )
+#define VALID_PTR(ptr)  (                                                                                                                   \
+                            (ptr) != NULL && (int*)(ptr) != (int*)poisons::UNINITIALIZED_PTR && (int*)(ptr) != (int*)poisons::FREED_PTR &&  \
+                            !isbadreadptr((void*)(ptr))                                                                                     \
+                        )
 #define FREE_PTR(ptr, type) {                   \
     free((ptr));                                \
     (ptr) = (type*)poisons::UNINITIALIZED_PTR;  \

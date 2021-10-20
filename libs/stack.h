@@ -39,20 +39,20 @@ typedef int stack_el_t;
 #define CHECK_SOFT_ERROR(obj, type, error) {                                        \
     if (VALIDATE_LEVEL >= NO_VALIDATE) {                                            \
         int err = type ## _error(obj);                                              \
-        if (err && VALID_PTR(error, int)) *(error) = err;                           \
+        if (err && VALID_PTR(error)) *(error) = err;                                \
         if (err) return err;                                                        \
     }                                                                               \
 }
 #define stack_ctor(st) {                                                            \
     StackInfo* info = (StackInfo*)calloc(1, sizeof(StackInfo));                     \
-    if (VALID_PTR(info, StackInfo)) {                                               \
+    if (VALID_PTR(info)) {                                                          \
         *info = LOCATION(st);                                                       \
     }                                                                               \
     Stack_ctor_(&(st), info);                                                       \
 }
 #define stack_dump(st, reason) {                                                    \
     StackInfo* info = (StackInfo*)calloc(1, sizeof(StackInfo));                     \
-    if (VALID_PTR(info, StackInfo)) {                                               \
+    if (VALID_PTR(info)) {                                                          \
         *info = LOCATION(st);                                                       \
     }                                                                               \
     Stack_dump_(&(st), info, reason);                                               \
