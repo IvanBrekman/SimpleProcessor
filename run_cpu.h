@@ -20,6 +20,8 @@ static const char* TRACKED_PROGRAMS[] = {
         "libs/baselib.cpp",    "libs/baselib.h",
         "libs/file_funcs.cpp", "libs/file_funcs.h",
         "libs/stack.cpp",      "libs/stack.h",
+
+        "config.h"
 };
 
 #define CHECK_TRACKED_PROGRAMS(system_call, executable_file) { \

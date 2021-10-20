@@ -1,17 +1,18 @@
 push 10
 push 20
-out
+print
 add
-out
+print
 push 10
 mul
 push 12
 push 1
-out
+print
 sub
 add
-out
+print
 verify
 dump
 cat
+out
 hlt

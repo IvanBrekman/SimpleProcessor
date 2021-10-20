@@ -120,6 +120,7 @@ stack_el_t top(const Stack* stack, int* error=NULL);
 int change_capacity(Stack* stack, int new_capacity, int* error=NULL);
 
 int  print_stack     (const Stack* stack, int* error=NULL);
+int  print_stack_line(const Stack* stack, const char* sep=", ", const char* end="\n", FILE* file=stdout, int* error=NULL);
 void Stack_dump_     (const Stack* stack, const StackInfo* current_info, const char reason[]);
 void Stack_dump_file_(const Stack* stack, const StackInfo* current_info, const char reason[], const char* log_file);
 

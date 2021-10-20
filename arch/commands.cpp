@@ -15,6 +15,11 @@ int init_stack() {
 
     return Stack_error(&st);
 }
+int stack_state(FILE* log) {
+    print_stack_line(&st, ", ", "\n", log);
+
+    return exit_codes::OK;
+}
 
 #define COMMAND_DEFINITION(name, code, argc_m, argv_m, func, body) int func(int argc, int* argv) body
     #include "commands_definition.h"

@@ -45,16 +45,21 @@ COMMAND_DEFINITION( "dump",   7, 0, {   }, execute_dump,   {
     return exit_codes::OK;
 })
 COMMAND_DEFINITION( "out",    8, 0, {   }, execute_out,    {
+    printf("%d\n", pop(&st));
+
+    return exit_codes::OK;
+})
+COMMAND_DEFINITION( "print",  9, 0, {   }, execute_print,  {
     print_stack(&st);
 
     return exit_codes::OK;
 })
 
-COMMAND_DEFINITION( "abrt",   9, 0, {   }, execute_abr,    {
+COMMAND_DEFINITION( "abrt",  10, 0, {   }, execute_abr,    {
     return exit_codes::BREAK;
 })
 
-COMMAND_DEFINITION( "cat",   10, 0, {   }, execute_cat,    {
+COMMAND_DEFINITION( "cat",   11, 0, {   }, execute_cat,    {
    printf("____________________$$____________$$_____\n"
           "_____________ _____$___$________$___$____\n"
           "__________________$_____$$$$$$_____ $____\n"

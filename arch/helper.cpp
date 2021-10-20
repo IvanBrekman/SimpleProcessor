@@ -33,22 +33,21 @@ const char* error_desc(int error_code) {
     }
 }
 
-void print_command (BinCommand* cmd) {
-    printf("   argc  cmd      argv\n");
+void print_command (BinCommand* cmd, int cmd_num, FILE* log) {
+    assert(VALID_PTR(log));
 
-    printf("| { %02d | %03d } , ", cmd->sgn.argc, cmd->sgn.cmd);
-    printf("{ ");
+    fprintf(log, "%04d    ", cmd_num);
+    fprintf(log, "| { %02d | %06d } , ", cmd->sgn.argc, cmd->sgn.cmd);
+    fprintf(log, "{ ");
+    for (int i = 0; i < MAX_ARGV; i++) {
+        fprintf(log, "%2d", cmd->argv[i]);
+        if (i + 1 < MAX_ARGV) fprintf(log, ", ");
+    }
+    fprintf(log, " } |    %s ", command_desc(cmd->sgn.cmd));
     for (int i = 0; i < cmd->sgn.argc; i++) {
-        printf("%d", cmd->argv[i]);
-        if (i + 1 < cmd->sgn.argc) printf(", ");
+        fprintf(log, "%d ", cmd->argv[i]);
     }
-    printf(" } |  %s\n", command_desc(cmd->sgn.cmd));
-}
-void print_commands(BinCommand* cmds, int n_commands) {
-    printf("Commands:\n");
-    for (int i = 0; i < n_commands; i++) {
-        print_command(&cmds[i]);
-    }
+    fprintf(log, "\n");
 }
 
 int         command_type(const char* command) {

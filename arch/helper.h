@@ -11,12 +11,6 @@
 
 #include "../config.h"
 
-#define LOG(code) {         \
-    if (LOG_PRINTF == 1) {  \
-        code;               \
-    }                       \
-}
-
 const int BITS_TO_ARGV = 2;                             // Max argv amount dependent
 const int MAX_ARGV     = 4;
 
@@ -50,8 +44,7 @@ struct BinCommand {
 
 const char* error_desc(int error_code);
 
-void print_command (BinCommand* cmd);
-void print_commands(BinCommand* cmds, int n_commands);
+void print_command (BinCommand* cmd,  int cmd_num, FILE* log=stdout);
 
 int         command_type(const char* command);
 const char* command_desc(int command);

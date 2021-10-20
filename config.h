@@ -11,8 +11,10 @@ struct header {
 };
 const header HEADER = {};
 
-#define VALIDATE_LEVEL 1
-#define LOG_PRINTF 1
+#define VALIDATE_LEVEL  1
+#define LOG_PRINTF      1
+#define LOG_STACK_STATE 1
+
 #define MAX_FILEPATH_SIZE 50
 
 #endif //SIMPLEPROCESSOR_CONFIG_H

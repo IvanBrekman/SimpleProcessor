@@ -53,8 +53,8 @@ int assembly(const char* source_file, const char* executable_file) {
         return exit_codes::INVALID_SYNTAX;
     }
 
+    LOG(printf("Assembled commands:\n"););
     BinCommand* mcodes = get_mcodes_from_tcom(text_commands, n_commands);
-    LOG(print_commands(mcodes, n_commands););
 
     write_mcodes(mcodes, n_commands, executable_file);
 
@@ -129,6 +129,8 @@ BinCommand* get_mcodes_from_tcom(const Text* commands, int n_commands) {
         }
 
         bit_cmd[i] = cmd;
+
+        LOG(print_command(&cmd, i););
     }
 
     return bit_cmd;

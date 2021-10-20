@@ -15,6 +15,11 @@
     free((ptr));                                \
     (ptr) = (type*)poisons::UNINITIALIZED_PTR;  \
 }
+#define LOG(code) {         \
+    if (LOG_PRINTF == 1) {  \
+        code;               \
+    }                       \
+}
 
 #define BLACK       "\033[1;30m"
 #define RED         "\033[1;31m"

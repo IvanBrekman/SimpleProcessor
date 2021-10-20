@@ -62,6 +62,9 @@ int Stack_ctor_(Stack* stack, const StackInfo* info, int* error) {
 //! \param error pointer to value, where error will be written (default: NULL)
 //! \return      1, if all is good
 int Stack_dtor_(Stack* stack, int* error) {
+    ASSERT_OK(stack, Stack, "Stack_error failed on destructor (maybe repeat dtor call?)");
+    CHECK_SOFT_ERROR(stack, Stack, error);
+
     if (VALIDATE_LEVEL >= MEDIUM_VALIDATE) {
         for (int i = 0; i < stack->size; i++) {
             stack->data[i] = (stack_el_t)poisons::FREED_ELEMENT;
@@ -366,7 +369,20 @@ int  print_stack(const Stack* stack, int* error) {
     for (int i = stack->size - 1; i >= 0; i--) {
         printf("| %2d |\n", stack->data[i]);
     }
-    printf(" ++++ \n");
+    if (stack->size > 0) printf(" ++++ \n");
+
+    return stack->size;
+}
+int  print_stack_line(const Stack* stack, const char* sep, const char* end, FILE* file, int* error) {
+    ASSERT_OK(stack, Stack, "Stack_error failed in print_stack func");
+    CHECK_SOFT_ERROR(stack, Stack, error);
+
+    fprintf(file, "| ");
+    for (int i = 0; i < stack->size; i++) {
+        fprintf(file, "%2d", stack->data[i]);
+        if (i + 1 < stack->size) fprintf(file, "%s", sep);
+    }
+    fprintf(file, " ]%s", end);
 
     return stack->size;
 }
@@ -395,9 +411,14 @@ void Stack_dump_(const Stack* stack, const StackInfo* current_info, const char r
            );
 
     if (VALID_PTR(stack->info_)) {
-        printf("\tStack definition: \"" ORANGE_UNL "%s" NATURAL "\" from %s:%d, " CYAN "%s" NATURAL " function\n",
-               stack->info_->name, stack->info_->file,
-               stack->info_->line, stack->info_->func);
+        if (VALID_PTR(stack->info_->name) && VALID_PTR(stack->info_->file) &&
+            VALID_PTR(stack->info_->func)) {
+            printf("\tStack definition: \"" ORANGE_UNL "%s" NATURAL "\" from %s:%d, " CYAN "%s" NATURAL " function\n",
+                stack->info_->name, stack->info_->file,
+                stack->info_->line, stack->info_->func);
+        } else {
+            printf("\tStack definition: " RED "cant access stack.info_ data\n" NATURAL);
+        }
     } else {
         printf("\tStack definition: " RED "Invalid stack.info_ ptr\n" NATURAL);
     }
@@ -499,10 +520,15 @@ void Stack_dump_file_(const Stack* stack, const StackInfo* current_info, const c
             );
 
     if (VALID_PTR(stack->info_)) {
-        fprintf(log, "\tStack definition: \"%s\" from %s:%d, %s function\n{\n",
-                stack->info_->name, stack->info_->file,
-                stack->info_->line, stack->info_->func
-                );
+        if (VALID_PTR(stack->info_->name) && VALID_PTR(stack->info_->file) &&
+            VALID_PTR(stack->info_->func)) {
+            fprintf(log, "\tStack definition: \"%s\" from %s:%d, %s function\n{\n",
+                    stack->info_->name, stack->info_->file,
+                    stack->info_->line, stack->info_->func
+                    );
+        } else {
+            printf("\tStack definition: " RED "cant access stack.info_ data\n" NATURAL);
+        }
     } else {
         fprintf(log, "\tStack definition: Invalid stack.info_ ptr\n");
     }
