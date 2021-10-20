@@ -7,7 +7,7 @@
 
 struct header {
     char signature[3] = "IB";
-    char version[10]  = "1.0.0";
+    char version[10]  = "1.1.0";
 };
 const header HEADER = {};
 

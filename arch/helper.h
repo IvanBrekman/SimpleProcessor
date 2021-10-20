@@ -11,8 +11,14 @@
 
 #include "../config.h"
 
-const int BITS_TO_ARGV = 2;                             // Max argv amount dependent
-const int MAX_ARGV     = 4;
+
+
+const int MAX_REGISTERS = 4;
+const int RAM_SIZE      = 4096;
+const int VRAM_START    = 2048;
+
+const int BITS_TO_ARGV  = 2;                             // Max argv amount dependent
+const int MAX_ARGV      = 4;
 
 enum exit_codes {
     OK             =  0,

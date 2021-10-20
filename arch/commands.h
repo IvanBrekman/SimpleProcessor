@@ -5,7 +5,18 @@
 #ifndef SIMPLEPROCESSOR_COMMANDS_H
 #define SIMPLEPROCESSOR_COMMANDS_H
 
+#include "../libs/stack.h"
+
 #include "helper.h"
+#include "registers.h"
+
+struct Processor {
+    Stack stack = {};
+    int ip      = -1; // instruction pointer
+
+    Registers regs    = { }; // regs names: ax, bx, cx, dx
+    int RAM[RAM_SIZE] = { 0 };
+};
 
 struct CommandParameters {
     const char* name;

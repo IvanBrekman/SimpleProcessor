@@ -7,50 +7,50 @@ COMMAND_DEFINITION( "hlt",    0, 0, {   }, execute_hlt,    {
 })
 
 COMMAND_DEFINITION( "push",   1, 1, { 1 }, execute_push,   {
-    push(&st, argv[0]);
+    push(&processor.stack, argv[0]);
 
     return exit_codes::OK;
 })
 COMMAND_DEFINITION( "pop",    2, 0, {   }, execute_pop,    {
-    pop(&st);
+    pop(&processor.stack);
 
     return exit_codes::OK;
 })
 
 COMMAND_DEFINITION( "add",    3, 0, {   }, execute_add,    {
-    push(&st, pop(&st) + pop(&st));
+    push(&processor.stack, pop(&processor.stack) + pop(&processor.stack));
 
     return exit_codes::OK;
 })
 COMMAND_DEFINITION( "sub",    4, 0, {   }, execute_sub,    {
-    push(&st, -pop(&st) + pop(&st));
+    push(&processor.stack, -pop(&processor.stack) + pop(&processor.stack));
 
     return exit_codes::OK;
 })
 COMMAND_DEFINITION( "mul",    5, 0, {   }, execute_mul,    {
-    push(&st, pop(&st) * pop(&st));
+    push(&processor.stack, pop(&processor.stack) * pop(&processor.stack));
 
     return exit_codes::OK;
 })
 
 COMMAND_DEFINITION( "verify", 6, 0, {   }, execute_verify, {
-    int err = Stack_error(&st);
+    int err = Stack_error(&processor.stack);
     printf("Stack Verify: %s (%d)\n", Stack_error_desc(err), err);
 
     return exit_codes::OK;
 })
 COMMAND_DEFINITION( "dump",   7, 0, {   }, execute_dump,   {
-    stack_dump(st, "System dump call");
+    stack_dump(processor.stack, "System dump call");
 
     return exit_codes::OK;
 })
 COMMAND_DEFINITION( "out",    8, 0, {   }, execute_out,    {
-    printf("%d\n", pop(&st));
+    printf("%d\n", pop(&processor.stack));
 
     return exit_codes::OK;
 })
 COMMAND_DEFINITION( "print",  9, 0, {   }, execute_print,  {
-    print_stack(&st);
+    print_stack(&processor.stack);
 
     return exit_codes::OK;
 })

@@ -51,12 +51,12 @@ int execute_commands(BinCommand* mcodes, int n_commands) {
             return exit_codes::INVALID_SYNTAX;
         }
 
-        LOG(if (LOG_STACK_STATE == 1) printf("\n");
-            print_command(&b_command, i);
-            if (LOG_STACK_STATE == 1) {
+        LOG(if (LOG_STACK_STATE == 1) {
+                printf("\n");
                 printf("Stack:  ");
                 stack_state();
             }
+            print_command(&b_command, i);
         );
         int exit_code = command.execute_func((int)b_command.sgn.argc, b_command.argv);
 

@@ -15,4 +15,5 @@ verify
 dump
 cat
 out
+print
 hlt
