@@ -28,7 +28,7 @@ struct CommandParameters {
     int (*execute_func) (int argc, int* argv);
 };
 
-int init_stack();
+int init_processor();
 int stack_state(FILE* log=stdout);
 
 #define COMMAND_DEFINITION(name, code, argc_m, argv_m, func, body) int func(int argc, int* argv);

@@ -12,11 +12,10 @@
 
 Processor processor = {};
 
-int init_stack() {
+int init_processor() {
     stack_ctor(processor.stack);
 
-    const char* names[4] = { "ax", "bx", "cx", "dx" };
-    init_registers(&processor.regs, names);
+    init_registers(&processor.regs, REG_NAMES);
 
     return Stack_error(&processor.stack);
 }

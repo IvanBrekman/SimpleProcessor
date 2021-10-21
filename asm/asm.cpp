@@ -21,8 +21,10 @@ int main(int argc, char** argv) {
     }
 
     LOG(printf("------start assembly------\n"););
-    int exit_code = assembly(argv[1], argv[2]);
+    int exit_code = 1;//assembly(argv[1], argv[2]);
     LOG(printf("------end   assembly------\n\n"););
+
+    printf("parse: %d\n", parse_arg("dx+4]"));
 
     return exit_code;
 }
@@ -125,7 +127,9 @@ BinCommand* get_mcodes_from_tcom(const Text* commands, int n_commands) {
         BinCommand cmd = {};
         cmd.sgn = { (unsigned)text_cmd.lines - 1, (unsigned)command_type(text_cmd.text[0].ptr) };
         for (int arg = 1; arg < text_cmd.lines; arg++) {
-            cmd.argv[arg - 1] = atoi(text_cmd.text[arg].ptr);
+            int arg_type = parse_arg(text_cmd.text[arg - 1].ptr);
+            cmd.arg_t[arg - 1] = arg_type;
+            cmd.argv[arg - 1]  = atoi(text_cmd.text[arg].ptr);
         }
 
         bit_cmd[i] = cmd;
@@ -134,4 +138,62 @@ BinCommand* get_mcodes_from_tcom(const Text* commands, int n_commands) {
     }
 
     return bit_cmd;
+}
+
+int parse_arg(const char* arg) {
+    char*      name = (char*)calloc(50, sizeof(char));
+    char* const_val = (char*)calloc(50, sizeof(char));
+
+    Registers reg_tmp = {};
+    init_registers(&reg_tmp, REG_NAMES);
+    
+    int cond    = arg[0] == '[';
+    int arg_len = strlen(arg) - 2 * cond;
+    int is_ram  = cond << 2;
+    arg = arg + cond;
+
+    int argc = sscanf(arg, "%[a-z]+%[0-9]", name, const_val);
+    LOG(printf( "[a-z]+[0-9]\n"
+                "sscanf res : %d\n"
+                "name       : \"%s\"\n"
+                "const_value: \"%s\"\n"
+                "parse len  : %zd\n"
+                "arg len    : %d\n\n",
+                argc, name, const_val, (strlen(name) + 1 + strlen(const_val)), arg_len);
+        );
+    if (argc == 2 && get_reg_by_name(&reg_tmp, name) != -1 && ((strlen(name) + 1 + strlen(const_val)) == arg_len)) {
+        return is_ram + (1 << 1) + 1;
+    }
+
+    argc = 0;
+    argc = sscanf(arg, "%[a-z]", name);
+    LOG(printf( "[a-z]\n"
+                "sscanf res : %d\n"
+                "name       : \"%s\"\n"
+                "const_value: \"%s\"\n"
+                "parse len  : %zd\n"
+                "arg len    : %d\n\n",
+                argc, name, const_val, strlen(name), arg_len);
+        );
+    if (argc == 1 && get_reg_by_name(&reg_tmp, name) != -1, (strlen(name) == arg_len)) {
+        return is_ram + (1 << 1) + 0;
+    }
+
+    argc = 0;
+    argc = sscanf(arg, "%[0-9]", const_val);
+    LOG(printf( "[0-9]\n"
+                "sscanf res : %d\n"
+                "name       : \"%s\"\n"
+                "const_value: \"%s\"\n"
+                "parse len  : %zd\n"
+                "arg len    : %d\n\n",
+                argc, name, const_val, strlen(const_val), arg_len);
+        );
+    if (argc == 1 && (strlen(const_val) == arg_len)) {
+        return is_ram + (0 << 1) + 1;
+    }
+
+    FREE_PTR(name, char);
+    FREE_PTR(const_val, char);
+    return -1;
 }

@@ -17,6 +17,8 @@ const int MAX_REGISTERS = 4;
 const int RAM_SIZE      = 4096;
 const int VRAM_START    = 2048;
 
+static const char* REG_NAMES[MAX_REGISTERS] = { "ax", "bx", "cx", "dx" };
+
 const int BITS_TO_ARGV  = 2;                             // Max argv amount dependent
 const int MAX_ARGV      = 4;
 
@@ -45,7 +47,8 @@ struct signature_ {
 
 struct BinCommand {
     signature_ sgn = {};
-    int argv[MAX_ARGV] = {};
+    int arg_t[MAX_ARGV] = {};
+    int  argv[MAX_ARGV] = {};
 };
 
 const char* error_desc(int error_code);

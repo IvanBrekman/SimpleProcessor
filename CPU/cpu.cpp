@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
 }
 
 int execute(const char* execute_file) {
-    init_stack();
+    init_processor();
 
     int n_commands = -1;
     errno = 0;

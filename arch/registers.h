@@ -17,8 +17,8 @@ struct Registers {
     const char* names[MAX_REGISTERS] = { "", "", "", "" };
 };
 
-int    init_registers(Registers* reg, const char* names[MAX_REGISTERS]);
-int   get_reg_by_name(Registers* reg, const char* name);
+int    init_registers(Registers* reg,  const char* names[MAX_REGISTERS]);
+int   get_reg_by_name(Registers* reg,  const char* name);
 
 int      write_to_reg(Registers* reg, int reg_index, int value);
 int     read_from_reg(Registers* reg, int reg_index);
