@@ -1,9 +1,9 @@
-push 
-push 
-push 
-push 
-pop 
-pop 3
-pop 
-pop 
-push  5
+push 2
+push 3
+push 5
+push 10
+pop ax
+pop dx
+pop [ax]
+pop [15]
+push [ax+5]

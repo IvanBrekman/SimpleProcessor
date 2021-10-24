@@ -43,10 +43,7 @@ void print_command (BinCommand* cmd, int cmd_num, FILE* log) {
         fprintf(log, "%2d", cmd->argv[i]);
         if (i + 1 < MAX_ARGV) fprintf(log, ", ");
     }
-    fprintf(log, " } |    %s ", command_desc(cmd->sgn.cmd));
-    for (int i = 0; i < cmd->sgn.argc; i++) {
-        fprintf(log, "%d ", cmd->argv[i]);
-    }
+    fprintf(log, " } |    %s %s", command_desc(cmd->sgn.cmd), arg_desc(cmd));
     fprintf(log, "\n");
 }
 
@@ -65,6 +62,19 @@ const char* command_desc(int command) {
     return ALL_COMMANDS[command].name;
 }
 
+char* arg_desc(const BinCommand* mcode) {
+    char* arg_string = (char*) calloc(MAX_ARG_SIZE, sizeof(char));
+    if (extract_bit(mcode->args_type, 2)) strcat(arg_string, "[");
+    if (extract_bit(mcode->args_type, 1)) strcat(arg_string, REG_NAMES[mcode->argv[0]]);
+
+    if (extract_bit(mcode->args_type, 1) && extract_bit(mcode->args_type, 0)) strcat(arg_string, "+");
+    
+    if (extract_bit(mcode->args_type, 0)) strcat(arg_string, to_string(mcode->argv[1]));
+    if (extract_bit(mcode->args_type, 2)) strcat(arg_string, "]");
+
+    return arg_string;
+}
+
 BinCommand* read_mcodes(const char* executable_file, int* n_commands) {
     assert(VALID_PTR(executable_file) && "Incorrect executable_file ptr");
     assert(VALID_PTR(n_commands) && "Incorrect n_commands ptr");
@@ -75,7 +85,7 @@ BinCommand* read_mcodes(const char* executable_file, int* n_commands) {
     header received_header = { "", "" };
     int hdr_data = (int)fread(&received_header, sizeof(header), 1, exe_file);
 
-    LOG(printf( "real signature: %s\n"
+    LOG1(printf( "real signature: %s\n"
                 "real version:   %s\n\n"
                 "rec signature:  %s\n"
                 "rec version:    %s\n\n",
@@ -100,7 +110,7 @@ BinCommand* read_mcodes(const char* executable_file, int* n_commands) {
 
     int wr_com = (int)fread(commands, sizeof(BinCommand), *n_commands, exe_file);
 
-    LOG(printf("Read elems: %d\n", wr_com););
+    LOG1(printf("Read elems: %d\n", wr_com););
     assert(wr_com * sizeof(BinCommand) == fsize && "File size and number of read bytes arent equal");
 
     fclose(exe_file);
@@ -113,7 +123,7 @@ int         write_mcodes(const BinCommand* mcodes, int n_commands, const char* e
     FILE* exe_file = fopen(executable_file, "wb");
     assert(VALID_PTR(exe_file) && "Cant open file with mode wb");
 
-    LOG(printf( "signature: %s\n"
+    LOG1(printf( "signature: %s\n"
                 "version:   %s\n\n", HEADER.signature, HEADER.version);
     );
     
@@ -122,7 +132,7 @@ int         write_mcodes(const BinCommand* mcodes, int n_commands, const char* e
 
     exe_file = fopen(executable_file, "ab");
     int wr_com = (int)fwrite(mcodes, sizeof(BinCommand), n_commands, exe_file);
-    LOG(printf( "Written elems:    %d\n"
+    LOG1(printf( "Written elems:    %d\n"
                 "n_commands:       %d\n"
                 "size BinCommand:  %zd\n\n", wr_com, n_commands, sizeof(BinCommand));
     );

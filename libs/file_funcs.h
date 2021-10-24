@@ -25,7 +25,7 @@ int replace(char* string, size_t size, char old_symbol, char new_symbol, int n_r
 void free_text(Text* data);
 void free_string(String* string);
 
-int  load_string_pointers(Text* text);
+int  load_string_pointers(Text* text, int skip_empty_strings=0, int skip_first_last_spaces=0);
 Text convert_to_text(const char** strings, int n_strings);
 void print_text(const Text* data, const char* sep=", ", const char* end="\n");
 void print_strings(const char** array, size_t size, const char* sep=", ", const char* end="\n");
@@ -34,7 +34,7 @@ int  file_size       (const char* filename);
 long file_last_change(const char* filename);
 
 FILE* open_file(const char* filename, const char mode[]);
-Text get_text_from_file(const char* filename);
+Text get_text_from_file(const char* filename, int skip_empty_strings=0, int skip_first_last_spaces=0);
 
 int    write_text_to_file(const char* filename, const char mode[], const Text* data, const char* text_sep="\n");
 int  write_buffer_to_file(const char* filename, const char mode[], const Text* data, const char*  buf_sep="\n");

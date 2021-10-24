@@ -9,6 +9,7 @@
 #include <cwchar>
 #include <sys/stat.h>
 #include <cstring>
+#include <cctype>
 
 #include "baselib.h"
 #include "file_funcs.h"
@@ -86,30 +87,63 @@ void print_strings(const char** array, size_t size, const char* sep, const char*
 }
 
 //! Function load pointers of beginnings of strings to an array
-//! \param dest_array pointer to array of String structures, where string will be written
-//! \param data       analyzed data
-//! \param data_size  data size
-//! \return           1
-int load_string_pointers(Text* text) {
+//! \param text                    pointer to Text object, where string will be written
+//! \param skip_empty_strings      flag to skip empty strings in text (default 0)
+//! \param skip_first_last_spaces  flag to skip spaces before first letter and after last letter (default 0)
+//! \return                        1
+int load_string_pointers(Text* text, int skip_empty_strings, int skip_first_last_spaces) {
     assert(VALID_PTR(text->text));
     assert(VALID_PTR(text->data));
 
+    int skiped_str = 0, letters_started = 0, spaces_count = 0;
     char* start_ptr = (char*)text->data;
 
     for (int i = 0, str_index = 0; i < text->data_size && str_index < text->lines; i++) {
         if (text->data[i] == '\0') {
-            char* end_ptr = NULL;
-            end_ptr = (char*)&(text->data[i]);
+            char* end_ptr = (char*)&(text->data[i]);
+
+            if (spaces_count) {
+                text->data[i - spaces_count] = '\0';
+                end_ptr -= spaces_count;
+                
+                spaces_count = 0;
+            }
+
+            if (!letters_started) {
+                start_ptr    += spaces_count;
+                spaces_count  = 0;
+            }
 
             struct String string = {
                     start_ptr,
                     (size_t)(end_ptr - start_ptr)
             };
-            text->text[str_index++] = string;
+
+            if (skip_empty_strings && string.len == 0) {
+                skiped_str++;
+            } else {
+                text->text[str_index++] = string;
+            }
 
             start_ptr = (char*)&(text->data[i + 1]);
+            letters_started = 0;
+
+            continue;
+        }
+
+        if (isspace(text->data[i])) {
+            spaces_count++;
+        }
+        if (!isspace(text->data[i]) && !letters_started) {
+            start_ptr += spaces_count;
+            letters_started = 1;
+        }
+        if (!isspace(text->data[i])) {
+            spaces_count = 0;
         }
     }
+
+    text->lines -= skiped_str;
 
     return 1;
 }
@@ -188,7 +222,7 @@ FILE* open_file(const char* filename, const char mode[]) {
 //! Function reads strings from file
 //! \param filename pointer to string of path to file
 //! \return         object of Text structure
-Text get_text_from_file(const char* filename) {
+Text get_text_from_file(const char* filename, int skip_empty_strings, int skip_first_last_spaces) {
     assert(VALID_PTR(filename));
 
     FILE* file = open_file(filename, "r");
@@ -213,7 +247,7 @@ Text get_text_from_file(const char* filename) {
     text.lines = replace(data, f_size, '\n', '\0');
 
     text.text = (String*)calloc(text.lines, sizeof(String));
-    load_string_pointers(&text);
+    load_string_pointers(&text, skip_empty_strings, skip_first_last_spaces);
 
     fclose(file);
     return text;

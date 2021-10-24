@@ -20,9 +20,9 @@ int main(int argc, char** argv) {
         return INVALID_SYNTAX;
     }
 
-    LOG(printf("------start assembly------\n"););
+    LOG1(printf("------start assembly------\n"););
     int exit_code = assembly(argv[1], argv[2]);
-    LOG(printf("------end   assembly------\n\n"););
+    LOG1(printf("------end   assembly------\n\n"););
 
     // int arguments[] = { -1, -1, -1, -1 };
     // printf("parse: %d\n", parse_arg("[dx+1]", arguments));
@@ -38,12 +38,12 @@ int assembly(const char* source_file, const char* executable_file) {
     assert(VALID_PTR(source_file)     && "Incorrect source_file ptr");
     assert(VALID_PTR(executable_file) && "Incorrect executable_file ptr");
 
-    Text text = get_text_from_file(source_file);
-
+    Text text = get_text_from_file(source_file, SKIP_EMPTY_STRINGS, SKIP_FISRT_LAST_SPACES);
+    
     int      n_commands = (int)text.lines;
     Text* text_commands = get_tcom(&text);
 
-    LOG(printf("All commands (asm):\n");
+    LOG1(printf("All commands (asm):\n");
         for (int i = 0; i < n_commands; i++) {
             print_text(&text_commands[i], ", ");
         }
@@ -52,7 +52,7 @@ int assembly(const char* source_file, const char* executable_file) {
 
     errno = 0;
     Text wrong_command = check_tcom(text_commands, n_commands);
-    LOG(printf("Check_tcom result: %d\n", errno););
+    LOG1(printf("Check_tcom result: %d\n", errno););
     if (errno != 0) {
         int err = errno;
         printf(RED "Incorrect command '");
@@ -62,7 +62,7 @@ int assembly(const char* source_file, const char* executable_file) {
         return exit_codes::INVALID_SYNTAX;
     }
 
-    LOG(printf("Assembled commands:\n"););
+    LOG1(printf("Assembled commands:\n"););
     BinCommand* mcodes = get_mcodes_from_tcom(text_commands, n_commands);
 
     write_mcodes(mcodes, n_commands, executable_file);
@@ -111,7 +111,7 @@ Text        check_tcom(const Text* tcom, int n_commands) {
 
         for (int arg = 1; arg < cmd.lines; arg++) {
             int res_types = parse_arg(cmd.text[arg].ptr);
-            LOG(printf("parse_arg result: %d\n\n", res_types););
+            LOG2(printf("parse_arg result: %d\n\n", res_types););
             if (res_types == -1 || !extract_bit(ALL_COMMANDS[cmd_code].args_type, res_types)) {
                 errno = compile_errors::INCORRECT_ARG_TYPE;
                 return cmd;
@@ -137,7 +137,7 @@ BinCommand* get_mcodes_from_tcom(const Text* commands, int n_commands) {
 
         bit_cmd[i] = cmd;
 
-        LOG(print_command(&cmd, i););
+        LOG1(print_command(&cmd, i););
     }
 
     return bit_cmd;
@@ -148,7 +148,7 @@ int parse_arg(const char* arg, int* argv, int* real_argc) {
     char const_val[MAX_ARG_SIZE] = { };
 
     Registers reg_tmp = {};
-    init_registers(&reg_tmp, REG_NAMES);
+    registers_ctor(&reg_tmp, REG_NAMES);
     
     int cond    = arg[0] == '[';
     int arg_len = strlen(arg) - 2 * cond;
@@ -157,7 +157,7 @@ int parse_arg(const char* arg, int* argv, int* real_argc) {
 
     int parse_len = 0;
     int argc = sscanf(arg, "%[a-z]+%[0-9]%n", name, const_val, &parse_len);
-    LOG(printf( "[a-z]+[0-9]\n"
+    LOG2(printf( "[a-z]+[0-9]\n"
                 "sscanf res : %d\n"
                 "name       : \"%s\"\n"
                 "const_value: \"%s\"\n"
@@ -176,7 +176,7 @@ int parse_arg(const char* arg, int* argv, int* real_argc) {
 
     argc = parse_len = 0;
     argc = sscanf(arg, "%[a-z]%n", name, &parse_len);
-    LOG(printf( "[a-z]\n"
+    LOG2(printf( "[a-z]\n"
                 "sscanf res : %d\n"
                 "name       : \"%s\"\n"
                 "const_value: \"%s\"\n"
@@ -194,7 +194,7 @@ int parse_arg(const char* arg, int* argv, int* real_argc) {
 
     argc = parse_len = 0;
     argc = sscanf(arg, "%[0-9]%n", const_val, &parse_len);
-    LOG(printf( "[0-9]\n"
+    LOG2(printf( "[0-9]\n"
                 "sscanf res : %d\n"
                 "name       : \"%s\"\n"
                 "const_value: \"%s\"\n"

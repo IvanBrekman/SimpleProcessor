@@ -12,13 +12,21 @@
 
 Processor processor = {};
 
-int init_processor() {
+int    init_processor() {
     stack_ctor(processor.stack);
 
-    init_registers(&processor.regs, REG_NAMES);
+    registers_ctor(&processor.regs, REG_NAMES);
 
     return Stack_error(&processor.stack);
 }
+int destroy_processor() {
+    Stack_dtor_(&processor.stack);
+
+    registers_dtor(&processor.regs);
+
+    return 0;
+}
+
 int stack_state(FILE* log) {
     print_stack_line(&processor.stack, ", ", "\n", log);
 

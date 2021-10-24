@@ -11,6 +11,7 @@
 
 #include "../config.h"
 
+const int MAX_LABELS    = 50;
 const int MAX_REGISTERS = 4;
 const int RAM_SIZE      = 4096;
 const int VRAM_START    = 2048;
@@ -55,6 +56,8 @@ void print_command (BinCommand* cmd,  int cmd_num, FILE* log=stdout);
 
 int         command_type(const char* command);
 const char* command_desc(int command);
+
+char* arg_desc(const BinCommand* mcode);
 
 
 BinCommand* read_mcodes(const char* executable_file, int* n_commands);

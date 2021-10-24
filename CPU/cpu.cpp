@@ -18,9 +18,9 @@ int main(int argc, char** argv) {
         return INVALID_SYNTAX;
     }
 
-    LOG(printf("------start executing------\n"););
+    LOG1(printf("------start executing------\n"););
     int exit_code = execute(argv[1]);
-    LOG(printf("------end   executing------\n\n"););
+    LOG1(printf("------end   executing------\n\n"););
 
     return exit_code;
 }
@@ -37,11 +37,13 @@ int execute(const char* execute_file) {
     }
 
     int exit_code = execute_commands(mcodes, n_commands);
+
+    destroy_processor();
     return exit_code;
 }
 
 int execute_commands(BinCommand* mcodes, int n_commands) {
-    printf("Executing commands:\n");
+    LOG1(printf("Executing commands:\n"););
 
     for (int i = 0; i < n_commands; i++) {
         BinCommand b_command = mcodes[i];
@@ -53,8 +55,10 @@ int execute_commands(BinCommand* mcodes, int n_commands) {
             return exit_codes::INVALID_SYNTAX;
         }
 
-        LOG(if (LOG_STACK_STATE == 1) {
+        LOG1(if (LOG_STACK_STATE == 1) {
                 printf("\n");
+                printf("registers:\n");
+                regs_state();
                 printf("Stack:  ");
                 stack_state();
             }
@@ -75,9 +79,9 @@ int execute_commands(BinCommand* mcodes, int n_commands) {
             }
         }
     }
-    LOG(printf("\nStack final state:\n");
+    LOG1(printf("\nStack final state:\n");
         stack_state();
-        printf("registers state\n");
+        printf("registers state:\n");
         regs_state();
     );
 

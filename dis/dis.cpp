@@ -3,6 +3,7 @@
 //
 
 #include <cstdlib>
+#include <cstring>
 #include <cerrno>
 
 #include "../libs/baselib.h"
@@ -17,9 +18,9 @@ int main(int argc, char** argv) {
         return exit_codes::INVALID_SYNTAX;
     }
 
-    LOG(printf("------start disassembly------\n"););
+    LOG1(printf("------start disassembly------\n"););
     int exit_code = disassembly(argv[1], argv[2]);
-    LOG(printf("------end   disassembly------\n\n"););
+    LOG1(printf("------end   disassembly------\n\n"););
 
     return exit_code;
 }
@@ -37,7 +38,7 @@ int disassembly(const char* executable_file, const char* source_file) {
     }
 
     Text* tcom = get_tcom_from_mcodes(mcodes, n_commands);
-    LOG(printf("All commands (dis)\n");
+    LOG1(printf("All commands (dis)\n");
         for (int i = 0; i < n_commands; i++) {
             print_text((const Text*)&tcom[i]);
         }
@@ -54,13 +55,11 @@ Text* get_tcom_from_mcodes(BinCommand* mcodes, int n_commands) {
 
     for (int i = 0; i < n_commands; i++) {
         BinCommand mcode = mcodes[i];
-        int n_args = 1 + (int)mcode.sgn.argc;
+        int n_args = 1 + 1;
 
         char** array = (char**) calloc(n_args, sizeof(char*));
         array[0] = (char*)command_desc((int)mcode.sgn.cmd);
-        for (int arg = 0; arg < n_args - 1; arg++) {
-            array[arg + 1] = to_string(mcode.argv[arg]);
-        }
+        array[1] = arg_desc(&mcode);
 
         Text cmd = convert_to_text((const char**)array, n_args);
         tcom[i] = cmd;

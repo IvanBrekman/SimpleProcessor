@@ -9,7 +9,7 @@
 
 struct Registers {
     int regs[MAX_REGISTERS] = {
-        poisons::UNINITIALIZED_INT, 
+        poisons::UNINITIALIZED_INT,
         poisons::UNINITIALIZED_INT,
         poisons::UNINITIALIZED_INT,
         poisons::UNINITIALIZED_INT
@@ -17,7 +17,9 @@ struct Registers {
     const char* names[MAX_REGISTERS] = { "", "", "", "" };
 };
 
-int    init_registers(Registers* reg,  const char* names[MAX_REGISTERS]);
+int    registers_ctor(Registers* reg,  const char* names[MAX_REGISTERS]);
+int    registers_dtor(Registers* reg);
+
 int   get_reg_by_name(Registers* reg,  const char* name);
 int         print_reg(Registers* reg);
 

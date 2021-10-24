@@ -9,7 +9,7 @@
 #include "registers.h"
 
 
-int    init_registers(Registers* reg, const char* names[]) {
+int    registers_ctor(Registers* reg, const char* names[]) {
     assert(VALID_PTR(reg)   && "Invalid reg ptr");
     assert(VALID_PTR(names) && "Invalid names ptr");
 
@@ -20,7 +20,20 @@ int    init_registers(Registers* reg, const char* names[]) {
 
     return MAX_REGISTERS;
 }
+int    registers_dtor(Registers* reg) {
+    assert(VALID_PTR(reg) && "Invalid reg ptr");
+    
+    for (int i = 0; i < MAX_REGISTERS; i++) {
+        reg->regs[i]  = poisons::FREED_ELEMENT;
+        reg->names[i] = (char*)poisons::FREED_PTR;
+    }
+
+    return MAX_REGISTERS;
+}
 int   get_reg_by_name(Registers* reg, const char* name) {
+    assert(VALID_PTR(reg)  && "Invalid reg ptr");
+    assert(VALID_PTR(name) && "Invalid name ptr");
+    
     for (int i = 0; i < MAX_REGISTERS; i++) {
         if (strcmp(name, reg->names[i]) == 0) {
             return i;
@@ -30,8 +43,16 @@ int   get_reg_by_name(Registers* reg, const char* name) {
     return -1;
 }
 int         print_reg(Registers* reg) {
+    assert(VALID_PTR(reg) && "Invalid reg ptr");
+    
     for (int i = 0; i < MAX_REGISTERS; i++) {
-        printf("%s - % 2d\n", reg->names[i], reg->regs[i]);
+        printf("%s: % 2d", reg->names[i], reg->regs[i]);
+
+        if (reg->regs[i] == poisons::UNINITIALIZED_INT) {
+            printf(" (uninitialized) ");
+        }
+
+        printf("\n");
     }
 
     return MAX_REGISTERS;
@@ -40,9 +61,10 @@ int         print_reg(Registers* reg) {
 
 int      write_to_reg(Registers* reg, int reg_index, int value) {
     assert(VALID_PTR(reg) && "Invalid reg ptr");
+    assert(0 <= reg_index && reg_index < MAX_REGISTERS && "reg_index out of range");
     
     reg->regs[reg_index] = value;
-    return value;
+    return reg->regs[reg_index];
 }
 int     read_from_reg(Registers* reg, int reg_index) {
     assert(VALID_PTR(reg) && "Invalid reg ptr");

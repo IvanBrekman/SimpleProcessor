@@ -15,8 +15,13 @@
     free((ptr));                                \
     (ptr) = (type*)poisons::UNINITIALIZED_PTR;  \
 }
-#define LOG(code) {         \
-    if (LOG_PRINTF == 1) {  \
+#define LOG1(code) {        \
+    if (LOG_PRINTF >= 1) {  \
+        code;               \
+    }                       \
+}
+#define LOG2(code) {        \
+    if (LOG_PRINTF >= 2) {  \
         code;               \
     }                       \
 }

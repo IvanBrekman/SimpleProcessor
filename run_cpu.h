@@ -47,7 +47,7 @@ static const char* TRACKED_PROGRAMS[] = {
 #define CHECK_SYSTEM_CALL(system_call, source_file, executable_file) {                                          \
     int updated = 0;                                                                                            \
     CHECK_TRACKED_PROGRAMS(system_call, executable_file);                                                       \
-    if (file_last_change(source_file) > file_last_change(executable_file)) {                                    \
+    if (!updated && file_last_change(source_file) > file_last_change(executable_file)) {                                    \
         int exit_code = system_call;                                                                            \
         if (exit_code != 0) {                                                                                   \
             printf(RED "program finished with exit code %d" NATURAL "\n", exit_code);                           \
