@@ -37,7 +37,7 @@ void print_command (BinCommand* cmd, int cmd_num, FILE* log) {
     assert(VALID_PTR(log));
 
     fprintf(log, "%04d    ", cmd_num);
-    fprintf(log, "| { %02d | %06d } , ", cmd->sgn.argc, cmd->sgn.cmd);
+    fprintf(log, "| { %02d | %06d } , %d , ", cmd->sgn.argc, cmd->sgn.cmd, cmd->args_type);
     fprintf(log, "{ ");
     for (int i = 0; i < MAX_ARGV; i++) {
         fprintf(log, "%2d", cmd->argv[i]);

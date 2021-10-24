@@ -45,10 +45,10 @@ int digits_number(int number, int radix) {
 
     return digits;
 }
-
 int extract_bit(int number, int bit) {
     return (number >> bit) & 1;
 }
+
 char* to_string(int number) {
     int d_num = digits_number(number, 10);
     char* str_num = (char*) calloc(d_num + 1, sizeof(char));

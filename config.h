@@ -7,7 +7,7 @@
 
 struct header {
     char signature[3] = "IB";
-    char version[10]  = "1.1.0";
+    char version[10]  = "1.1.1";
 };
 const header HEADER = {};
 
@@ -16,5 +16,6 @@ const header HEADER = {};
 #define LOG_STACK_STATE 1
 
 #define MAX_FILEPATH_SIZE 50
+#define MAX_ARG_SIZE      50
 
 #endif //SIMPLEPROCESSOR_CONFIG_H

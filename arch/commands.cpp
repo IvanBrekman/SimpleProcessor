@@ -24,7 +24,12 @@ int stack_state(FILE* log) {
 
     return exit_codes::OK;
 }
+int regs_state() {
+    print_reg(&processor.regs);
 
-#define COMMAND_DEFINITION(name, code, argc_m, argv_m, func, body) int func(int argc, int* argv) body
+    return exit_codes::OK;
+}
+
+#define COMMAND_DEFINITION(name, code, argc_min, argc_max, argv_m, func, body) int func(int args_type, int* argv) body
     #include "commands_definition.h"
 #undef COMMAND_DEFINITION

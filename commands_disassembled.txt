@@ -1,19 +1,9 @@
-push 10
-push 20
-print
-add
-print
-push 10
-mul
-push 12
-push 1
-print
-sub
-add
-print
-verify
-dump
-cat
-out
-print
-hlt
+push 
+push 
+push 
+push 
+pop 
+pop 3
+pop 
+pop 
+push  5

@@ -378,9 +378,9 @@ int  print_stack_line(const Stack* stack, const char* sep, const char* end, FILE
     CHECK_SOFT_ERROR(stack, Stack, error);
 
     fprintf(file, "| ");
-    for (int i = 0; i < stack->size; i++) {
+    for (int i = stack->size - 1; i >= 0; i--) {
         fprintf(file, "%2d", stack->data[i]);
-        if (i + 1 < stack->size) fprintf(file, "%s", sep);
+        if (i > 0) fprintf(file, "%s", sep);
     }
     fprintf(file, " ]%s", end);
 

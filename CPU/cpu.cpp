@@ -42,10 +42,12 @@ int execute(const char* execute_file) {
 
 int execute_commands(BinCommand* mcodes, int n_commands) {
     printf("Executing commands:\n");
+
     for (int i = 0; i < n_commands; i++) {
         BinCommand b_command = mcodes[i];
         CommandParameters command = ALL_COMMANDS[b_command.sgn.cmd];
         int com_size = sizeof(ALL_COMMANDS) / sizeof(ALL_COMMANDS[0]);
+
         if (b_command.sgn.cmd < 0 || b_command.sgn.cmd >= com_size) {
             printf(RED "Incorrect command code (%d)\n" NATURAL, b_command.sgn.cmd);
             return exit_codes::INVALID_SYNTAX;
@@ -58,7 +60,7 @@ int execute_commands(BinCommand* mcodes, int n_commands) {
             }
             print_command(&b_command, i);
         );
-        int exit_code = command.execute_func((int)b_command.sgn.argc, b_command.argv);
+        int exit_code = command.execute_func((int)b_command.args_type, b_command.argv);
 
         if (exit_code != exit_codes::OK) {
             switch (exit_code)
@@ -73,6 +75,11 @@ int execute_commands(BinCommand* mcodes, int n_commands) {
             }
         }
     }
+    LOG(printf("\nStack final state:\n");
+        stack_state();
+        printf("registers state\n");
+        regs_state();
+    );
 
     return exit_codes::NO_OBVIOUS_END;
 }

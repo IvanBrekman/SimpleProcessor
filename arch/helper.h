@@ -11,8 +11,6 @@
 
 #include "../config.h"
 
-
-
 const int MAX_REGISTERS = 4;
 const int RAM_SIZE      = 4096;
 const int VRAM_START    = 2048;
@@ -46,9 +44,9 @@ struct signature_ {
 };
 
 struct BinCommand {
-    signature_ sgn = {};
-    int arg_t[MAX_ARGV] = {};
-    int  argv[MAX_ARGV] = {};
+    signature_ sgn     = {};
+    int args_type      =  0;
+    int argv[MAX_ARGV] = {};
 };
 
 const char* error_desc(int error_code);

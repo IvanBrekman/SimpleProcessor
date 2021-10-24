@@ -14,6 +14,6 @@ Text*       get_tcom(const Text* data);
 Text        check_tcom(const Text* tcom, int n_commands);
 BinCommand* get_mcodes_from_tcom(const Text* commands, int n_commands);
 
-int parse_arg(const char* arg);
+int parse_arg(const char* arg, int* argv=NULL, int* real_argc=NULL);
 
 #endif //SIMPLEPROCESSOR_ASM_H

@@ -2,64 +2,90 @@
 // Created by ivanbrekman on 17.10.2021.
 //
 
-COMMAND_DEFINITION( "hlt",    0, 0, {   }, execute_hlt,    {
+COMMAND_DEFINITION( "hlt",    0, 0, 0, 0b00000000, execute_hlt,    {
     return exit_codes::EXIT;
 })
 
-COMMAND_DEFINITION( "push",   1, 1, { 1 }, execute_push,   {
-    push(&processor.stack, argv[0]);
+COMMAND_DEFINITION( "push",   1, 1, 3, 0b11101110, execute_push,   {
+    int arg = 0;
+    if (extract_bit(args_type, 1)) {
+        arg += read_from_reg(&processor.regs, argv[0]);
+    }
+    if (extract_bit(args_type, 0)) {
+        arg += argv[1];
+    }
+    if (extract_bit(args_type, 2)) {
+        arg  = processor.RAM[arg];
+    }
+    
+    push(&processor.stack, arg);
 
     return exit_codes::OK;
 })
-COMMAND_DEFINITION( "pop",    2, 0, {   }, execute_pop,    {
-    pop(&processor.stack);
+COMMAND_DEFINITION( "pop",    2, 0, 3, 0b11100100, execute_pop,    {
+    int pop_value = pop(&processor.stack);
+
+    if (args_type > 0) {
+        if (extract_bit(args_type, 2)) {
+            int arg = 0;
+            if (extract_bit(args_type, 1)) {
+                arg += read_from_reg(&processor.regs, argv[0]);
+            }
+            if (extract_bit(args_type, 0)) {
+                arg += argv[1];
+            }
+            processor.RAM[arg] = pop_value;
+        } else {
+            write_to_reg(&processor.regs, argv[0], pop_value);
+        }
+    }
 
     return exit_codes::OK;
 })
 
-COMMAND_DEFINITION( "add",    3, 0, {   }, execute_add,    {
+COMMAND_DEFINITION( "add",    3, 0, 0, 0b00000000, execute_add,    {
     push(&processor.stack, pop(&processor.stack) + pop(&processor.stack));
 
     return exit_codes::OK;
 })
-COMMAND_DEFINITION( "sub",    4, 0, {   }, execute_sub,    {
+COMMAND_DEFINITION( "sub",    4, 0, 0, 0b00000000, execute_sub,    {
     push(&processor.stack, -pop(&processor.stack) + pop(&processor.stack));
 
     return exit_codes::OK;
 })
-COMMAND_DEFINITION( "mul",    5, 0, {   }, execute_mul,    {
+COMMAND_DEFINITION( "mul",    5, 0, 0, 0b00000000, execute_mul,    {
     push(&processor.stack, pop(&processor.stack) * pop(&processor.stack));
 
     return exit_codes::OK;
 })
 
-COMMAND_DEFINITION( "verify", 6, 0, {   }, execute_verify, {
+COMMAND_DEFINITION( "verify", 6, 0, 0, 0b00000000, execute_verify, {
     int err = Stack_error(&processor.stack);
     printf("Stack Verify: %s (%d)\n", Stack_error_desc(err), err);
 
     return exit_codes::OK;
 })
-COMMAND_DEFINITION( "dump",   7, 0, {   }, execute_dump,   {
+COMMAND_DEFINITION( "dump",   7, 0, 0, 0b00000000, execute_dump,   {
     stack_dump(processor.stack, "System dump call");
 
     return exit_codes::OK;
 })
-COMMAND_DEFINITION( "out",    8, 0, {   }, execute_out,    {
+COMMAND_DEFINITION( "out",    8, 0, 0, 0b00000000, execute_out,    {
     printf("%d\n", pop(&processor.stack));
 
     return exit_codes::OK;
 })
-COMMAND_DEFINITION( "print",  9, 0, {   }, execute_print,  {
+COMMAND_DEFINITION( "print",  9, 0, 0, 0b00000000, execute_print,  {
     print_stack(&processor.stack);
 
     return exit_codes::OK;
 })
 
-COMMAND_DEFINITION( "abrt",  10, 0, {   }, execute_abr,    {
+COMMAND_DEFINITION( "abrt",  10, 0, 0, 0b00000000, execute_abr,    {
     return exit_codes::BREAK;
 })
 
-COMMAND_DEFINITION( "cat",   11, 0, {   }, execute_cat,    {
+COMMAND_DEFINITION( "cat",   11, 0, 0, 0b00000000, execute_cat,    {
    printf("____________________$$____________$$_____\n"
           "_____________ _____$___$________$___$____\n"
           "__________________$_____$$$$$$_____ $____\n"

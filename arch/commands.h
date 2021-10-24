@@ -15,27 +15,29 @@ struct Processor {
     int ip      = -1; // instruction pointer
 
     Registers regs    = { }; // regs names: ax, bx, cx, dx
-    int RAM[RAM_SIZE] = { 0 };
+    int RAM[RAM_SIZE] = { 0, 0, 0, 0, 0, 0 };
 };
 
 struct CommandParameters {
-    const char* name;
-    int code;
+    const char* name = "";
+    int code = -1;
 
-    int argc;
-    int arg_types[MAX_ARGV];
+    int argc_min  =  0;
+    int argc_max  = -1;
+    int args_type =  0;
 
-    int (*execute_func) (int argc, int* argv);
+    int (*execute_func) (int args_type, int* argv);
 };
 
 int init_processor();
 int stack_state(FILE* log=stdout);
+int regs_state();
 
-#define COMMAND_DEFINITION(name, code, argc_m, argv_m, func, body) int func(int argc, int* argv);
+#define COMMAND_DEFINITION(name, code, argc_min, argc_max, argv_m, func, body) int func(int args_type, int* argv);
     #include "commands_definition.h"
 #undef COMMAND_DEFINITION
 
-#define COMMAND_DEFINITION(name, code, argc, argv, func, body) { name, code, argc, argv, func },
+#define COMMAND_DEFINITION(name, code, argc_min, argc_max, argv, func, body) { name, code, argc_min, argc_max, argv, func },
 const CommandParameters ALL_COMMANDS[] {
     #include "commands_definition.h"
 };

@@ -21,10 +21,15 @@ int main(int argc, char** argv) {
     }
 
     LOG(printf("------start assembly------\n"););
-    int exit_code = 1;//assembly(argv[1], argv[2]);
+    int exit_code = assembly(argv[1], argv[2]);
     LOG(printf("------end   assembly------\n\n"););
 
-    printf("parse: %d\n", parse_arg("dx+4]"));
+    // int arguments[] = { -1, -1, -1, -1 };
+    // printf("parse: %d\n", parse_arg("[dx+1]", arguments));
+    // for(int i = 0; i < 4; i++) {
+    //     printf("%d ", arguments[i]);
+    // }
+    // printf("\n");
 
     return exit_code;
 }
@@ -47,10 +52,12 @@ int assembly(const char* source_file, const char* executable_file) {
 
     errno = 0;
     Text wrong_command = check_tcom(text_commands, n_commands);
+    LOG(printf("Check_tcom result: %d\n", errno););
     if (errno != 0) {
-        printf(RED "Incorrect command \"");
+        int err = errno;
+        printf(RED "Incorrect command '");
         print_text(&wrong_command, ", ", "");
-        printf("\"\n%s\n" NATURAL, error_desc(errno));
+        printf("'\n%s\n" NATURAL, error_desc(err));
 
         return exit_codes::INVALID_SYNTAX;
     }
@@ -93,26 +100,21 @@ Text        check_tcom(const Text* tcom, int n_commands) {
 
         int cmd_code = command_type((const char*)cmd.text[0].ptr);
         if (cmd_code == UNKNOWN) {
-            errno = UNKNOWN_COMMAND;
+            errno = compile_errors::UNKNOWN_COMMAND;
             return cmd;
         }
 
-        if ((cmd.lines - 1) != ALL_COMMANDS[cmd_code].argc) {
-            errno = INCORRECT_ARG_AMOUNT;
+        if ((cmd.lines - 1) < ALL_COMMANDS[cmd_code].argc_min || (cmd.lines - 1) > ALL_COMMANDS[cmd_code].argc_max) {
+            errno = compile_errors::INCORRECT_ARG_AMOUNT;
             return cmd;
         }
 
         for (int arg = 1; arg < cmd.lines; arg++) {
-            if (is_number(cmd.text[arg].ptr)) {
-                if (extract_bit(ALL_COMMANDS[cmd_code].arg_types[arg - 1], 0) == 0) { // if num is not allowed type
-                    errno = INCORRECT_ARG_TYPE;
-                    return cmd;
-                }
-            } else {
-                if (extract_bit(ALL_COMMANDS[cmd_code].arg_types[arg - 1], 1) == 0) { // if register is not allowed type
-                    errno = INCORRECT_ARG_TYPE;
-                    return cmd;
-                }
+            int res_types = parse_arg(cmd.text[arg].ptr);
+            LOG(printf("parse_arg result: %d\n\n", res_types););
+            if (res_types == -1 || !extract_bit(ALL_COMMANDS[cmd_code].args_type, res_types)) {
+                errno = compile_errors::INCORRECT_ARG_TYPE;
+                return cmd;
             }
         }
     }
@@ -127,9 +129,10 @@ BinCommand* get_mcodes_from_tcom(const Text* commands, int n_commands) {
         BinCommand cmd = {};
         cmd.sgn = { (unsigned)text_cmd.lines - 1, (unsigned)command_type(text_cmd.text[0].ptr) };
         for (int arg = 1; arg < text_cmd.lines; arg++) {
-            int arg_type = parse_arg(text_cmd.text[arg - 1].ptr);
-            cmd.arg_t[arg - 1] = arg_type;
-            cmd.argv[arg - 1]  = atoi(text_cmd.text[arg].ptr);
+            int real_argc = 0;
+            int arg_type  = parse_arg(text_cmd.text[arg].ptr, cmd.argv, &real_argc);
+            cmd.args_type = arg_type;
+            cmd.sgn.argc  = real_argc;
         }
 
         bit_cmd[i] = cmd;
@@ -140,9 +143,9 @@ BinCommand* get_mcodes_from_tcom(const Text* commands, int n_commands) {
     return bit_cmd;
 }
 
-int parse_arg(const char* arg) {
-    char*      name = (char*)calloc(50, sizeof(char));
-    char* const_val = (char*)calloc(50, sizeof(char));
+int parse_arg(const char* arg, int* argv, int* real_argc) {
+    char      name[MAX_ARG_SIZE] = { };
+    char const_val[MAX_ARG_SIZE] = { };
 
     Registers reg_tmp = {};
     init_registers(&reg_tmp, REG_NAMES);
@@ -152,48 +155,60 @@ int parse_arg(const char* arg) {
     int is_ram  = cond << 2;
     arg = arg + cond;
 
-    int argc = sscanf(arg, "%[a-z]+%[0-9]", name, const_val);
+    int parse_len = 0;
+    int argc = sscanf(arg, "%[a-z]+%[0-9]%n", name, const_val, &parse_len);
     LOG(printf( "[a-z]+[0-9]\n"
                 "sscanf res : %d\n"
                 "name       : \"%s\"\n"
                 "const_value: \"%s\"\n"
-                "parse len  : %zd\n"
+                "parse len  : %d\n"
                 "arg len    : %d\n\n",
-                argc, name, const_val, (strlen(name) + 1 + strlen(const_val)), arg_len);
-        );
-    if (argc == 2 && get_reg_by_name(&reg_tmp, name) != -1 && ((strlen(name) + 1 + strlen(const_val)) == arg_len)) {
+                argc, name, const_val, parse_len, arg_len);
+    );
+    if (argc == 2 && get_reg_by_name(&reg_tmp, name) != -1 && parse_len == arg_len) {
+        if (VALID_PTR(argv)) {
+            argv[0] = get_reg_by_name(&reg_tmp, name);
+            argv[1] = atoi(const_val);
+            if (VALID_PTR(real_argc)) *real_argc = 2;
+        }
         return is_ram + (1 << 1) + 1;
     }
 
-    argc = 0;
-    argc = sscanf(arg, "%[a-z]", name);
+    argc = parse_len = 0;
+    argc = sscanf(arg, "%[a-z]%n", name, &parse_len);
     LOG(printf( "[a-z]\n"
                 "sscanf res : %d\n"
                 "name       : \"%s\"\n"
                 "const_value: \"%s\"\n"
-                "parse len  : %zd\n"
+                "parse len  : %d\n"
                 "arg len    : %d\n\n",
-                argc, name, const_val, strlen(name), arg_len);
-        );
-    if (argc == 1 && get_reg_by_name(&reg_tmp, name) != -1, (strlen(name) == arg_len)) {
+                argc, name, const_val, parse_len, arg_len);
+    );
+    if (argc == 1 && get_reg_by_name(&reg_tmp, name) != -1 && (strlen(name) == arg_len)) {
+        if (VALID_PTR(argv)) {
+            argv[0] = get_reg_by_name(&reg_tmp, name);
+            if (VALID_PTR(real_argc)) *real_argc = 1;
+        }
         return is_ram + (1 << 1) + 0;
     }
 
-    argc = 0;
-    argc = sscanf(arg, "%[0-9]", const_val);
+    argc = parse_len = 0;
+    argc = sscanf(arg, "%[0-9]%n", const_val, &parse_len);
     LOG(printf( "[0-9]\n"
                 "sscanf res : %d\n"
                 "name       : \"%s\"\n"
                 "const_value: \"%s\"\n"
-                "parse len  : %zd\n"
-                "arg len    : %d\n\n",
-                argc, name, const_val, strlen(const_val), arg_len);
-        );
+                "parse len  : %d\n"
+                "arg len    : %d\n",
+                argc, name, const_val, parse_len, arg_len);
+    );
     if (argc == 1 && (strlen(const_val) == arg_len)) {
+        if (VALID_PTR(argv)) {
+            argv[1] = atoi(const_val);
+            if (VALID_PTR(real_argc)) *real_argc = 1;
+        }
         return is_ram + (0 << 1) + 1;
     }
 
-    FREE_PTR(name, char);
-    FREE_PTR(const_val, char);
     return -1;
 }

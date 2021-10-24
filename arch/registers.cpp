@@ -9,7 +9,7 @@
 #include "registers.h"
 
 
-int init_registers(Registers* reg, const char* names[]) {
+int    init_registers(Registers* reg, const char* names[]) {
     assert(VALID_PTR(reg)   && "Invalid reg ptr");
     assert(VALID_PTR(names) && "Invalid names ptr");
 
@@ -20,7 +20,7 @@ int init_registers(Registers* reg, const char* names[]) {
 
     return MAX_REGISTERS;
 }
-int get_reg_by_name(Registers* reg, const char* name) {
+int   get_reg_by_name(Registers* reg, const char* name) {
     for (int i = 0; i < MAX_REGISTERS; i++) {
         if (strcmp(name, reg->names[i]) == 0) {
             return i;
@@ -29,6 +29,14 @@ int get_reg_by_name(Registers* reg, const char* name) {
 
     return -1;
 }
+int         print_reg(Registers* reg) {
+    for (int i = 0; i < MAX_REGISTERS; i++) {
+        printf("%s - % 2d\n", reg->names[i], reg->regs[i]);
+    }
+
+    return MAX_REGISTERS;
+}
+
 
 int      write_to_reg(Registers* reg, int reg_index, int value) {
     assert(VALID_PTR(reg) && "Invalid reg ptr");
