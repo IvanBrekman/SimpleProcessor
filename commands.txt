@@ -1,11 +1,21 @@
-push 2
-push 3
-push 5
-push 10
-
+push 0
 pop ax
-pop dx                
-pop [ax]   
-pop [15]
 
-push [ax+5]
+next:
+    push ax
+    push 10
+    ja stop
+
+    push ax
+    push ax
+    mul
+    out
+
+    push ax
+    push 1
+    add
+    pop ax
+    jmp next
+
+stop:
+    hlt

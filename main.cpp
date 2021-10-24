@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
         printf("Введите путь к исполняемому файлу (в который запишутся команды)\n");
         scanf("%s",executable_file);
     }
-
+    
     int exit_code = run_cpu(source_file, executable_file);
 
     return exit_code;

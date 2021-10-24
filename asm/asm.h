@@ -8,11 +8,11 @@
 #include "../libs/file_funcs.h"
 #include "../arch/helper.h"
 
-int assembly(const char* source_file, const char* executable_file);
+int assembly(const char* source_file, const char* executable_file, int label_assembly);
 
-Text*       get_tcom(const Text* data);
-Text        check_tcom(const Text* tcom, int n_commands);
-BinCommand* get_mcodes_from_tcom(const Text* commands, int n_commands);
+Text*                   get_tcom(const Text* data);
+Text                  check_tcom(const Text* tcom, int n_commands, int label_assembly);
+BinCommand* get_mcodes_from_tcom(const Text* commands, int* n_commands);
 
 int parse_arg(const char* arg, int* argv=NULL, int* real_argc=NULL);
 

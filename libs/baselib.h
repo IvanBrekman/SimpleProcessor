@@ -82,6 +82,7 @@ int is_number(char* string);
 int digits_number(int number, int radix=10);
 int extract_bit(int number, int bit);
 
+char* bin4(int number);
 char* to_string(int number);
 
 #endif //BASELIB_H

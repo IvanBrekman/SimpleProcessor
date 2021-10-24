@@ -21,6 +21,10 @@ const char* error_desc(int error_code) {
             return "Invalid arguments amount for this command";
         case compile_errors::INCORRECT_ARG_TYPE:
             return "Incorrect argument type for this command";
+        case compile_errors::REPEAT_LABEL_DEFINITION:
+            return "Label with this name is already defined";
+        case compile_errors::UNKNOWN_LABEL:
+            return "No label defined with this name";
         
         case binary_errors::DAMAGED_BINARY:
             return "Data in executable file are damaged";
@@ -37,7 +41,7 @@ void print_command (BinCommand* cmd, int cmd_num, FILE* log) {
     assert(VALID_PTR(log));
 
     fprintf(log, "%04d    ", cmd_num);
-    fprintf(log, "| { %02d | %06d } , %d , ", cmd->sgn.argc, cmd->sgn.cmd, cmd->args_type);
+    fprintf(log, "| { %02d | %06d } , %4s , ", cmd->sgn.argc, cmd->sgn.cmd, bin4(cmd->args_type));
     fprintf(log, "{ ");
     for (int i = 0; i < MAX_ARGV; i++) {
         fprintf(log, "%2d", cmd->argv[i]);
@@ -63,14 +67,21 @@ const char* command_desc(int command) {
 }
 
 char* arg_desc(const BinCommand* mcode) {
-    char* arg_string = (char*) calloc(MAX_ARG_SIZE, sizeof(char));
-    if (extract_bit(mcode->args_type, 2)) strcat(arg_string, "[");
-    if (extract_bit(mcode->args_type, 1)) strcat(arg_string, REG_NAMES[mcode->argv[0]]);
+    static int labels_count = 0;
 
-    if (extract_bit(mcode->args_type, 1) && extract_bit(mcode->args_type, 0)) strcat(arg_string, "+");
+    char* arg_string = (char*) calloc(MAX_ARG_SIZE, sizeof(char));
+    if (extract_bit(mcode->args_type, RAM_BIT))      strcat(arg_string, "[");
+    if (extract_bit(mcode->args_type, REGISTER_BIT)) strcat(arg_string, REG_NAMES[mcode->argv[0]]);
+
+    if (extract_bit(mcode->args_type, REGISTER_BIT) && extract_bit(mcode->args_type, NUMBER_BIT)) strcat(arg_string, "+");
     
-    if (extract_bit(mcode->args_type, 0)) strcat(arg_string, to_string(mcode->argv[1]));
-    if (extract_bit(mcode->args_type, 2)) strcat(arg_string, "]");
+    if (extract_bit(mcode->args_type, NUMBER_BIT))   strcat(arg_string, to_string(mcode->argv[1]));
+    if (extract_bit(mcode->args_type, RAM_BIT))      strcat(arg_string, "]");
+
+    if (extract_bit(mcode->args_type, LABEL_BIT)) {
+        strcat(arg_string, "label_");
+        strcat(arg_string, to_string(labels_count++));
+    }
 
     return arg_string;
 }

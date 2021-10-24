@@ -6,6 +6,6 @@
 #define SIMPLEPROCESSOR_CPU_H
 
 int execute(const char* execute_file);
-int execute_commands(BinCommand* mcodes, int n_commands);
+int execute_commands(BinCommand* mcodes, int n_commands, Processor* processor);
 
 #endif //SIMPLEPROCESSOR_CPU_H

@@ -11,6 +11,7 @@
 static const char* TRACKED_PROGRAMS[] = {
         "arch/commands.cpp",  "arch/commands.h",
         "arch/helper.cpp",    "arch/helper.h",
+        "arch/labels.cpp",    "arch/labels.h",
         "arch/registers.cpp", "arch/registers.h",
         "arch/commands_definition.h",
 
@@ -60,9 +61,9 @@ static const char* TRACKED_PROGRAMS[] = {
 
 static const char* decompile_output = "commands_disassembled.txt";
 static const char* compile_strings[] = {
-        "gcc asm/asm.cpp libs/baselib.cpp libs/file_funcs.cpp libs/stack.cpp arch/helper.cpp arch/commands.cpp arch/registers.cpp -lm -o asm/asm.cat",
-        "gcc dis/dis.cpp libs/baselib.cpp libs/file_funcs.cpp libs/stack.cpp arch/helper.cpp arch/commands.cpp arch/registers.cpp -lm -o dis/dis.cat",
-        "gcc CPU/cpu.cpp libs/baselib.cpp libs/file_funcs.cpp libs/stack.cpp arch/helper.cpp arch/commands.cpp arch/registers.cpp -lm -o CPU/cpu.cat"
+        "gcc asm/asm.cpp libs/baselib.cpp libs/file_funcs.cpp libs/stack.cpp arch/helper.cpp arch/commands.cpp arch/labels.cpp arch/registers.cpp -lm -o asm/asm.cat",
+        "gcc dis/dis.cpp libs/baselib.cpp libs/file_funcs.cpp libs/stack.cpp arch/helper.cpp arch/commands.cpp arch/labels.cpp arch/registers.cpp -lm -o dis/dis.cat",
+        "gcc CPU/cpu.cpp libs/baselib.cpp libs/file_funcs.cpp libs/stack.cpp arch/helper.cpp arch/commands.cpp arch/labels.cpp arch/registers.cpp -lm -o CPU/cpu.cat"
 };
 static const char* execute_strings[] = {
         "./asm/asm.cat ",

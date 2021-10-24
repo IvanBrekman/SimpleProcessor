@@ -18,9 +18,11 @@ int    labels_ctor(Labels* lab);
 int    labels_dtor(Labels* lab);
 
 int   print_labels(Labels* lab);
+int  uniq_lab_name(Labels* lab, const char* name);
+int possible_label(Labels* lab,       char* string);
 
 int    write_label(Labels* lab, const char* name, int label);
 int     read_label(Labels* lab, const char* name);
-int can_read_label(Labels* lab, const char* name);
+int can_read_label(Labels* lab, const int index);
 
 #endif //SIMPLEPROCESSOR_LABELS_H

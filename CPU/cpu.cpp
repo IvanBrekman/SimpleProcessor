@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
 }
 
 int execute(const char* execute_file) {
-    init_processor();
+    Processor* processor = init_processor();
 
     int n_commands = -1;
     errno = 0;
@@ -36,17 +36,19 @@ int execute(const char* execute_file) {
         return exit_codes::INVALID_SYNTAX;
     }
 
-    int exit_code = execute_commands(mcodes, n_commands);
+    int exit_code = execute_commands(mcodes, n_commands, processor);
 
     destroy_processor();
     return exit_code;
 }
 
-int execute_commands(BinCommand* mcodes, int n_commands) {
+int execute_commands(BinCommand* mcodes, int n_commands, Processor* processor) {
     LOG1(printf("Executing commands:\n"););
 
-    for (int i = 0; i < n_commands; i++) {
-        BinCommand b_command = mcodes[i];
+    for ( ; processor->ip < n_commands; processor->ip++) {
+        LOG1(printf("ip: %d\n", processor->ip););
+        
+        BinCommand b_command = mcodes[processor->ip];
         CommandParameters command = ALL_COMMANDS[b_command.sgn.cmd];
         int com_size = sizeof(ALL_COMMANDS) / sizeof(ALL_COMMANDS[0]);
 
@@ -62,7 +64,7 @@ int execute_commands(BinCommand* mcodes, int n_commands) {
                 printf("Stack:  ");
                 stack_state();
             }
-            print_command(&b_command, i);
+            print_command(&b_command, processor->ip);
         );
         int exit_code = command.execute_func((int)b_command.args_type, b_command.argv);
 

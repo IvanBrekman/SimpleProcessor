@@ -15,7 +15,7 @@ const header HEADER = { };
 #define MAX_ARG_SIZE      50
 
 #define VALIDATE_LEVEL  1
-#define LOG_PRINTF      1
+#define LOG_PRINTF      0
 #define LOG_STACK_STATE 1
 
 #define SKIP_EMPTY_STRINGS      1

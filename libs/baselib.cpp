@@ -49,7 +49,29 @@ int extract_bit(int number, int bit) {
     return (number >> bit) & 1;
 }
 
+char* bin4(int number) {
+    char* bits = (char*) calloc(32, sizeof(char));
+    int real_bits = 0;
+
+    while (number > 0) {
+        bits[real_bits++] = '0' + (number % 2);
+        number /= 2;
+    }
+
+    for (int i = 0; i < real_bits / 2; i++) {
+        char tmp = bits[i];
+        bits[i] = bits[real_bits - 1 - i];
+        bits[real_bits - 1 - i] = tmp;
+    }
+
+    bits[real_bits] = '\0';
+    return bits;
+}
 char* to_string(int number) {
+    if (number == 0) {
+        return (char*)"0";
+    }
+
     int d_num = digits_number(number, 10);
     char* str_num = (char*) calloc(d_num + 1, sizeof(char));
 

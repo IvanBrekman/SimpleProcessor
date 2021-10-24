@@ -29,8 +29,11 @@ struct CommandParameters {
     int (*execute_func) (int args_type, int* argv);
 };
 
-int    init_processor();
-int destroy_processor();
+Processor* init_processor();
+int     destroy_processor();
+
+int get_processor_ip();
+int set_processor_ip(int value);
 
 int stack_state(FILE* log=stdout);
 int regs_state();

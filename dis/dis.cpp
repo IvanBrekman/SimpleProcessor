@@ -8,9 +8,14 @@
 
 #include "../libs/baselib.h"
 #include "../libs/file_funcs.h"
+
 #include "../arch/helper.h"
+#include "../arch/commands.h"
+#include "../arch/labels.h"
 
 #include "dis.h"
+
+Labels labels = { };
 
 int main(int argc, char** argv) {
     if (argc < 3) {
@@ -53,6 +58,7 @@ int disassembly(const char* executable_file, const char* source_file) {
 Text* get_tcom_from_mcodes(BinCommand* mcodes, int n_commands) {
     Text* tcom = (Text*) calloc(n_commands, sizeof(Text));
 
+    labels_ctor(&labels);
     for (int i = 0; i < n_commands; i++) {
         BinCommand mcode = mcodes[i];
         int n_args = 1 + 1;
@@ -63,7 +69,12 @@ Text* get_tcom_from_mcodes(BinCommand* mcodes, int n_commands) {
 
         Text cmd = convert_to_text((const char**)array, n_args);
         tcom[i] = cmd;
+
+        if (ALL_COMMANDS[mcode.sgn.cmd].args_type == 0b0000000000000010) {
+            write_label(&labels, "label_", mcode.argv[2]);
+        }
     }
 
+    labels_dtor(&labels);
     return tcom;
 }

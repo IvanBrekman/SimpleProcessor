@@ -2,19 +2,19 @@
 // Created by ivanbrekman on 17.10.2021.
 //
 
-COMMAND_DEFINITION( "hlt",    0, 0, 0, 0b00000000, execute_hlt,    {
+COMMAND_DEFINITION( "hlt",   0, 0, 0, 0b0000000000000000, execute_hlt,  {
     return exit_codes::EXIT;
 })
 
-COMMAND_DEFINITION( "push",   1, 1, 3, 0b11101110, execute_push,   {
+COMMAND_DEFINITION( "push",  1, 1, 1, 0b1111110011111100, execute_push, {
     int arg = 0;
-    if (extract_bit(args_type, 1)) {
+    if (extract_bit(args_type, REGISTER_BIT)) {
         arg += read_from_reg(&processor.regs, argv[0]);
     }
-    if (extract_bit(args_type, 0)) {
+    if (extract_bit(args_type, NUMBER_BIT)) {
         arg += argv[1];
     }
-    if (extract_bit(args_type, 2)) {
+    if (extract_bit(args_type, RAM_BIT)) {
         arg  = processor.RAM[arg];
     }
     
@@ -22,16 +22,17 @@ COMMAND_DEFINITION( "push",   1, 1, 3, 0b11101110, execute_push,   {
 
     return exit_codes::OK;
 })
-COMMAND_DEFINITION( "pop",    2, 0, 3, 0b11100100, execute_pop,    {
+
+COMMAND_DEFINITION( "pop",   2, 0, 1, 0b1111110000110000, execute_pop,  {
     int pop_value = pop(&processor.stack);
 
     if (args_type > 0) {
-        if (extract_bit(args_type, 2)) {
+        if (extract_bit(args_type, RAM_BIT)) {
             int arg = 0;
-            if (extract_bit(args_type, 1)) {
+            if (extract_bit(args_type, REGISTER_BIT)) {
                 arg += read_from_reg(&processor.regs, argv[0]);
             }
-            if (extract_bit(args_type, 0)) {
+            if (extract_bit(args_type, NUMBER_BIT)) {
                 arg += argv[1];
             }
             processor.RAM[arg] = pop_value;
@@ -43,49 +44,54 @@ COMMAND_DEFINITION( "pop",    2, 0, 3, 0b11100100, execute_pop,    {
     return exit_codes::OK;
 })
 
-COMMAND_DEFINITION( "add",    3, 0, 0, 0b00000000, execute_add,    {
+COMMAND_DEFINITION( "add",   3, 0, 0, 0b0000000000000000, execute_add,  {
     push(&processor.stack, pop(&processor.stack) + pop(&processor.stack));
 
     return exit_codes::OK;
 })
-COMMAND_DEFINITION( "sub",    4, 0, 0, 0b00000000, execute_sub,    {
+
+COMMAND_DEFINITION( "sub",   4, 0, 0, 0b0000000000000000, execute_sub,  {
     push(&processor.stack, -pop(&processor.stack) + pop(&processor.stack));
 
     return exit_codes::OK;
 })
-COMMAND_DEFINITION( "mul",    5, 0, 0, 0b00000000, execute_mul,    {
+
+COMMAND_DEFINITION( "mul",   5, 0, 0, 0b0000000000000000, execute_mul,  {
     push(&processor.stack, pop(&processor.stack) * pop(&processor.stack));
 
     return exit_codes::OK;
 })
 
-COMMAND_DEFINITION( "verify", 6, 0, 0, 0b00000000, execute_verify, {
+COMMAND_DEFINITION( "vrf",   6, 0, 0, 0b0000000000000000, execute_vrf,  {
     int err = Stack_error(&processor.stack);
     printf("Stack Verify: %s (%d)\n", Stack_error_desc(err), err);
 
     return exit_codes::OK;
 })
-COMMAND_DEFINITION( "dump",   7, 0, 0, 0b00000000, execute_dump,   {
+
+COMMAND_DEFINITION( "dump",  7, 0, 0, 0b0000000000000000, execute_dump, {
     stack_dump(processor.stack, "System dump call");
 
     return exit_codes::OK;
 })
-COMMAND_DEFINITION( "out",    8, 0, 0, 0b00000000, execute_out,    {
+
+COMMAND_DEFINITION( "out",   8, 0, 0, 0b0000000000000000, execute_out,  {
     printf("%d\n", pop(&processor.stack));
 
     return exit_codes::OK;
 })
-COMMAND_DEFINITION( "print",  9, 0, 0, 0b00000000, execute_print,  {
+
+COMMAND_DEFINITION( "prt",   9, 0, 0, 0b0000000000000000, execute_prt,  {
     print_stack(&processor.stack);
 
     return exit_codes::OK;
 })
 
-COMMAND_DEFINITION( "abrt",  10, 0, 0, 0b00000000, execute_abr,    {
+COMMAND_DEFINITION( "abrt", 10, 0, 0, 0b0000000000000000, execute_abr,  {
     return exit_codes::BREAK;
 })
 
-COMMAND_DEFINITION( "cat",   11, 0, 0, 0b00000000, execute_cat,    {
+COMMAND_DEFINITION( "cat",  11, 0, 0, 0b0000000000000000, execute_cat,  {
    printf("____________________$$____________$$_____\n"
           "_____________ _____$___$________$___$____\n"
           "__________________$_____$$$$$$_____ $____\n"
@@ -109,3 +115,23 @@ COMMAND_DEFINITION( "cat",   11, 0, 0, 0b00000000, execute_cat,    {
 
    return exit_codes::OK;
 })
+
+COMMAND_DEFINITION( "jmp",  12, 1, 1, 0b0000000000000010, execute_jmp,  {
+    processor.ip = argv[2] - 1;
+    return processor.ip;
+})
+
+#define COND_JUMP_DEFINITION(name, code, sign)                                  \
+COMMAND_DEFINITION( #name, code, 1, 1, 0b0000000000000010, execute_ ## name, {  \
+    int first  = pop(&processor.stack);                                         \
+    int second = pop(&processor.stack);                                         \
+                                                                                \
+    if (second sign first) {                                                    \
+        processor.ip = argv[2] - 1;                                             \
+    }                                                                           \
+                                                                                \
+    return processor.ip;                                                        \
+})
+
+#include "cond_jumps_definition.h"
+#undef COND_JUMP_DEFINITION

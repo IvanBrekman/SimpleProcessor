@@ -12,7 +12,11 @@
 
 #include "../arch/helper.h"
 #include "../arch/commands.h"
+#include "../arch/labels.h"
+
 #include "asm.h"
+
+Labels labels = {};
 
 int main(int argc, char** argv) {
     if (argc < 3) {
@@ -21,7 +25,19 @@ int main(int argc, char** argv) {
     }
 
     LOG1(printf("------start assembly------\n"););
-    int exit_code = assembly(argv[1], argv[2]);
+    labels_ctor(&labels);
+
+    LOG1(printf("First assembly\n"););
+    assembly(argv[1], argv[2], 1);
+
+    LOG1(printf("\nLabels:\n");
+         print_labels(&labels);
+         printf("\n");
+    )
+
+    LOG1(printf("Second assembly\n"););
+    int exit_code = assembly(argv[1], argv[2], 0);
+
     LOG1(printf("------end   assembly------\n\n"););
 
     // int arguments[] = { -1, -1, -1, -1 };
@@ -31,12 +47,23 @@ int main(int argc, char** argv) {
     // }
     // printf("\n");
 
+    labels_dtor(&labels);
     return exit_code;
 }
 
-int assembly(const char* source_file, const char* executable_file) {
+int assembly(const char* source_file, const char* executable_file, int label_assembly) {
     assert(VALID_PTR(source_file)     && "Incorrect source_file ptr");
     assert(VALID_PTR(executable_file) && "Incorrect executable_file ptr");
+
+    if (!label_assembly) {
+        for (int i = 0; i < labels.labels_count; i++) {
+            if (!can_read_label(&labels, i)) {
+                errno = compile_errors::UNKNOWN_LABEL;
+                printf(RED "%s\n" NATURAL, error_desc(errno));
+                return exit_codes::INVALID_SYNTAX;
+            }
+        }
+    }
 
     Text text = get_text_from_file(source_file, SKIP_EMPTY_STRINGS, SKIP_FISRT_LAST_SPACES);
     
@@ -51,7 +78,7 @@ int assembly(const char* source_file, const char* executable_file) {
     );
 
     errno = 0;
-    Text wrong_command = check_tcom(text_commands, n_commands);
+    Text wrong_command = check_tcom(text_commands, n_commands, label_assembly);
     LOG1(printf("Check_tcom result: %d\n", errno););
     if (errno != 0) {
         int err = errno;
@@ -63,16 +90,18 @@ int assembly(const char* source_file, const char* executable_file) {
     }
 
     LOG1(printf("Assembled commands:\n"););
-    BinCommand* mcodes = get_mcodes_from_tcom(text_commands, n_commands);
+    BinCommand* mcodes = get_mcodes_from_tcom(text_commands, &n_commands);
 
-    write_mcodes(mcodes, n_commands, executable_file);
-
+    if (!label_assembly) {
+        write_mcodes(mcodes, n_commands, executable_file);
+    }
+    
     FREE_PTR(text_commands, Text);
     FREE_PTR(mcodes, BinCommand);
     return exit_codes::OK;
 }
 
-Text*       get_tcom(const Text* data) {
+Text*                   get_tcom(const Text* data) {
     assert(VALID_PTR(data) && "Invalid data ptr");
 
     Text* commands = (Text*)calloc(data->lines, sizeof(Text));
@@ -94,14 +123,22 @@ Text*       get_tcom(const Text* data) {
 
     return commands;
 }
-Text        check_tcom(const Text* tcom, int n_commands) {
+Text                  check_tcom(const Text* tcom, int n_commands, int label_assembly) {
     for (int i = 0; i < n_commands; i++) {
         Text cmd = tcom[i];
 
-        int cmd_code = command_type((const char*)cmd.text[0].ptr);
+        int cmd_code = command_type(cmd.text[0].ptr);
+
         if (cmd_code == UNKNOWN) {
-            errno = compile_errors::UNKNOWN_COMMAND;
-            return cmd;
+            if (possible_label(&labels, cmd.text[0].ptr) == -1) {
+                errno = compile_errors::UNKNOWN_COMMAND;
+                return cmd;
+            }
+            if (possible_label(&labels, cmd.text[0].ptr) == 0 && label_assembly) {
+                errno = compile_errors::REPEAT_LABEL_DEFINITION;
+                return cmd;
+            }
+            continue;
         }
 
         if ((cmd.lines - 1) < ALL_COMMANDS[cmd_code].argc_min || (cmd.lines - 1) > ALL_COMMANDS[cmd_code].argc_max) {
@@ -113,7 +150,7 @@ Text        check_tcom(const Text* tcom, int n_commands) {
             int res_types = parse_arg(cmd.text[arg].ptr);
             LOG2(printf("parse_arg result: %d\n\n", res_types););
             if (res_types == -1 || !extract_bit(ALL_COMMANDS[cmd_code].args_type, res_types)) {
-                errno = compile_errors::INCORRECT_ARG_TYPE;
+                errno = compile_errors::INCORRECT_ARG_TYPE; 
                 return cmd;
             }
         }
@@ -121,25 +158,41 @@ Text        check_tcom(const Text* tcom, int n_commands) {
 
     return tcom[0];
 }
-BinCommand* get_mcodes_from_tcom(const Text* commands, int n_commands) {
-    BinCommand* bit_cmd = (BinCommand*)calloc(n_commands, sizeof(BinCommand));
+BinCommand* get_mcodes_from_tcom(const Text* commands, int* n_commands) {
+    BinCommand* bit_cmd = (BinCommand*)calloc(*n_commands, sizeof(BinCommand));
 
-    for (int i = 0; i < n_commands; i++) {
+    int cmd_index = 0;
+    for (int i = 0; i < *n_commands; i++) {
         Text text_cmd = commands[i];
         BinCommand cmd = {};
-        cmd.sgn = { (unsigned)text_cmd.lines - 1, (unsigned)command_type(text_cmd.text[0].ptr) };
+
+        int command_code = command_type(text_cmd.text[0].ptr);
+        if (command_code == UNKNOWN) {
+            String label = text_cmd.text[0];
+            label.len--;
+            label.ptr[label.len] = '\0';
+
+            write_label(&labels, text_cmd.text[0].ptr, cmd_index);
+            LOG1(print_labels(&labels););
+            continue;
+        }
+        assert(command_code != UNKNOWN && "Unknown command in get_mcodes_from_tcom!! Check check_tcom func!");
+
+        cmd.sgn = {  };
         for (int arg = 1; arg < text_cmd.lines; arg++) {
             int real_argc = 0;
             int arg_type  = parse_arg(text_cmd.text[arg].ptr, cmd.argv, &real_argc);
             cmd.args_type = arg_type;
             cmd.sgn.argc  = real_argc;
         }
+        cmd.sgn.cmd = (unsigned)command_code;
 
-        bit_cmd[i] = cmd;
+        bit_cmd[cmd_index++] = cmd;
 
-        LOG1(print_command(&cmd, i););
+        LOG1(print_command(&cmd, cmd_index - 1););
     }
 
+    *n_commands -= labels.labels_count;
     return bit_cmd;
 }
 
@@ -152,7 +205,7 @@ int parse_arg(const char* arg, int* argv, int* real_argc) {
     
     int cond    = arg[0] == '[';
     int arg_len = strlen(arg) - 2 * cond;
-    int is_ram  = cond << 2;
+    int is_ram  = cond << RAM_BIT;
     arg = arg + cond;
 
     int parse_len = 0;
@@ -171,7 +224,7 @@ int parse_arg(const char* arg, int* argv, int* real_argc) {
             argv[1] = atoi(const_val);
             if (VALID_PTR(real_argc)) *real_argc = 2;
         }
-        return is_ram + (1 << 1) + 1;
+        return is_ram + (1 << REGISTER_BIT) + (1 << NUMBER_BIT) + 0;
     }
 
     argc = parse_len = 0;
@@ -184,12 +237,23 @@ int parse_arg(const char* arg, int* argv, int* real_argc) {
                 "arg len    : %d\n\n",
                 argc, name, const_val, parse_len, arg_len);
     );
-    if (argc == 1 && get_reg_by_name(&reg_tmp, name) != -1 && (strlen(name) == arg_len)) {
-        if (VALID_PTR(argv)) {
-            argv[0] = get_reg_by_name(&reg_tmp, name);
-            if (VALID_PTR(real_argc)) *real_argc = 1;
+    if (argc == 1 && (parse_len == arg_len)) {
+        if (get_reg_by_name(&reg_tmp, name) != -1) {
+            if (VALID_PTR(argv)) {
+                argv[0] = get_reg_by_name(&reg_tmp, name);
+                if (VALID_PTR(real_argc)) *real_argc = 1;
+            }
+            return is_ram + (1 << REGISTER_BIT) + 0 + 0;
+        } else {
+            if (VALID_PTR(argv)) {
+                int value = read_label(&labels, name);
+                argv[2] = value;
+                write_label(&labels, strdup(name), value);
+                LOG1(print_labels(&labels););
+                if (VALID_PTR(real_argc)) *real_argc = 1;
+            }
+            return is_ram + 0 + 0 + 1;
         }
-        return is_ram + (1 << 1) + 0;
     }
 
     argc = parse_len = 0;
@@ -207,7 +271,7 @@ int parse_arg(const char* arg, int* argv, int* real_argc) {
             argv[1] = atoi(const_val);
             if (VALID_PTR(real_argc)) *real_argc = 1;
         }
-        return is_ram + (0 << 1) + 1;
+        return is_ram + (0 << REGISTER_BIT) + (1 << NUMBER_BIT) + 0;
     }
 
     return -1;

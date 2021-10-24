@@ -16,6 +16,11 @@ const int MAX_REGISTERS = 4;
 const int RAM_SIZE      = 4096;
 const int VRAM_START    = 2048;
 
+const int LABEL_BIT    = 0;
+const int NUMBER_BIT   = 1;
+const int REGISTER_BIT = 2;
+const int RAM_BIT      = 3;
+
 static const char* REG_NAMES[MAX_REGISTERS] = { "ax", "bx", "cx", "dx" };
 
 const int BITS_TO_ARGV  = 2;                             // Max argv amount dependent
@@ -29,14 +34,16 @@ enum exit_codes {
     NO_OBVIOUS_END = -4
 };
 enum compile_errors {
-    UNKNOWN_COMMAND      = -15,
-    INCORRECT_ARG_AMOUNT = -16,
-    INCORRECT_ARG_TYPE   = -17
+    UNKNOWN_COMMAND         = -15,
+    INCORRECT_ARG_AMOUNT    = -16,
+    INCORRECT_ARG_TYPE      = -17,
+    REPEAT_LABEL_DEFINITION = -18,
+    UNKNOWN_LABEL           = -19
 };
 enum binary_errors {
-    DAMAGED_BINARY       = -63,
-    READ_PARTIAL_HEADER  = -64,
-    INCORRECT_VERSION    = -65
+    DAMAGED_BINARY          = -63,
+    READ_PARTIAL_HEADER     = -64,
+    INCORRECT_VERSION       = -65
 };
 
 struct signature_ {
