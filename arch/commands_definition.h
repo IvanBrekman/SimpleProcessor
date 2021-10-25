@@ -2,11 +2,11 @@
 // Created by ivanbrekman on 17.10.2021.
 //
 
-COMMAND_DEFINITION( "hlt",   0, 0, 0, 0b0000000000000000, execute_hlt,  {
+COMMAND_DEFINITION( hlt,   0, 0, 0, 0b0000000000000000,  {
     return exit_codes::EXIT;
 })
 
-COMMAND_DEFINITION( "push",  1, 1, 1, 0b1111110011111100, execute_push, {
+COMMAND_DEFINITION( push,  1, 1, 1, 0b1111110011111100,  {
     int arg = 0;
     if (extract_bit(args_type, REGISTER_BIT)) {
         arg += read_from_reg(&processor.regs, argv[0]);
@@ -23,7 +23,7 @@ COMMAND_DEFINITION( "push",  1, 1, 1, 0b1111110011111100, execute_push, {
     return exit_codes::OK;
 })
 
-COMMAND_DEFINITION( "pop",   2, 0, 1, 0b1111110000110000, execute_pop,  {
+COMMAND_DEFINITION( pop,   2, 0, 1, 0b1111110000110000,  {
     int pop_value = pop(&processor.stack);
 
     if (args_type > 0) {
@@ -44,54 +44,54 @@ COMMAND_DEFINITION( "pop",   2, 0, 1, 0b1111110000110000, execute_pop,  {
     return exit_codes::OK;
 })
 
-COMMAND_DEFINITION( "add",   3, 0, 0, 0b0000000000000000, execute_add,  {
+COMMAND_DEFINITION( add,   3, 0, 0, 0b0000000000000000,  {
     push(&processor.stack, pop(&processor.stack) + pop(&processor.stack));
 
     return exit_codes::OK;
 })
 
-COMMAND_DEFINITION( "sub",   4, 0, 0, 0b0000000000000000, execute_sub,  {
+COMMAND_DEFINITION( sub,   4, 0, 0, 0b0000000000000000,  {
     push(&processor.stack, -pop(&processor.stack) + pop(&processor.stack));
 
     return exit_codes::OK;
 })
 
-COMMAND_DEFINITION( "mul",   5, 0, 0, 0b0000000000000000, execute_mul,  {
+COMMAND_DEFINITION( mul,   5, 0, 0, 0b0000000000000000,  {
     push(&processor.stack, pop(&processor.stack) * pop(&processor.stack));
 
     return exit_codes::OK;
 })
 
-COMMAND_DEFINITION( "vrf",   6, 0, 0, 0b0000000000000000, execute_vrf,  {
+COMMAND_DEFINITION( vrf,   6, 0, 0, 0b0000000000000000,  {
     int err = Stack_error(&processor.stack);
     printf("Stack Verify: %s (%d)\n", Stack_error_desc(err), err);
 
     return exit_codes::OK;
 })
 
-COMMAND_DEFINITION( "dump",  7, 0, 0, 0b0000000000000000, execute_dump, {
+COMMAND_DEFINITION( dump,  7, 0, 0, 0b0000000000000000,  {
     stack_dump(processor.stack, "System dump call");
 
     return exit_codes::OK;
 })
 
-COMMAND_DEFINITION( "out",   8, 0, 0, 0b0000000000000000, execute_out,  {
+COMMAND_DEFINITION( out,   8, 0, 0, 0b0000000000000000,  {
     printf("%d\n", pop(&processor.stack));
 
     return exit_codes::OK;
 })
 
-COMMAND_DEFINITION( "prt",   9, 0, 0, 0b0000000000000000, execute_prt,  {
+COMMAND_DEFINITION( prt,   9, 0, 0, 0b0000000000000000,  {
     print_stack(&processor.stack);
 
     return exit_codes::OK;
 })
 
-COMMAND_DEFINITION( "abrt", 10, 0, 0, 0b0000000000000000, execute_abr,  {
+COMMAND_DEFINITION( abrt, 10, 0, 0, 0b0000000000000000,  {
     return exit_codes::BREAK;
 })
 
-COMMAND_DEFINITION( "cat",  11, 0, 0, 0b0000000000000000, execute_cat,  {
+COMMAND_DEFINITION( cat,  11, 0, 0, 0b0000000000000000,  {
    printf("____________________$$____________$$_____\n"
           "_____________ _____$___$________$___$____\n"
           "__________________$_____$$$$$$_____ $____\n"
@@ -116,13 +116,13 @@ COMMAND_DEFINITION( "cat",  11, 0, 0, 0b0000000000000000, execute_cat,  {
    return exit_codes::OK;
 })
 
-COMMAND_DEFINITION( "jmp",  12, 1, 1, 0b0000000000000010, execute_jmp,  {
+COMMAND_DEFINITION( jmp,  12, 1, 1, 0b0000000000000010,  {
     processor.ip = argv[2] - 1;
     return processor.ip;
 })
 
 #define COND_JUMP_DEFINITION(name, code, sign)                                  \
-COMMAND_DEFINITION( #name, code, 1, 1, 0b0000000000000010, execute_ ## name, {  \
+COMMAND_DEFINITION( name, code, 1, 1, 0b0000000000000010, {                     \
     int first  = pop(&processor.stack);                                         \
     int second = pop(&processor.stack);                                         \
                                                                                 \
@@ -137,14 +137,14 @@ COMMAND_DEFINITION( #name, code, 1, 1, 0b0000000000000010, execute_ ## name, {  
 #undef COND_JUMP_DEFINITION
 // 18
 
-COMMAND_DEFINITION( "call", 19, 1, 1, 0b0000000000000010, execute_call, {
+COMMAND_DEFINITION( call, 19, 1, 1, 0b0000000000000010, {
     push(&processor.call_stack, processor.ip + 1);
 
     processor.ip = argv[2] - 1;
     return processor.ip;
 })
 
-COMMAND_DEFINITION( "ret",  20, 0, 0, 0b0000000000000000, execute_ret,  {
+COMMAND_DEFINITION( ret,  20, 0, 0, 0b0000000000000000,  {
     processor.ip = pop(&processor.call_stack) - 1;
     return processor.ip;
 })

@@ -37,7 +37,7 @@ int processor_dump(FILE* log) {
 
     printf("Stack:      ");
     print_stack_line(&processor.stack, ", ", "\n", log);
-    
+
     printf("Stack_call: ");
     print_stack_line(&processor.call_stack, ", ", "\n", log);
 
@@ -55,6 +55,6 @@ int set_processor_ip(int value) {
     return processor.ip;
 }
 
-#define COMMAND_DEFINITION(name, code, argc_min, argc_max, argv_m, func, body) int func(int args_type, int* argv) body
+#define COMMAND_DEFINITION(name, code, argc_min, argc_max, argv_m, body) int execute_ ## name(int args_type, int* argv) body
     #include "commands_definition.h"
 #undef COMMAND_DEFINITION

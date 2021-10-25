@@ -39,11 +39,11 @@ int set_processor_ip(int value);
 
 int processor_dump(FILE* log=stdout);
 
-#define COMMAND_DEFINITION(name, code, argc_min, argc_max, argv_m, func, body) int func(int args_type, int* argv);
+#define COMMAND_DEFINITION(name, code, argc_min, argc_max, argv_m, body) int execute_ ## name(int args_type, int* argv);
     #include "commands_definition.h"
 #undef COMMAND_DEFINITION
 
-#define COMMAND_DEFINITION(name, code, argc_min, argc_max, argv, func, body) { name, code, argc_min, argc_max, argv, func },
+#define COMMAND_DEFINITION(name, code, argc_min, argc_max, argv, body) { #name, code, argc_min, argc_max, argv, execute_ ## name },
 const CommandParameters ALL_COMMANDS[] {
     #include "commands_definition.h"
 };

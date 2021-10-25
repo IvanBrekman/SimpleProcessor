@@ -28,9 +28,9 @@ const int MAX_ARGV      = 4;
 
 enum exit_codes {
     OK             =  0,
-    BREAK          = -1,
-    INVALID_SYNTAX = -2,
-    EXIT           = -3,
+    EXIT           = -1,
+    BREAK          = -2,
+    INVALID_SYNTAX = -3,
     NO_OBVIOUS_END = -4
 };
 enum compile_errors {
