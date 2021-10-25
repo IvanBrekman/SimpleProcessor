@@ -85,4 +85,6 @@ int extract_bit(int number, int bit);
 char* bin4(int number);
 char* to_string(int number);
 
+int cmp_int(const void* num1, const void* num2);
+
 #endif //BASELIB_H

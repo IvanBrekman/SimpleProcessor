@@ -64,8 +64,7 @@ void print_command (BinCommand* cmd,  int cmd_num, FILE* log=stdout);
 int         command_type(const char* command);
 const char* command_desc(int command);
 
-char* arg_desc(const BinCommand* mcode);
-
+char* arg_desc(const BinCommand* mcode, void* lab=NULL);
 
 BinCommand* read_mcodes(const char* executable_file, int* n_commands);
 int         write_mcodes(const BinCommand* mcodes, int n_commands, const char* executable_file);

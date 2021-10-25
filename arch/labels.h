@@ -14,15 +14,18 @@ struct Labels {
     int labels_count = 0;
 };
 
-int    labels_ctor(Labels* lab);
-int    labels_dtor(Labels* lab);
+int     labels_ctor(      Labels* lab);
+int     labels_dtor(      Labels* lab);
 
-int   print_labels(Labels* lab);
-int  uniq_lab_name(Labels* lab, const char* name);
-int possible_label(Labels* lab,       char* string);
+int    print_labels(const Labels* lab);
 
-int    write_label(Labels* lab, const char* name, int label);
-int     read_label(Labels* lab, const char* name);
-int can_read_label(Labels* lab, const int index);
+int  get_lab_by_val(const Labels* lab, int val);
+int get_lab_by_name(const Labels* lab, const char* name);
+int   uniq_lab_name(const Labels* lab, const char* name);
+int  possible_label(const Labels* lab,       char* string);
+
+int     write_label(      Labels* lab, const char* name, int label);
+int      read_label(const Labels* lab, const char* name);
+int  can_read_label(const Labels* lab, const int index);
 
 #endif //SIMPLEPROCESSOR_LABELS_H

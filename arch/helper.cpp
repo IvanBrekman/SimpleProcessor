@@ -12,6 +12,7 @@
 
 #include "helper.h"
 #include "commands.h"
+#include "labels.h"
 
 const char* error_desc(int error_code) {
     switch (error_code) {
@@ -66,7 +67,7 @@ const char* command_desc(int command) {
     return ALL_COMMANDS[command].name;
 }
 
-char* arg_desc(const BinCommand* mcode) {
+char* arg_desc(const BinCommand* mcode, void* lab) {
     static int labels_count = 0;
 
     char* arg_string = (char*) calloc(MAX_ARG_SIZE, sizeof(char));
@@ -80,7 +81,13 @@ char* arg_desc(const BinCommand* mcode) {
 
     if (extract_bit(mcode->args_type, LABEL_BIT)) {
         strcat(arg_string, "label_");
-        strcat(arg_string, to_string(labels_count++));
+
+        int lab_index = get_lab_by_val((Labels*) lab, mcode->argv[2]);
+        if (VALID_PTR(lab) && lab_index != -1) {
+            strcat(arg_string, to_string(lab_index));
+        } else {
+            strcat(arg_string, to_string(labels_count++));
+        }
     }
 
     return arg_string;

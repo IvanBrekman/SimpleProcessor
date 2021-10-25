@@ -7,7 +7,7 @@
 #include "../libs/baselib.h"
 #include "labels.h"
 
-int    labels_ctor(Labels* lab) {
+int     labels_ctor(      Labels* lab) {
     assert(VALID_PTR(lab) && "Invalid lab ptr");
 
     for (int i = 0; i < MAX_LABELS; i++) {
@@ -17,7 +17,7 @@ int    labels_ctor(Labels* lab) {
 
     return MAX_LABELS;
 }
-int    labels_dtor(Labels* lab) {
+int     labels_dtor(      Labels* lab) {
     assert(VALID_PTR(lab) && "Invalid lab ptr");
     
     for (int i = 0; i < MAX_LABELS; i++) {
@@ -28,7 +28,7 @@ int    labels_dtor(Labels* lab) {
     return MAX_LABELS;
 }
 
-int   print_labels(Labels* lab) {
+int    print_labels(const Labels* lab) {
     assert(VALID_PTR(lab) && "Invalid lab ptr");
     
     for (int i = 0; i < lab->labels_count; i++) {
@@ -43,7 +43,16 @@ int   print_labels(Labels* lab) {
     return lab->labels_count;
 }
 
-int get_lab_by_name(Labels* lab, const char* name) {
+int  get_lab_by_val(const Labels* lab, int val) {
+    for (int i = 0; i < lab->labels_count; i++) {
+        if (lab->labels[i] == val) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+int get_lab_by_name(const Labels* lab, const char* name) {
     assert(VALID_PTR(lab)  && "Invalid lab ptr");
     assert(VALID_PTR(name) && "Invalid name ptr");
     
@@ -55,7 +64,7 @@ int get_lab_by_name(Labels* lab, const char* name) {
 
     return -1;
 }
-int  uniq_lab_name(Labels* lab, const char* name) {
+int   uniq_lab_name(const Labels* lab, const char* name) {
     assert(VALID_PTR(lab)  && "Invalid lab ptr");
     assert(VALID_PTR(name) && "Invalid name ptr");
 
@@ -67,7 +76,7 @@ int  uniq_lab_name(Labels* lab, const char* name) {
     
     return 1;
 }
-int possible_label(Labels* lab, char* string) {
+int  possible_label(const Labels* lab, char* string) {
     assert(VALID_PTR(lab)    && "Invalid lab ptr");
     assert(VALID_PTR(string) && "Invalid string ptr");
 
@@ -83,7 +92,7 @@ int possible_label(Labels* lab, char* string) {
     return uniq;
 }
 
-int    write_label(Labels* lab, const char* name, int label) {
+int     write_label(      Labels* lab, const char* name, int label) {
     assert(VALID_PTR(lab)  && "Invalid lab ptr");
     assert(VALID_PTR(name) && "Invalid name ptr");
     assert((label >= 0 || label == poisons::UNINITIALIZED_INT) && "Incorrect label (label must be >= 0)");
@@ -98,7 +107,7 @@ int    write_label(Labels* lab, const char* name, int label) {
 
     return lab_index == -1 ? lab->labels[lab->labels_count - 1] : lab->labels[lab_index];
 }
-int     read_label(Labels* lab, const char* name) {
+int      read_label(const Labels* lab, const char* name) {
     assert(VALID_PTR(lab)  && "Invalid lab ptr");
     assert(VALID_PTR(name) && "Invalid name ptr");
     
@@ -106,7 +115,7 @@ int     read_label(Labels* lab, const char* name) {
     
     return can_read_label(lab, lab_index) ? lab->labels[lab_index] : poisons::UNINITIALIZED_INT;
 }
-int can_read_label(Labels* lab, int index) {
+int  can_read_label(const Labels* lab, int index) {
     assert(VALID_PTR(lab) && "Invalid lab ptr");
     
     if (index < 0 || index >= lab->labels_count) {

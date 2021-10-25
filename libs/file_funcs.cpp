@@ -102,16 +102,18 @@ int load_string_pointers(Text* text, int skip_empty_strings, int skip_first_last
         if (text->data[i] == '\0') {
             char* end_ptr = (char*)&(text->data[i]);
 
-            if (spaces_count) {
-                text->data[i - spaces_count] = '\0';
-                end_ptr -= spaces_count;
-                
-                spaces_count = 0;
-            }
+            if (skip_first_last_spaces) {
+                if (spaces_count) {
+                    text->data[i - spaces_count] = '\0';
+                    end_ptr -= spaces_count;
+                    
+                    spaces_count = 0;
+                }
 
-            if (!letters_started) {
-                start_ptr    += spaces_count;
-                spaces_count  = 0;
+                if (!letters_started) {
+                    start_ptr    += spaces_count;
+                    spaces_count  = 0;
+                }
             }
 
             struct String string = {
@@ -131,15 +133,17 @@ int load_string_pointers(Text* text, int skip_empty_strings, int skip_first_last
             continue;
         }
 
-        if (isspace(text->data[i])) {
-            spaces_count++;
-        }
-        if (!isspace(text->data[i]) && !letters_started) {
-            start_ptr += spaces_count;
-            letters_started = 1;
-        }
-        if (!isspace(text->data[i])) {
-            spaces_count = 0;
+        if (skip_first_last_spaces) {
+            if (isspace(text->data[i])) {
+                spaces_count++;
+            }
+            if (!isspace(text->data[i]) && !letters_started) {
+                start_ptr += spaces_count;
+                letters_started = 1;
+            }
+            if (!isspace(text->data[i])) {
+                spaces_count = 0;
+            }
         }
     }
 
@@ -180,6 +184,21 @@ Text convert_to_text(const char** strings, int n_strings) {
     load_string_pointers(&text);
 
     return text;
+}
+int  insert_text(Text* source_text, int* n_text, Text* insert_text, int index) {
+    assert(VALID_PTR(source_text));
+    assert(VALID_PTR(insert_text));
+    assert(index >= 0);
+
+    for (int i = *n_text; i > index; i--) {
+        Text tmp = source_text[i];
+        source_text[i] = source_text[i - 1];
+        source_text[i - 1] = tmp;
+    }
+    source_text[index] = *insert_text;
+    *n_text += 1;
+
+    return 1;
 }
 
 //! Function defines size of file

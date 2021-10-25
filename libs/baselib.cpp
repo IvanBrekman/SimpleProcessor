@@ -83,3 +83,7 @@ char* to_string(int number) {
 
     return str_num;
 }
+
+int cmp_int(const void* num1, const void* num2) {
+    return *(int*)num1 - *(int*)num2;
+}

@@ -19,3 +19,4 @@ next:
 
 stop:
     hlt
+    jmp stop
