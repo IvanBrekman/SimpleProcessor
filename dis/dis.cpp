@@ -42,23 +42,37 @@ int disassembly(const char* executable_file, const char* source_file) {
         return exit_codes::INVALID_SYNTAX;
     }
 
+    labels_ctor(&labels);
     Text* tcom = get_tcom_from_mcodes(mcodes, &n_commands);
+
     LOG1(printf("All commands (dis)\n");
         for (int i = 0; i < n_commands; i++) {
             print_text((const Text*)&tcom[i]);
         }
     );
+
     for (int i = 0; i < n_commands; i++) {
+        for (int lab_index = 0; lab_index < labels.labels_count; lab_index++) {
+            if (labels.labels[lab_index] == i) {
+                char ** data = (char**) calloc(2, sizeof(char*));
+                data[0] = (char*)"";
+                data[1] = strdup(strcat((char*)labels.names[lab_index], ":"));
+                
+                Text label = convert_to_text((const char**)data, 2);
+                write_text_to_file(source_file, i == 0 ? "w" : "a", (const Text*)&label);
+            }
+        }
+
         write_text_to_file(source_file, i == 0 ? "w" : "a", (const Text*)&tcom[i], " ");
     }
 
+    labels_dtor(&labels);
     return exit_codes::OK;
 }
 
 Text* get_tcom_from_mcodes(BinCommand* mcodes, int* n_commands) {
     Text* tcom = (Text*) calloc(*n_commands, sizeof(Text));
 
-    labels_ctor(&labels);
     for (int i = 0; i < *n_commands; i++) {
         BinCommand mcode = mcodes[i];
         int n_args = 1 + 1;
@@ -78,39 +92,5 @@ Text* get_tcom_from_mcodes(BinCommand* mcodes, int* n_commands) {
         }
     }
 
-    tcom = (Text*) realloc(tcom, (*n_commands + labels.labels_count) * sizeof(Text));
-    assert(VALID_PTR(tcom) && "Not enough memory for tcom");
-
-    qsort(labels.names,  labels.labels_count, sizeof(labels.names[0]), cmp_lab_names);
-    qsort(labels.labels, labels.labels_count, sizeof(int), cmp_int);
-    printf("ncommands %d\n", *n_commands);
-    for (int i = 0; i < labels.labels_count; i++) {
-        char ** data = (char**) calloc(2, sizeof(char*));
-        data[0] = (char*)"\n";
-        data[1] = strdup(strcat((char*)labels.names[i], ":"));
-        
-        Text label = convert_to_text((const char**)data, 2);
-        print_text(&label);
-
-        insert_text(tcom, n_commands, &label, labels.labels[i] + i);
-    }
-    printf("ncommands %d\n", *n_commands);
-    
-
-    printf("labels: (%d)\n", labels.labels_count);
-    print_labels(&labels);
-
-    for (int i = 0; i < *n_commands; i++) {
-        print_text(&tcom[i]);
-    }
-
-    labels_dtor(&labels);
     return tcom;
-}
-
-int cmp_lab_names(const void* lab1, const void* lab2) {
-    int index1 = get_lab_by_name(&labels, *(char**)lab1);
-    int index2 = get_lab_by_name(&labels, *(char**)lab2);
-
-    return labels.labels[index1] - labels.labels[index2];
 }

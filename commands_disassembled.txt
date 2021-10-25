@@ -1,7 +1,7 @@
 push 0
 pop ax
 
- label_1:
+label_1:
 push ax
 push 10
 ja label_0
@@ -15,6 +15,11 @@ add
 pop ax
 jmp label_1
 
- label_0:
+label_0:
+call label_2
 hlt 
-jmp label_0
+
+label_2:
+push 123
+out 
+ret 

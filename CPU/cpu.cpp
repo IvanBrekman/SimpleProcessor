@@ -57,12 +57,9 @@ int execute_commands(BinCommand* mcodes, int n_commands, Processor* processor) {
             return exit_codes::INVALID_SYNTAX;
         }
 
-        LOG1(if (LOG_STACK_STATE == 1) {
+        LOG1(if (LOG_PROCESSOR_STATE == 1) {
                 printf("\n");
-                printf("registers:\n");
-                regs_state();
-                printf("Stack:  ");
-                stack_state();
+                processor_dump();
             }
             print_command(&b_command, processor->ip);
         );
@@ -81,10 +78,8 @@ int execute_commands(BinCommand* mcodes, int n_commands, Processor* processor) {
             }
         }
     }
-    LOG1(printf("\nStack final state:\n");
-        stack_state();
-        printf("registers state:\n");
-        regs_state();
+    LOG1(printf("\nProcessor final state:\n");
+         processor_dump();
     );
 
     return exit_codes::NO_OBVIOUS_END;

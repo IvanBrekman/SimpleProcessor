@@ -44,6 +44,8 @@ int    print_labels(const Labels* lab) {
 }
 
 int  get_lab_by_val(const Labels* lab, int val) {
+    assert(VALID_PTR(lab));
+    
     for (int i = 0; i < lab->labels_count; i++) {
         if (lab->labels[i] == val) {
             return i;

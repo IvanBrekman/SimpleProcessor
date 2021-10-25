@@ -11,6 +11,5 @@
 int disassembly(const char* executable_file, const char* source_file);
 
 Text* get_tcom_from_mcodes(BinCommand* mcodes, int* n_commands);
-int cmp_lab_names(const void* lab1, const void* lab2);
 
 #endif //SIMPLEPROCESSOR_DIS_H

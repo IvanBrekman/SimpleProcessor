@@ -5,6 +5,7 @@
 #include <cassert>
 #include <cstdlib>
 #include <cstring>
+#include <cctype>
 #include <cerrno>
 
 #include "../libs/baselib.h"
@@ -40,13 +41,6 @@ int main(int argc, char** argv) {
 
     LOG1(printf("------end   assembly------\n\n"););
 
-    // int arguments[] = { -1, -1, -1, -1 };
-    // printf("parse: %d\n", parse_arg("[dx+1]", arguments));
-    // for(int i = 0; i < 4; i++) {
-    //     printf("%d ", arguments[i]);
-    // }
-    // printf("\n");
-
     labels_dtor(&labels);
     return exit_code;
 }
@@ -67,8 +61,8 @@ int assembly(const char* source_file, const char* executable_file, int label_ass
 
     Text text = get_text_from_file(source_file, SKIP_EMPTY_STRINGS, SKIP_FISRT_LAST_SPACES);
     
-    int      n_commands = (int)text.lines;
     Text* text_commands = get_tcom(&text);
+    int      n_commands = (int)text.lines;
 
     LOG1(printf("All commands (asm):\n");
         for (int i = 0; i < n_commands; i++) {
@@ -101,13 +95,33 @@ int assembly(const char* source_file, const char* executable_file, int label_ass
     return exit_codes::OK;
 }
 
-Text*                   get_tcom(const Text* data) {
+Text*                   get_tcom(Text* data) {
     assert(VALID_PTR(data) && "Invalid data ptr");
 
     Text* commands = (Text*)calloc(data->lines, sizeof(Text));
 
+    int comment_str = 0;
     for (int i = 0; i < data->lines; i++) {
         char* str_command = data->text[i].ptr;
+
+        if (str_command[0] == COMMENT_SYMBOL) {
+            comment_str++;
+            continue;
+        }
+        
+        char* com_sym_index = strchr(str_command, COMMENT_SYMBOL);
+        if (com_sym_index != NULL) {
+            data->text[i].len = (int)(com_sym_index - &str_command[0]);
+            printf("length: %zd\n", data->text[i].len);
+
+            int spaces = 0;
+            for (int cmd_index = data->text[i].len - 1; isspace(data->text[i].ptr[cmd_index]); cmd_index--) {
+                spaces++;
+            }
+            printf("spaces: %d\n", spaces);
+            data->text[i].len -= spaces;
+            str_command[data->text[i].len] = '\0';
+        }
 
         int args = replace(str_command, data->text[i].len, ' ', '\0') + 1;
         Text command = {
@@ -118,9 +132,10 @@ Text*                   get_tcom(const Text* data) {
         };
         load_string_pointers(&command);
 
-        commands[i] = command;
+        commands[i - comment_str] = command;
     }
 
+    data->lines -= comment_str;
     return commands;
 }
 Text                  check_tcom(const Text* tcom, int n_commands, int label_assembly) {
@@ -185,6 +200,7 @@ BinCommand* get_mcodes_from_tcom(const Text* commands, int* n_commands) {
             cmd.args_type = arg_type;
             cmd.sgn.argc  = real_argc;
         }
+
         cmd.sgn.cmd = (unsigned)command_code;
 
         bit_cmd[cmd_index++] = cmd;

@@ -18,5 +18,10 @@ next:
     jmp next
 
 stop:
+    call end
     hlt
-    jmp stop
+
+end:
+    push 123
+    out
+    ret

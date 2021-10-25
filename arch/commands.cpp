@@ -16,6 +16,7 @@ Processor* init_processor() {
     processor.ip = 0;
 
     stack_ctor(processor.stack);
+    stack_ctor(processor.call_stack);
     registers_ctor(&processor.regs, REG_NAMES);
 
     return &processor;
@@ -24,18 +25,21 @@ int     destroy_processor() {
     processor.ip = -1;
 
     Stack_dtor_(&processor.stack);
+    Stack_dtor_(&processor.call_stack);
     registers_dtor(&processor.regs);
 
     return 0;
 }
 
-int stack_state(FILE* log) {
-    print_stack_line(&processor.stack, ", ", "\n", log);
-
-    return exit_codes::OK;
-}
-int regs_state() {
+int processor_dump(FILE* log) {
+    printf("Registers:  ");
     print_reg(&processor.regs);
+
+    printf("Stack:      ");
+    print_stack_line(&processor.stack, ", ", "\n", log);
+    
+    printf("Stack_call: ");
+    print_stack_line(&processor.call_stack, ", ", "\n", log);
 
     return exit_codes::OK;
 }

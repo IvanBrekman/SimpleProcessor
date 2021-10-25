@@ -10,7 +10,7 @@
 
 int assembly(const char* source_file, const char* executable_file, int label_assembly);
 
-Text*                   get_tcom(const Text* data);
+Text*                   get_tcom(Text* data);
 Text                  check_tcom(const Text* tcom, int n_commands, int label_assembly);
 BinCommand* get_mcodes_from_tcom(const Text* commands, int* n_commands);
 

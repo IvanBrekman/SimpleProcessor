@@ -135,3 +135,16 @@ COMMAND_DEFINITION( #name, code, 1, 1, 0b0000000000000010, execute_ ## name, {  
 
 #include "cond_jumps_definition.h"
 #undef COND_JUMP_DEFINITION
+// 18
+
+COMMAND_DEFINITION( "call", 19, 1, 1, 0b0000000000000010, execute_call, {
+    push(&processor.call_stack, processor.ip + 1);
+
+    processor.ip = argv[2] - 1;
+    return processor.ip;
+})
+
+COMMAND_DEFINITION( "ret",  20, 0, 0, 0b0000000000000000, execute_ret,  {
+    processor.ip = pop(&processor.call_stack) - 1;
+    return processor.ip;
+})

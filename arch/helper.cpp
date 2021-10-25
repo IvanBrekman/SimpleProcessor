@@ -48,6 +48,7 @@ void print_command (BinCommand* cmd, int cmd_num, FILE* log) {
         fprintf(log, "%2d", cmd->argv[i]);
         if (i + 1 < MAX_ARGV) fprintf(log, ", ");
     }
+
     fprintf(log, " } |    %s %s", command_desc(cmd->sgn.cmd), arg_desc(cmd));
     fprintf(log, "\n");
 }
@@ -82,8 +83,8 @@ char* arg_desc(const BinCommand* mcode, void* lab) {
     if (extract_bit(mcode->args_type, LABEL_BIT)) {
         strcat(arg_string, "label_");
 
-        int lab_index = get_lab_by_val((Labels*) lab, mcode->argv[2]);
-        if (VALID_PTR(lab) && lab_index != -1) {
+        int lab_index = VALID_PTR(lab) ? get_lab_by_val((Labels*) lab, mcode->argv[2]) : -1;
+        if (lab_index != -1) {
             strcat(arg_string, to_string(lab_index));
         } else {
             strcat(arg_string, to_string(labels_count++));

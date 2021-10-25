@@ -11,8 +11,10 @@
 #include "registers.h"
 
 struct Processor {
-    Stack stack = {};
-    int ip      = -1; // instruction pointer
+    Stack      stack  = { };
+    Stack call_stack  = { };
+
+    int ip            = -1;  // instruction pointer
 
     Registers regs    = { }; // regs names: ax, bx, cx, dx
     int RAM[RAM_SIZE] = { 0, 0, 0, 0, 0, 0 };
@@ -35,8 +37,7 @@ int     destroy_processor();
 int get_processor_ip();
 int set_processor_ip(int value);
 
-int stack_state(FILE* log=stdout);
-int regs_state();
+int processor_dump(FILE* log=stdout);
 
 #define COMMAND_DEFINITION(name, code, argc_min, argc_max, argv_m, func, body) int func(int args_type, int* argv);
     #include "commands_definition.h"
