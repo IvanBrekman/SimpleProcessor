@@ -22,5 +22,6 @@ const header HEADER = { };
 #define SKIP_FISRT_LAST_SPACES  1
 
 #define COMMENT_SYMBOL '#'
+#define SLEEP 0
 
 #endif //SIMPLEPROCESSOR_CONFIG_H

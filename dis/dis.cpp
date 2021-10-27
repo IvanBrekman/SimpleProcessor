@@ -51,6 +51,7 @@ int disassembly(const char* executable_file, const char* source_file) {
         }
     );
 
+    int label_text = 0;
     for (int i = 0; i < n_commands; i++) {
         for (int lab_index = 0; lab_index < labels.labels_count; lab_index++) {
             if (labels.labels[lab_index] == i) {
@@ -58,11 +59,22 @@ int disassembly(const char* executable_file, const char* source_file) {
                 data[0] = (char*)"";
                 data[1] = strdup(strcat((char*)labels.names[lab_index], ":"));
                 
-                Text label = convert_to_text((const char**)data, 2);
-                write_text_to_file(source_file, i == 0 ? "w" : "a", (const Text*)&label);
+                write_strings_to_file(source_file, i == 0 ? "w" : "a", (const char**)data, 2);
+
+                label_text = 1;
+                FREE_PTR(data, char*);
+                break;
             }
         }
 
+        if (label_text) {
+            char ** data = (char**) calloc(1, sizeof(char*));
+            data[0] = (char*)"\t";
+
+            write_strings_to_file(source_file, i == 0 ? "w" : "a", (const char**)data, 1, "", "");
+
+            FREE_PTR(data, char*);
+        }
         write_text_to_file(source_file, i == 0 ? "w" : "a", (const Text*)&tcom[i], " ");
     }
 
@@ -84,11 +96,11 @@ Text* get_tcom_from_mcodes(BinCommand* mcodes, int* n_commands) {
         Text cmd = convert_to_text((const char**)array, n_args);
         tcom[i] = cmd;
 
-        if (ALL_COMMANDS[mcode.sgn.cmd].args_type == 0b0000000000000010 && get_lab_by_val(&labels, mcode.argv[2]) == -1) {
+        if (ALL_COMMANDS[mcode.sgn.cmd].args_type == 0b0000000000000010 && get_lab_by_val(&labels, mcode.argv[LABEL_BIT]) == -1) {
             char name[MAX_ARG_SIZE] = "label_";
             strcat(name, to_string(labels.labels_count));
 
-            write_label(&labels, strdup(name), mcode.argv[2]);
+            write_label(&labels, strdup(name), mcode.argv[LABEL_BIT]);
         }
     }
 

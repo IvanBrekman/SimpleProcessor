@@ -3,14 +3,19 @@
 //
 
 #include <cerrno>
+#include <cstring>
+#include <unistd.h>
 
 #include "../libs/baselib.h"
 #include "../libs/file_funcs.h"
 
 #include "../arch/helper.h"
 #include "../arch/commands.h"
+#include "../arch/labels.h"
 
 #include "cpu.h"
+
+Labels labels = { };
 
 int main(int argc, char** argv) {
     if (argc < 2) {
@@ -44,9 +49,25 @@ int execute(const char* execute_file) {
 
 int execute_commands(BinCommand* mcodes, int n_commands, Processor* processor) {
     LOG1(printf("Executing commands:\n"););
+    LOG1(labels_ctor(&labels););
+
+    LOG1(printf("Fill labels..\n");
+        int ip = processor->ip;
+        for ( ; processor->ip < n_commands; processor->ip++) {
+            BinCommand b_command = mcodes[processor->ip];
+
+            if (ALL_COMMANDS[b_command.sgn.cmd].args_type == 0b0000000000000010 && get_lab_by_val(&labels, b_command.argv[LABEL_BIT]) == -1) {
+                char name[MAX_ARG_SIZE] = "label_";
+                strcat(name, to_string(labels.labels_count));
+
+                write_label(&labels, strdup(name), b_command.argv[LABEL_BIT]);
+            }
+        }
+        processor->ip = ip;
+    )
 
     for ( ; processor->ip < n_commands; processor->ip++) {
-        LOG1(printf("ip: %d\n", processor->ip););
+        LOG2(printf("ip: %d\n", processor->ip););
         
         BinCommand b_command = mcodes[processor->ip];
         CommandParameters command = ALL_COMMANDS[b_command.sgn.cmd];
@@ -61,7 +82,7 @@ int execute_commands(BinCommand* mcodes, int n_commands, Processor* processor) {
                 printf("\n");
                 processor_dump();
             }
-            print_command(&b_command, processor->ip);
+            print_command(&b_command, processor->ip, stdout, &labels);
         );
         int exit_code = command.execute_func((int)b_command.args_type, b_command.argv);
 
@@ -77,7 +98,10 @@ int execute_commands(BinCommand* mcodes, int n_commands, Processor* processor) {
                 break;
             }
         }
+        sleep(SLEEP);
     }
+
+    LOG1(labels_dtor(&labels););
     LOG1(printf("\nProcessor final state:\n");
          processor_dump();
     );

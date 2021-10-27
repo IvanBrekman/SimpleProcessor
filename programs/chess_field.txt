@@ -1,0 +1,63 @@
+# Initialize y, x and shift
+push 0
+push 0
+push 0
+
+pop ax
+pop bx
+pop cx
+#
+
+fill_mem_cell:
+    # Calculate mod 2
+    push ax
+    push bx
+    add
+    mod 2
+    pop [cx+2048]
+    #
+
+    # Update shift
+    push cx
+    push 1
+    add
+    pop cx
+    #
+
+    # Update y and x
+    push bx
+    push 1
+    add
+    pop bx
+
+    push bx
+    push 10
+    call check_add_y
+    jmp fill_mem_cell
+#
+
+hlt
+
+check_add_y:
+    jge add_y
+    ret
+
+    # if need add
+    add_y:
+        push ax
+        push 1
+        add
+        pop ax
+
+        push 0
+        pop bx
+
+        push ax
+        push 10
+        jge break
+    ret
+    #
+
+break:
+    draw
+    hlt

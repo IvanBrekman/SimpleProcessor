@@ -112,13 +112,11 @@ Text*                   get_tcom(Text* data) {
         char* com_sym_index = strchr(str_command, COMMENT_SYMBOL);
         if (com_sym_index != NULL) {
             data->text[i].len = (int)(com_sym_index - &str_command[0]);
-            printf("length: %zd\n", data->text[i].len);
 
             int spaces = 0;
             for (int cmd_index = data->text[i].len - 1; isspace(data->text[i].ptr[cmd_index]); cmd_index--) {
                 spaces++;
             }
-            printf("spaces: %d\n", spaces);
             data->text[i].len -= spaces;
             str_command[data->text[i].len] = '\0';
         }
@@ -193,15 +191,12 @@ BinCommand* get_mcodes_from_tcom(const Text* commands, int* n_commands) {
         }
         assert(command_code != UNKNOWN && "Unknown command in get_mcodes_from_tcom!! Check check_tcom func!");
 
-        cmd.sgn = {  };
+        cmd.sgn = { (unsigned)(text_cmd.lines - 1), (unsigned)command_code };
         for (int arg = 1; arg < text_cmd.lines; arg++) {
-            int real_argc = 0;
-            int arg_type  = parse_arg(text_cmd.text[arg].ptr, cmd.argv, &real_argc);
+            int arg_type  = parse_arg(text_cmd.text[arg].ptr, cmd.argv + (TYPES_AMOUNT * (arg - 1)));
             cmd.args_type = arg_type;
-            cmd.sgn.argc  = real_argc;
         }
-
-        cmd.sgn.cmd = (unsigned)command_code;
+        LOG2(print_labels(&labels););
 
         bit_cmd[cmd_index++] = cmd;
 
@@ -215,6 +210,7 @@ BinCommand* get_mcodes_from_tcom(const Text* commands, int* n_commands) {
 int parse_arg(const char* arg, int* argv, int* real_argc) {
     char      name[MAX_ARG_SIZE] = { };
     char const_val[MAX_ARG_SIZE] = { };
+    LOG2(printf("arg: %s\n", arg););
 
     Registers reg_tmp = {};
     registers_ctor(&reg_tmp, REG_NAMES);
@@ -236,15 +232,15 @@ int parse_arg(const char* arg, int* argv, int* real_argc) {
     );
     if (argc == 2 && get_reg_by_name(&reg_tmp, name) != -1 && parse_len == arg_len) {
         if (VALID_PTR(argv)) {
-            argv[0] = get_reg_by_name(&reg_tmp, name);
-            argv[1] = atoi(const_val);
+            argv[REGISTER_BIT] = get_reg_by_name(&reg_tmp, name);
+            argv[NUMBER_BIT]   = atoi(const_val);
             if (VALID_PTR(real_argc)) *real_argc = 2;
         }
         return is_ram + (1 << REGISTER_BIT) + (1 << NUMBER_BIT) + 0;
     }
 
     argc = parse_len = 0;
-    argc = sscanf(arg, "%[a-z]%n", name, &parse_len);
+    argc = sscanf(arg, "%[a-z _]%n", name, &parse_len);
     LOG2(printf( "[a-z]\n"
                 "sscanf res : %d\n"
                 "name       : \"%s\"\n"
@@ -256,14 +252,14 @@ int parse_arg(const char* arg, int* argv, int* real_argc) {
     if (argc == 1 && (parse_len == arg_len)) {
         if (get_reg_by_name(&reg_tmp, name) != -1) {
             if (VALID_PTR(argv)) {
-                argv[0] = get_reg_by_name(&reg_tmp, name);
+                argv[REGISTER_BIT] = get_reg_by_name(&reg_tmp, name);
                 if (VALID_PTR(real_argc)) *real_argc = 1;
             }
             return is_ram + (1 << REGISTER_BIT) + 0 + 0;
         } else {
             if (VALID_PTR(argv)) {
                 int value = read_label(&labels, name);
-                argv[2] = value;
+                argv[LABEL_BIT] = value;
                 write_label(&labels, strdup(name), value);
                 LOG1(print_labels(&labels););
                 if (VALID_PTR(real_argc)) *real_argc = 1;
@@ -284,7 +280,7 @@ int parse_arg(const char* arg, int* argv, int* real_argc) {
     );
     if (argc == 1 && (strlen(const_val) == arg_len)) {
         if (VALID_PTR(argv)) {
-            argv[1] = atoi(const_val);
+            argv[NUMBER_BIT] = atoi(const_val);
             if (VALID_PTR(real_argc)) *real_argc = 1;
         }
         return is_ram + (0 << REGISTER_BIT) + (1 << NUMBER_BIT) + 0;

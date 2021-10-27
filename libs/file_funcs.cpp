@@ -185,21 +185,6 @@ Text convert_to_text(const char** strings, int n_strings) {
 
     return text;
 }
-int  insert_text(Text* source_text, int* n_text, Text* insert_text, int index) {
-    assert(VALID_PTR(source_text));
-    assert(VALID_PTR(insert_text));
-    assert(index >= 0);
-
-    for (int i = *n_text; i > index; i--) {
-        Text tmp = source_text[i];
-        source_text[i] = source_text[i - 1];
-        source_text[i - 1] = tmp;
-    }
-    source_text[index] = *insert_text;
-    *n_text += 1;
-
-    return 1;
-}
 
 //! Function defines size of file
 //! \param filename path to file (absolute or relative)
@@ -277,8 +262,9 @@ Text get_text_from_file(const char* filename, int skip_empty_strings, int skip_f
 //! \param mode     mode with which open file
 //! \param data     pointer to object of Text structure, where will strings come from
 //! \param text_sep string which different Text strings will be separated
+//! \param text_end string which Text will be ended
 //! \return         number of written strings
-int write_text_to_file(const char* filename, const char mode[], const Text* data, const char* text_sep) {
+int write_text_to_file(const char* filename, const char mode[], const Text* data, const char* text_sep, const char* text_end) {
     assert(VALID_PTR(filename));
     assert(VALID_PTR(mode));
     assert(VALID_PTR(data));
@@ -295,7 +281,7 @@ int write_text_to_file(const char* filename, const char mode[], const Text* data
         fputs(data->text[n_wr_strings].ptr, file);
         if (n_wr_strings + 1 < data->lines) fputs(text_sep, file);
     }
-    fputs("\n", file);
+    fputs(text_end, file);
 
     fclose(file);
     return n_wr_strings;
@@ -305,9 +291,10 @@ int write_text_to_file(const char* filename, const char mode[], const Text* data
 //! \param mode     mode with which open file
 //! \param data     pointer to object of Text structure, where will strings come from
 //! \param buf_sep  string which different Text strings will be separated
+//! \param buf_end  string which Text will be ended
 //! \return         number of written strings
 //! \note '\0' indicates line ending in buffer, so all lines in buffer must end in '\0'
-int write_buffer_to_file(const char* filename, const char mode[], const struct Text* data, const char* buf_sep) {
+int write_buffer_to_file(const char* filename, const char mode[], const struct Text* data, const char* buf_sep, const char* buf_end) {
     assert(VALID_PTR(filename));
     assert(VALID_PTR(mode));
     assert(VALID_PTR(data));
@@ -328,7 +315,7 @@ int write_buffer_to_file(const char* filename, const char mode[], const struct T
         char* end_ptr = strchr(start_ptr, '\0');
         start_ptr = end_ptr + 1;
     }
-    fputs("\n", file);
+    fputs(buf_end, file);
 
     fclose(file);
     return n_wr_strings;
@@ -339,8 +326,9 @@ int write_buffer_to_file(const char* filename, const char mode[], const struct T
 //! \param data      pointer to array of char*
 //! \param n_strings number of elements in data
 //! \param str_sep  string which different data strings will be separated
+//! \param str_end  string which data strings will be ended
 //! \return          number of written strings
-int write_strings_to_file(const char* filename, const char mode[], const char** data, int n_strings, const char* str_sep) {
+int write_strings_to_file(const char* filename, const char mode[], const char** data, int n_strings, const char* str_sep, const char* str_end) {
     assert(VALID_PTR(filename));
     assert(VALID_PTR(mode));
     assert(VALID_PTR(data));
@@ -357,7 +345,7 @@ int write_strings_to_file(const char* filename, const char mode[], const char** 
         fputs(data[n_wr_strings], file);
         if (n_wr_strings + 1 < n_strings) fputs(str_sep, file);
     }
-    fputs("\n", file);
+    fputs(str_end, file);
 
     fclose(file);
     return n_wr_strings;

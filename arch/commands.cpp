@@ -21,7 +21,7 @@ Processor* init_processor() {
 
     return &processor;
 }
-int     destroy_processor() {
+int destroy_processor() {
     processor.ip = -1;
 
     Stack_dtor_(&processor.stack);
@@ -32,7 +32,7 @@ int     destroy_processor() {
 }
 
 int processor_dump(FILE* log) {
-    printf("Registers:  ");
+    printf("Registers:\n");
     print_reg(&processor.regs);
 
     printf("Stack:      ");
@@ -40,6 +40,20 @@ int processor_dump(FILE* log) {
 
     printf("Stack_call: ");
     print_stack_line(&processor.call_stack, ", ", "\n", log);
+
+    printf("RAM:        [");
+    for (int i = 0; i < 50; i++) {
+        printf("%d", processor.RAM[i]);
+        if (i + 1 < 50) printf(", ");
+    }
+    printf("]\n");
+
+    printf("VRAM:       [");
+    for (int i = 0; i < 50; i++) {
+        printf("%d", processor.RAM[VRAM_START + i]);
+        if (i + 1 < 50) printf(", ");
+    }
+    printf("]\n");
 
     return exit_codes::OK;
 }

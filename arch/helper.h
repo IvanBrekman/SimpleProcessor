@@ -16,6 +16,7 @@ const int MAX_REGISTERS = 4;
 const int RAM_SIZE      = 4096;
 const int VRAM_START    = 2048;
 
+const int TYPES_AMOUNT = 4;
 const int LABEL_BIT    = 0;
 const int NUMBER_BIT   = 1;
 const int REGISTER_BIT = 2;
@@ -23,8 +24,8 @@ const int RAM_BIT      = 3;
 
 static const char* REG_NAMES[MAX_REGISTERS] = { "ax", "bx", "cx", "dx" };
 
-const int BITS_TO_ARGV  = 2;                             // Max argv amount dependent
-const int MAX_ARGV      = 4;
+const int BITS_TO_ARGV  = 3;                             // Max argv amount dependent
+const int MAX_ARGV      = 8;
 
 enum exit_codes {
     OK             =  0,
@@ -59,7 +60,7 @@ struct BinCommand {
 
 const char* error_desc(int error_code);
 
-void print_command (BinCommand* cmd,  int cmd_num, FILE* log=stdout);
+void print_command (BinCommand* cmd,  int cmd_num, FILE* log=stdout, void* lab=NULL);
 
 int         command_type(const char* command);
 const char* command_desc(int command);

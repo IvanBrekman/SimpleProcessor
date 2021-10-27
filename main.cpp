@@ -10,8 +10,6 @@
 #include "run_cpu.h"
 #include "libs/file_funcs.h"
 
-// TODO: добавить DSL
-
 // gcc main.cpp run_cpu.cpp libs/baselib.cpp libs/file_funcs.cpp -o main.out
 int main(int argc, char** argv) {
     char* source_file     = (char*) calloc(MAX_FILEPATH_SIZE, sizeof(char));

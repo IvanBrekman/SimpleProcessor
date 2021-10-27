@@ -38,18 +38,19 @@ const char* error_desc(int error_code) {
     }
 }
 
-void print_command (BinCommand* cmd, int cmd_num, FILE* log) {
+void print_command (BinCommand* cmd, int cmd_num, FILE* log, void* lab) {
     assert(VALID_PTR(log));
 
     fprintf(log, "%04d    ", cmd_num);
-    fprintf(log, "| { %02d | %06d } , %4s , ", cmd->sgn.argc, cmd->sgn.cmd, bin4(cmd->args_type));
+    fprintf(log, "[ { %02d | %03d } , %04d , ", cmd->sgn.argc, cmd->sgn.cmd, atoi(bin4(cmd->args_type)));
     fprintf(log, "{ ");
     for (int i = 0; i < MAX_ARGV; i++) {
         fprintf(log, "%2d", cmd->argv[i]);
-        if (i + 1 < MAX_ARGV) fprintf(log, ", ");
+        if (i + 1 < MAX_ARGV && (i + 1) % TYPES_AMOUNT == 0) fprintf(log, " | ");
+        else if (i + 1 < MAX_ARGV) fprintf(log, ", ");
     }
 
-    fprintf(log, " } |    %s %s", command_desc(cmd->sgn.cmd), arg_desc(cmd));
+    fprintf(log, " } ]    %s %s", command_desc(cmd->sgn.cmd), arg_desc(cmd, lab));
     fprintf(log, "\n");
 }
 
@@ -73,17 +74,17 @@ char* arg_desc(const BinCommand* mcode, void* lab) {
 
     char* arg_string = (char*) calloc(MAX_ARG_SIZE, sizeof(char));
     if (extract_bit(mcode->args_type, RAM_BIT))      strcat(arg_string, "[");
-    if (extract_bit(mcode->args_type, REGISTER_BIT)) strcat(arg_string, REG_NAMES[mcode->argv[0]]);
+    if (extract_bit(mcode->args_type, REGISTER_BIT)) strcat(arg_string, REG_NAMES[mcode->argv[REGISTER_BIT]]);
 
     if (extract_bit(mcode->args_type, REGISTER_BIT) && extract_bit(mcode->args_type, NUMBER_BIT)) strcat(arg_string, "+");
     
-    if (extract_bit(mcode->args_type, NUMBER_BIT))   strcat(arg_string, to_string(mcode->argv[1]));
+    if (extract_bit(mcode->args_type, NUMBER_BIT))   strcat(arg_string, to_string(mcode->argv[NUMBER_BIT]));
     if (extract_bit(mcode->args_type, RAM_BIT))      strcat(arg_string, "]");
 
     if (extract_bit(mcode->args_type, LABEL_BIT)) {
         strcat(arg_string, "label_");
 
-        int lab_index = VALID_PTR(lab) ? get_lab_by_val((Labels*) lab, mcode->argv[2]) : -1;
+        int lab_index = VALID_PTR(lab) ? get_lab_by_val((Labels*) lab, mcode->argv[LABEL_BIT]) : -1;
         if (lab_index != -1) {
             strcat(arg_string, to_string(lab_index));
         } else {

@@ -27,7 +27,6 @@ void free_string(String* string);
 
 int  load_string_pointers(Text* text, int skip_empty_strings=0, int skip_first_last_spaces=0);
 Text convert_to_text(const char** strings, int n_strings);
-int  insert_text(Text* source_text, int* n_text, Text* insert_text, int index);
 
 void print_text(const Text* data, const char* sep=", ", const char* end="\n");
 void print_strings(const char** array, size_t size, const char* sep=", ", const char* end="\n");
@@ -38,8 +37,8 @@ long file_last_change(const char* filename);
 FILE* open_file(const char* filename, const char mode[]);
 Text get_text_from_file(const char* filename, int skip_empty_strings=0, int skip_first_last_spaces=0);
 
-int    write_text_to_file(const char* filename, const char mode[], const Text* data, const char* text_sep="\n");
-int  write_buffer_to_file(const char* filename, const char mode[], const Text* data, const char*  buf_sep="\n");
-int write_strings_to_file(const char* filename, const char mode[], const char** data, int n_strings, const char* str_sep="\n");
+int    write_text_to_file(const char* filename, const char mode[], const Text* data, const char* text_sep="\n", const char* text_end="\n");
+int  write_buffer_to_file(const char* filename, const char mode[], const Text* data, const char*  buf_sep="\n", const char*  buf_end="\n");
+int write_strings_to_file(const char* filename, const char mode[], const char** data, int n_strings, const char* str_sep="\n", const char* str_end="\n");
 
 #endif //SIMPLEPROCESSOR_FILE_FUNCS_H

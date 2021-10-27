@@ -17,12 +17,12 @@
 }
 #define LOG1(code) {        \
     if (LOG_PRINTF >= 1) {  \
-        code;               \
+        code                \
     }                       \
 }
 #define LOG2(code) {        \
     if (LOG_PRINTF >= 2) {  \
-        code;               \
+        code                \
     }                       \
 }
 

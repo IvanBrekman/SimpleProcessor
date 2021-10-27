@@ -1,25 +1,20 @@
-push 0
-pop ax
-
-label_1:
-push ax
-push 10
-ja label_0
-push ax
-push ax
-mul 
-out 
-push ax
 push 1
-add 
-pop ax
-jmp label_1
-
-label_0:
-call label_2
+in 
+call label_0
+out 
 hlt 
 
-label_2:
-push 123
-out 
-ret 
+label_0:
+	pop ax
+	push ax
+	push 0
+	je label_1
+	push ax
+	mul 
+	push ax
+	push 1
+	sub 
+	call label_0
+
+label_1:
+	ret 
