@@ -1,0 +1,146 @@
+push 1
+pop $prec
+
+# Input coefficients
+inv
+inv
+inv
+
+pop cx
+pop bx
+pop ax
+#
+
+push ax
+push 0
+je SolveLinearEquation
+jmp SolveSquareEquation
+
+hlt
+
+# Linear equation
+SolveLinearEquation:
+    push bx    # b == 0?
+    push 0
+    je SolveNoB
+
+    # x = -c / b
+    push 0
+    push cx
+    sub
+    push bx
+    div
+    #
+
+    push 1
+    out
+    outv
+
+    hlt
+
+SolveNoB:
+    push cx  # c == 0?
+    push 0
+    je AllAnswers
+    jmp NoAnswers
+
+AllAnswers:
+    push 9999  # inf ans
+    out
+    hlt
+NoAnswers:
+    push 0
+    out
+    hlt
+#
+
+# Square Equation
+SolveSquareEquation:
+    # calc D
+    push bx
+    push bx
+    mul
+
+    push 4
+    push ax
+    push cx
+
+    mul
+    mul
+    sub
+    #
+
+    prt
+    pop dx  # Save D to dx
+    push dx
+
+    push 0
+    jg PositiveD
+
+    push dx
+    push 0
+    je NeuturalD
+    jmp NegativeD
+
+    hlt
+
+PositiveD:
+    push dx
+    sqrt     # sqrt(D)
+    pop dx
+
+    push 2
+    out
+
+    # -b + sqrt(D)
+    push 0
+    push bx
+    sub
+    push dx
+    add
+    #
+
+    push 2
+    push ax # 2a
+    mul
+    div     # (-b + sqrt(D)) / 2a
+
+    # -b - sqrt(D)
+    push 0
+    push bx
+    sub
+    push 0
+    push dx
+    sub
+    add
+    #
+
+    push 2
+    push ax  # 2a
+    mul
+    div      # (-b - sqrt(D)) / 2a
+
+    outv
+    outv
+    
+    hlt
+NeuturalD:
+    push 0
+    push bx  # -b
+    sub
+
+    push 2
+    push ax  # 2a
+    mul
+    div      # -b / 2a
+
+    push 1
+    out
+    outv
+
+    hlt
+NegativeD:
+    push 0
+    out
+    hlt
+#

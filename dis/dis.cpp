@@ -91,7 +91,7 @@ Text* get_tcom_from_mcodes(BinCommand* mcodes, int* n_commands) {
 
         char** array = (char**) calloc(n_args, sizeof(char*));
         array[0] = (char*)command_desc((int)mcode.sgn.cmd);
-        array[1] = arg_desc(&mcode, &labels);
+        array[1] = arg_desc(&mcode, 0, &labels);
 
         Text cmd = convert_to_text((const char**)array, n_args);
         tcom[i] = cmd;

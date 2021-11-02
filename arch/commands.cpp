@@ -17,7 +17,9 @@ Processor* init_processor() {
 
     stack_ctor(processor.stack);
     stack_ctor(processor.call_stack);
+
     registers_ctor(&processor.regs, REG_NAMES);
+    write_to_reg(&processor.regs, system_registers::VALUE_PRECISION, ACCURACY);
 
     return &processor;
 }

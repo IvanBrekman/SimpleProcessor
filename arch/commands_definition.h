@@ -4,11 +4,18 @@
 
 #include "DSL/commands_syntax.h"
 
+// break commands
 COMMAND_DEFINITION( hlt,   0, 0, 0, 0b0000000000000000,  {
     return EXIT_;
 })
 
-COMMAND_DEFINITION( push,  1, 1, 1, 0b1111110011111100,  {
+COMMAND_DEFINITION( abrt,  1, 0, 0, 0b0000000000000000,  {
+    return BREAK_;
+})
+// --------------
+
+// stack commands
+COMMAND_DEFINITION( push,  2, 1, 1, 0b1111110011111100,  {
     int arg = 0;
     if (HAS_REGISTER) arg += read_from_reg(REG, ARG(0, REGISTER_BIT));
     if (HAS_NUMBER)   arg += ARG(0, NUMBER_BIT);
@@ -19,7 +26,7 @@ COMMAND_DEFINITION( push,  1, 1, 1, 0b1111110011111100,  {
     return OK_;
 })
 
-COMMAND_DEFINITION( pop,   2, 0, 1, 0b1111110000110000,  {
+COMMAND_DEFINITION( pop,   3, 0, 1, 0b1111110000110000,  {
     int pop_value = POP;
 
     if (args_type > 0) {
@@ -36,12 +43,31 @@ COMMAND_DEFINITION( pop,   2, 0, 1, 0b1111110000110000,  {
     return OK_;
 })
 
-COMMAND_DEFINITION( add,   3, 0, 0, 0b0000000000000000,  {
+COMMAND_DEFINITION( vrf,   4, 0, 0, 0b0000000000000000,  {
+    int err = Stack_error(STACK);
+    printf("Stack Verify: %s (%d)\n", Stack_error_desc(err), err);
+
+    return OK_;
+})
+
+COMMAND_DEFINITION( dump,  5, 0, 0, 0b0000000000000000,  {
+    DUMP;
+    return OK_;
+})
+
+COMMAND_DEFINITION( prt,   6, 0, 0, 0b0000000000000000,  {
+    PRINT;
+    return OK_;
+})
+// --------------
+
+// Arythmetics commands
+COMMAND_DEFINITION( add,   7, 0, 0, 0b0000000000000000,  {
     PUSH(POP + POP);
     return OK_;
 })
 
-COMMAND_DEFINITION( sub,   4, 0, 0, 0b0000000000000000,  {
+COMMAND_DEFINITION( sub,   8, 0, 0, 0b0000000000000000,  {
     int arg1 = POP;
     int arg2 = POP;
 
@@ -49,38 +75,143 @@ COMMAND_DEFINITION( sub,   4, 0, 0, 0b0000000000000000,  {
     return OK_;
 })
 
-COMMAND_DEFINITION( mul,   5, 0, 0, 0b0000000000000000,  {
+COMMAND_DEFINITION( mul,   9, 0, 0, 0b0000000000000000,  {
     PUSH(POP * POP);
     return OK_;
 })
 
-COMMAND_DEFINITION( vrf,   6, 0, 0, 0b0000000000000000,  {
-    int err = Stack_error(STACK);
-    printf("Stack Verify: %s (%d)\n", Stack_error_desc(err), err);
+COMMAND_DEFINITION( div,  10, 0, 0, 0b0000000000000000,  {
+    int arg1 = POP;
+    int arg2 = POP;
 
+    PUSH(arg2 / (arg1 * pow(10, -PRECISION_)));
     return OK_;
 })
 
-COMMAND_DEFINITION( dump,  7, 0, 0, 0b0000000000000000,  {
-    DUMP;
+COMMAND_DEFINITION( mod,  11, 1, 1, 0b0000000000000100,  {
+    PUSH(POP % ARG(0, NUMBER_BIT));
     return OK_;
 })
 
-COMMAND_DEFINITION( out,   8, 0, 0, 0b0000000000000000,  {
+COMMAND_DEFINITION( sqr,  12, 0, 0, 0b0000000000000000,  {
+    int arg1 = POP;
+
+    PUSH(arg1 * arg1);
+    return OK_;
+})
+
+COMMAND_DEFINITION( sqrt, 13, 0, 0, 0b0000000000000000,  {
+    int arg1 = POP;
+
+    PUSH((int)sqrt(arg1));
+    return OK_;
+})
+
+COMMAND_DEFINITION( abs,  14, 0, 0, 0b0000000000000000,  {
+    int arg1 = POP;
+
+    PUSH(arg1 >= 0 ? arg1 : -arg1);
+    return OK_;
+})
+// --------------
+
+// IO commands
+COMMAND_DEFINITION( in,   15, 0, 0, 0b0000000000000000,  {
+    printf("Input number..\n");
+    
+    int num = poisons::UNINITIALIZED_INT;
+    while (scanf("%d", &num) != 1) {
+        printf("NaN\n");
+        while (getchar() != '\n') continue;
+    }
+
+    PUSH(num);
+    return OK_;
+})
+
+COMMAND_DEFINITION( inv,  16, 0, 0, 0b0000000000000000,  {
+    printf("Input number..\n");
+    
+    int num = poisons::UNINITIALIZED_INT;
+    while (scanf("%d", &num) != 1) {
+        printf("NaN\n");
+        while (getchar() != '\n') continue;
+    }
+
+    PUSH(num * (int)pow(10, PRECISION_));
+    return OK_;
+})
+
+COMMAND_DEFINITION( out,  17, 0, 0, 0b0000000000000000,  {
     OUT;
     return OK_;
 })
 
-COMMAND_DEFINITION( prt,   9, 0, 0, 0b0000000000000000,  {
-    PRINT;
+COMMAND_DEFINITION( outv, 18, 0, 0, 0b0000000000000000,  {
+    OUTV;
+    return OK_;
+})
+// --------------
+
+// jump-types commands
+COMMAND_DEFINITION( jmp,  19, 1, 1, 0b0000000000000010,  {
+    IP = ARG(0, LABEL_BIT) - 1;
+    return IP;
+})
+
+#define COND_JUMP_DEFINITION(name, code, sign)                                  \
+COMMAND_DEFINITION( name, code, 1, 1, 0b0000000000000010, {                     \
+    int first  = POP;                                                           \
+    int second = POP;                                                           \
+                                                                                \
+    if (second sign first) {                                                    \
+        IP = ARG(0, LABEL_BIT) - 1;                                             \
+    }                                                                           \
+                                                                                \
+    return IP;                                                                  \
+})
+#include "cond_jumps_definition.h"
+#undef COND_JUMP_DEFINITION
+// 25
+
+COMMAND_DEFINITION( call, 26, 1, 1, 0b0000000000000010,  {
+    PUSH_C(IP + 1);
+
+    IP = ARG(0, LABEL_BIT) - 1;
+    return IP;
+})
+
+COMMAND_DEFINITION( ret,  27, 0, 0, 0b0000000000000000,  {
+    IP = POP_C - 1;
+    return IP;
+})
+// --------------
+
+// draw commands
+COMMAND_DEFINITION( draw, 28, 2, 2, 0b1111110011111100,  {
+    int arg1 = 0;
+    int arg2 = 0;
+
+    if (HAS_REGISTER) arg1 += read_from_reg(REG, ARG(0, REGISTER_BIT));
+    if (HAS_NUMBER)   arg1 += ARG(0, NUMBER_BIT);
+    if (HAS_RAM)      arg1  = RAM(arg1);
+
+    if (HAS_REGISTER) arg2 += read_from_reg(REG, ARG(1, REGISTER_BIT));
+    if (HAS_NUMBER)   arg2 += ARG(1, NUMBER_BIT);
+    if (HAS_RAM)      arg2  = RAM(arg2);
+
+    printf("arg1 - arg2: %d - %d\n", arg1, arg2);
+    for (int y = 0; y < arg1; y++) {
+        for (int x = 0; x < arg2; x++) {
+            printf("%s", RAM(VRAM_START + y * arg2 + x) == 0 ? "**" : "  ");
+        }
+        printf("\n");
+    }
+
     return OK_;
 })
 
-COMMAND_DEFINITION( abrt, 10, 0, 0, 0b0000000000000000,  {
-    return BREAK_;
-})
-
-COMMAND_DEFINITION( cat,  11, 0, 0, 0b0000000000000000,  {
+COMMAND_DEFINITION( cat,  29, 0, 0, 0b0000000000000000,  {
    printf("____________________$$____________$$_____\n"
           "_____________ _____$___$________$___$____\n"
           "__________________$_____$$$$$$_____ $____\n"
@@ -104,77 +235,4 @@ COMMAND_DEFINITION( cat,  11, 0, 0, 0b0000000000000000,  {
 
    return OK_;
 })
-
-COMMAND_DEFINITION( jmp,  12, 1, 1, 0b0000000000000010,  {
-    IP = ARG(0, LABEL_BIT) - 1;
-    return IP;
-})
-
-#define COND_JUMP_DEFINITION(name, code, sign)                                  \
-COMMAND_DEFINITION( name, code, 1, 1, 0b0000000000000010, {                     \
-    int first  = POP;                                                           \
-    int second = POP;                                                           \
-                                                                                \
-    if (second sign first) {                                                    \
-        IP = ARG(0, LABEL_BIT) - 1;                                             \
-    }                                                                           \
-                                                                                \
-    return IP;                                                                  \
-})
-
-#include "cond_jumps_definition.h"
-#undef COND_JUMP_DEFINITION
-// 18
-
-COMMAND_DEFINITION( call, 19, 1, 1, 0b0000000000000010, {
-    PUSH_C(IP + 1);
-
-    IP = ARG(0, LABEL_BIT) - 1;
-    return IP;
-})
-
-COMMAND_DEFINITION( ret,  20, 0, 0, 0b0000000000000000,  {
-    IP = POP_C - 1;
-    return IP;
-})
-
-COMMAND_DEFINITION( draw, 21, 2, 2, 0b1111110011111100, {
-    int arg1 = 0;
-    int arg2 = 0;
-
-    if (HAS_REGISTER) arg1 += read_from_reg(REG, ARG(0, REGISTER_BIT));
-    if (HAS_NUMBER)   arg1 += ARG(0, NUMBER_BIT);
-    if (HAS_RAM)      arg1  = RAM(arg1);
-
-    if (HAS_REGISTER) arg2 += read_from_reg(REG, ARG(1, REGISTER_BIT));
-    if (HAS_NUMBER)   arg2 += ARG(1, NUMBER_BIT);
-    if (HAS_RAM)      arg2  = RAM(arg2);
-
-    printf("arg1 - arg2: %d - %d\n", arg1, arg2);
-    for (int y = 0; y < arg1; y++) {
-        for (int x = 0; x < arg2; x++) {
-            printf("%c", RAM(VRAM_START + y * arg2 + x) == 0 ? '-' : '*');
-        }
-        printf("\n");
-    }
-
-    return OK_;
-})
-
-COMMAND_DEFINITION( mod, 22, 1, 1, 0b0000000000000100, {
-    PUSH(POP % ARG(0, NUMBER_BIT));
-    return OK_;
-})
-
-COMMAND_DEFINITION( in,  23, 0, 0, 0b0000000000000000, {
-    printf("Input number..\n");
-    
-    int num = poisons::UNINITIALIZED_INT;
-    while (scanf("%d", &num) != 1) {
-        printf("NaN\n");
-        while (getchar() != '\n') continue;
-    }
-
-    PUSH(num);
-    return OK_;
-})
+// --------------

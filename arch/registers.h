@@ -8,13 +8,8 @@
 #include "helper.h"
 
 struct Registers {
-    int regs[MAX_REGISTERS] = {
-        poisons::UNINITIALIZED_INT,
-        poisons::UNINITIALIZED_INT,
-        poisons::UNINITIALIZED_INT,
-        poisons::UNINITIALIZED_INT
-    };
-    const char* names[MAX_REGISTERS] = { "", "", "", "" };
+    int          regs[MAX_REGISTERS] = { };
+    const char* names[MAX_REGISTERS] = { };
 };
 
 int    registers_ctor(Registers* reg,  const char* names[MAX_REGISTERS]);

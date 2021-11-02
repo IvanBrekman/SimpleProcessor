@@ -15,13 +15,14 @@ const header HEADER = { };
 #define MAX_ARG_SIZE      50
 
 #define VALIDATE_LEVEL      1
-#define LOG_PRINTF          1
-#define LOG_PROCESSOR_STATE 0
+#define LOG_PRINTF          0
+#define LOG_PROCESSOR_STATE 1
 
 #define SKIP_EMPTY_STRINGS      1
 #define SKIP_FISRT_LAST_SPACES  1
 
 #define COMMENT_SYMBOL '#'
-#define SLEEP 0
+#define SLEEP    0
+#define ACCURACY 0
 
 #endif //SIMPLEPROCESSOR_CONFIG_H

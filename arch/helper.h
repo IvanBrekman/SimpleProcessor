@@ -11,8 +11,13 @@
 
 #include "../config.h"
 
+static const char* REG_NAMES[] = { "ax", "bx", "cx", "dx", "$prec" };
+enum system_registers {
+    VALUE_PRECISION = 4
+};
+
+const int MAX_REGISTERS = sizeof(REG_NAMES) / sizeof(REG_NAMES[0]);
 const int MAX_LABELS    = 50;
-const int MAX_REGISTERS = 4;
 const int RAM_SIZE      = 4096;
 const int VRAM_START    = 2048;
 
@@ -22,10 +27,8 @@ const int NUMBER_BIT   = 1;
 const int REGISTER_BIT = 2;
 const int RAM_BIT      = 3;
 
-static const char* REG_NAMES[MAX_REGISTERS] = { "ax", "bx", "cx", "dx" };
-
-const int BITS_TO_ARGV  = 3;                             // Max argv amount dependent
-const int MAX_ARGV      = 8;
+const int BITS_TO_ARGV = 2;
+const int MAX_ARGV     = TYPES_AMOUNT * BITS_TO_ARGV;
 
 enum exit_codes {
     OK             =  0,
@@ -65,7 +68,7 @@ void print_command (BinCommand* cmd,  int cmd_num, FILE* log=stdout, void* lab=N
 int         command_type(const char* command);
 const char* command_desc(int command);
 
-char* arg_desc(const BinCommand* mcode, void* lab=NULL);
+char* arg_desc(const BinCommand* mcode, int arg_shift, void* lab=NULL);
 
 BinCommand* read_mcodes(const char* executable_file, int* n_commands);
 int         write_mcodes(const BinCommand* mcodes, int n_commands, const char* executable_file);

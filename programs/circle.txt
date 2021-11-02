@@ -1,0 +1,116 @@
+push 1
+pop $prec
+
+# screen size
+in
+in
+
+pop [11]
+pop [10]
+#
+
+# centerX, centerY, radius
+in
+in
+in
+
+pop cx
+pop [1]
+pop [2]
+#
+
+# init x y
+push 0
+push 0
+
+pop ax
+pop bx
+#
+
+Iteration:
+    call checkXY
+    push bx
+    push 1
+    add
+    pop bx
+
+    push bx
+    push [10]
+    call check_add_y
+    jmp Iteration
+
+hlt
+
+checkXY:
+    # (x - a)^2
+    push ax
+    push [1]
+    sub
+    sqr
+    pop [3]
+    #
+
+    # (x - b)^2
+    push bx
+    push [2]
+    sub
+    sqr
+
+    # Sum it
+    push [3]
+    add
+
+    push cx # r^2
+    sqr
+
+    # Comparison with eps
+    sub
+    abs
+    push 50
+    #
+
+    # Calc VRAM shift
+    push ax
+    push [10]
+    mul
+    push bx
+    add
+    pop dx
+    #
+
+    jl addOne
+    jmp addZero
+
+    addOne:
+        push 1
+        pop [dx+2048]
+        ret
+    
+    addZero:
+        push 0
+        pop [dx+2048]
+        ret
+
+
+check_add_y:
+    jge add_y
+    ret
+
+    add_y:
+        push ax
+        push 1
+        add
+        pop ax
+
+        push 0
+        pop bx
+
+        push ax
+        push [11]
+
+        jge break
+    ret
+
+break:
+    draw [10] [11]
+    hlt

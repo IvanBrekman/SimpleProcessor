@@ -221,7 +221,7 @@ int parse_arg(const char* arg, int* argv, int* real_argc) {
     arg = arg + cond;
 
     int parse_len = 0;
-    int argc = sscanf(arg, "%[a-z]+%[0-9]%n", name, const_val, &parse_len);
+    int argc = sscanf(arg, "%[a-zA-Z_]+%[0-9]%n", name, const_val, &parse_len);
     LOG2(printf( "[a-z]+[0-9]\n"
                 "sscanf res : %d\n"
                 "name       : \"%s\"\n"
@@ -240,8 +240,8 @@ int parse_arg(const char* arg, int* argv, int* real_argc) {
     }
 
     argc = parse_len = 0;
-    argc = sscanf(arg, "%[a-z _]%n", name, &parse_len);
-    LOG2(printf( "[a-z]\n"
+    argc = sscanf(arg, "%[a-zA-Z_$]%n", name, &parse_len);
+    LOG2(printf( "[a-zA-Z]\n"
                 "sscanf res : %d\n"
                 "name       : \"%s\"\n"
                 "const_value: \"%s\"\n"
@@ -269,7 +269,7 @@ int parse_arg(const char* arg, int* argv, int* real_argc) {
     }
 
     argc = parse_len = 0;
-    argc = sscanf(arg, "%[0-9]%n", const_val, &parse_len);
+    argc = sscanf(arg, "%[-?0-9]%n", const_val, &parse_len);
     LOG2(printf( "[0-9]\n"
                 "sscanf res : %d\n"
                 "name       : \"%s\"\n"

@@ -50,7 +50,11 @@ void print_command (BinCommand* cmd, int cmd_num, FILE* log, void* lab) {
         else if (i + 1 < MAX_ARGV) fprintf(log, ", ");
     }
 
-    fprintf(log, " } ]    %s %s", command_desc(cmd->sgn.cmd), arg_desc(cmd, lab));
+    fprintf(log, " } ]    %s ", command_desc(cmd->sgn.cmd));
+    for (int i = 0; i < cmd->sgn.argc; i++) {
+        fprintf(log, "%s ", arg_desc(cmd, i, lab));
+    }
+
     fprintf(log, "\n");
 }
 
@@ -69,22 +73,22 @@ const char* command_desc(int command) {
     return ALL_COMMANDS[command].name;
 }
 
-char* arg_desc(const BinCommand* mcode, void* lab) {
+char* arg_desc(const BinCommand* mcode, int arg_shift, void* lab) {
     static int labels_count = 0;
 
     char* arg_string = (char*) calloc(MAX_ARG_SIZE, sizeof(char));
     if (extract_bit(mcode->args_type, RAM_BIT))      strcat(arg_string, "[");
-    if (extract_bit(mcode->args_type, REGISTER_BIT)) strcat(arg_string, REG_NAMES[mcode->argv[REGISTER_BIT]]);
+    if (extract_bit(mcode->args_type, REGISTER_BIT)) strcat(arg_string, REG_NAMES[mcode->argv[(arg_shift * TYPES_AMOUNT) + REGISTER_BIT]]);
 
     if (extract_bit(mcode->args_type, REGISTER_BIT) && extract_bit(mcode->args_type, NUMBER_BIT)) strcat(arg_string, "+");
     
-    if (extract_bit(mcode->args_type, NUMBER_BIT))   strcat(arg_string, to_string(mcode->argv[NUMBER_BIT]));
+    if (extract_bit(mcode->args_type, NUMBER_BIT))   strcat(arg_string, to_string(mcode->argv[(arg_shift * TYPES_AMOUNT) + NUMBER_BIT]));
     if (extract_bit(mcode->args_type, RAM_BIT))      strcat(arg_string, "]");
 
     if (extract_bit(mcode->args_type, LABEL_BIT)) {
         strcat(arg_string, "label_");
 
-        int lab_index = VALID_PTR(lab) ? get_lab_by_val((Labels*) lab, mcode->argv[LABEL_BIT]) : -1;
+        int lab_index = VALID_PTR(lab) ? get_lab_by_val((Labels*) lab, mcode->argv[(arg_shift * TYPES_AMOUNT) + LABEL_BIT]) : -1;
         if (lab_index != -1) {
             strcat(arg_string, to_string(lab_index));
         } else {
