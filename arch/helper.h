@@ -62,6 +62,7 @@ struct BinCommand {
 };
 
 const char* error_desc(int error_code);
+const char* exit_code_desc(int exit_code);
 
 void print_command (BinCommand* cmd,  int cmd_num, FILE* log=stdout, void* lab=NULL);
 

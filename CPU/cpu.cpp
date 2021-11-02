@@ -24,7 +24,10 @@ int main(int argc, char** argv) {
     }
 
     LOG1(printf("------start executing------\n"););
+
     int exit_code = execute(argv[1]);
+    printf(BLUE "Program finished with exit code %d (%s)\n" NATURAL, exit_code, exit_code_desc(exit_code));
+    
     LOG1(printf("------end   executing------\n\n"););
 
     return exit_code;

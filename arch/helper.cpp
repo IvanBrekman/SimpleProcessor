@@ -37,6 +37,24 @@ const char* error_desc(int error_code) {
             return "Unknown error";
     }
 }
+const char* exit_code_desc(int exit_code) {
+    switch (exit_code)
+    {
+        case exit_codes::OK:
+            return "ok";
+        case exit_codes::EXIT:
+            return "Default program break";
+        case exit_codes::BREAK:
+            return "Program was aborted";
+        case exit_codes::INVALID_SYNTAX:
+            return "Incorrect syntax detected";
+        case exit_codes::NO_OBVIOUS_END:
+            return "Program wasn`t finished with 'hlt' command. Undefined behavior";
+        default:
+            return "Unknown exit code";
+    }
+}
+
 
 void print_command (BinCommand* cmd, int cmd_num, FILE* log, void* lab) {
     assert(VALID_PTR(log));

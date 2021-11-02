@@ -1,0 +1,7 @@
+*.out
+
+*.cat
+*.kitty
+
+commands.txt
+commands_disassembled.txt
