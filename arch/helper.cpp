@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <cstring>
 #include <cerrno>
+#include <cassert>
 
 #include "../config.h"
 #include "../libs/baselib.h"
@@ -14,7 +15,7 @@
 #include "commands.h"
 #include "labels.h"
 
-const char* error_desc(int error_code) {
+const char*     error_desc(int error_code) {
     switch (error_code) {
         case compile_errors::UNKNOWN_COMMAND:
             return "Unknown command";
@@ -37,7 +38,7 @@ const char* error_desc(int error_code) {
             return "Unknown error";
     }
 }
-const char* exit_code_desc(int exit_code) {
+const char* exit_code_desc(int exit_code)  {
     switch (exit_code)
     {
         case exit_codes::OK:
@@ -57,10 +58,13 @@ const char* exit_code_desc(int exit_code) {
 
 
 void print_command (BinCommand* cmd, int cmd_num, FILE* log, void* lab) {
-    assert(VALID_PTR(log));
+    assert(VALID_PTR(cmd) && "Invalid cmd ptr");
+    assert(VALID_PTR(log) && "Invalid log ptr");
+    assert(VALID_PTR(lab) && "Invalid lab ptr");
+    assert(cmd_num >= 0   && "Incorrect cmd_num value");
 
     fprintf(log, "%04d    ", cmd_num);
-    fprintf(log, "[ { %02d | %03d } , %04d , ", cmd->sgn.argc, cmd->sgn.cmd, atoi(bin4(cmd->args_type)));
+    fprintf(log, "[ { %02d | %03d } , %04d , ", cmd->sgn.argc, cmd->sgn.cmd, atoi(bin4(cmd->args_type)) /* int view of binary number to fill '0' before number */);
     fprintf(log, "{ ");
     for (int i = 0; i < MAX_ARGV; i++) {
         fprintf(log, "%2d", cmd->argv[i]);

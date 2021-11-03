@@ -2,6 +2,7 @@
 // Created by ivanbrekman on 20.10.2021.
 //
 
+#include <cstdio>
 #include <cassert>
 #include <cstring>
 
@@ -79,5 +80,5 @@ int     read_from_reg(Registers* reg, int reg_index) {
 int can_read_from_reg(Registers* reg, int reg_index) {
     assert(VALID_PTR(reg) && "Invalid reg ptr");
 
-    return reg_index >= 0 && reg_index < MAX_REGISTERS && reg->regs[reg_index] != poisons::UNINITIALIZED_INT;
+    return 0 <= reg_index && reg_index < MAX_REGISTERS && reg->regs[reg_index] != poisons::UNINITIALIZED_INT && reg->regs[reg_index] != poisons::FREED_ELEMENT;
 }

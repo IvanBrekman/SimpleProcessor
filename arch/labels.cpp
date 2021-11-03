@@ -2,9 +2,12 @@
 // Created by ivanbrekman on 24.10.2021.
 //
 
+#include <cstdio>
 #include <cstring>
+#include <cassert>
 
 #include "../libs/baselib.h"
+
 #include "labels.h"
 
 int     labels_ctor(      Labels* lab) {
@@ -100,7 +103,7 @@ int     write_label(      Labels* lab, const char* name, int label) {
     assert((label >= 0 || label == poisons::UNINITIALIZED_INT) && "Incorrect label (label must be >= 0)");
     
     int lab_index = get_lab_by_name(lab, name);
-    if (lab_index == -1) {
+    if (lab_index == -1) {                              // if it is new label
         lab->names[lab->labels_count]    = name;
         lab->labels[lab->labels_count++] = label;
     } else {

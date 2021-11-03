@@ -8,6 +8,7 @@
 #include "libs/baselib.h"
 #include "libs/file_funcs.h"
 
+// Array of programs, which time of last change will be checked
 static const char* TRACKED_PROGRAMS[] = {
         "arch/commands.cpp",  "arch/commands.h",
         "arch/helper.cpp",    "arch/helper.h",
@@ -48,7 +49,7 @@ static const char* TRACKED_PROGRAMS[] = {
 #define CHECK_SYSTEM_CALL(system_call, source_file, executable_file) {                                          \
     int updated = 0;                                                                                            \
     CHECK_TRACKED_PROGRAMS(system_call, executable_file);                                                       \
-    if (!updated && file_last_change(source_file) > file_last_change(executable_file)) {                                    \
+    if (!updated && file_last_change(source_file) > file_last_change(executable_file)) {                        \
         int exit_code = system_call;                                                                            \
         if (exit_code != 0) {                                                                                   \
             printf(RED "program finished with exit code %d" NATURAL "\n", exit_code);                           \

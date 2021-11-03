@@ -2,8 +2,6 @@
 // Created by ivanbrekman on 16.10.2021.
 //
 
-#include <malloc.h>
-
 #include "../libs/baselib.h"
 #include "../libs/stack.h"
 
@@ -61,9 +59,6 @@ int processor_dump(FILE* log) {
 }
 
 int get_processor_ip() {
-    getchar();
-    getchar();
-    while(getchar() != '\n');
     return processor.ip;
 }
 int set_processor_ip(int value) {
@@ -71,6 +66,8 @@ int set_processor_ip(int value) {
     return processor.ip;
 }
 
+// Commands implementation-----------------------------------------------------
 #define COMMAND_DEFINITION(name, code, argc_min, argc_max, argv_m, body) int execute_ ## name(int args_type, int* argv) body
     #include "commands_definition.h"
 #undef COMMAND_DEFINITION
+// ----------------------------------------------------------------------------

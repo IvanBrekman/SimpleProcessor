@@ -2,15 +2,22 @@
 // Created by ivanbrekman on 17.10.2021.
 //
 
-#include <cstring>
 #include <cstdio>
 #include <cstdlib>
 #include <cassert>
+#include <cstring>
 
-#include "libs/baselib.h"
 #include "run_cpu.h"
 
+//! Function compile assembler, disassembler and CPU programs (if it need), then compile and decompile source_file (if it need), and finelly execute executable_file
+//! \param source_file     path to file with asm commands
+//! \param executable_file path to executable file, which will be created (if it need) and exeuted
+//! \return                exit code of executing program
+//! \note Compiling programs depends on time of last change in files
 int run_cpu(const char* source_file, const char* executable_file) {
+    assert(VALID_PTR(source_file)     && "Invalid ptr to source_file.");
+    assert(VALID_PTR(executable_file) && "Invalid ptr to source_file.");
+
     char* command_compile   = (char*) calloc(strlen(execute_strings[0]) + strlen(source_file) + 1 + strlen(executable_file) + 1, sizeof(char));
     strcpy(command_compile, execute_strings[0]);
     strcat(command_compile, source_file);
@@ -38,7 +45,10 @@ int run_cpu(const char* source_file, const char* executable_file) {
     CHECK_SYSTEM_CALL(system(command_decompile), source_file, decompile_output);
     printf("\n");
 
-    system(command_execute);
+    int exit_code = system(command_execute);
 
-    return 0;
+    FREE_PTR(command_compile,   char);
+    FREE_PTR(command_decompile, char);
+    FREE_PTR(command_execute,   char);
+    return exit_code;
 }

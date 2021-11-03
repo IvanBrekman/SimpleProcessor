@@ -2,7 +2,10 @@
 // Created by ivanbrekman on 15.10.2021.
 //
 
+/* !NOTE! if you changed arg types (which bit show type or add/delete new types) you must change bin view of jump-type command. Search comment in this file */
+
 #include <cerrno>
+#include <cassert>
 #include <cstring>
 #include <unistd.h>
 
@@ -54,12 +57,12 @@ int execute_commands(BinCommand* mcodes, int n_commands, Processor* processor) {
     LOG1(printf("Executing commands:\n"););
     LOG1(labels_ctor(&labels););
 
-    LOG1(printf("Fill labels..\n");
+    LOG1(printf("Fill labels..\n");                                     // run by all commands to fill labels names
         int ip = processor->ip;
         for ( ; processor->ip < n_commands; processor->ip++) {
             BinCommand b_command = mcodes[processor->ip];
 
-            if (ALL_COMMANDS[b_command.sgn.cmd].args_type == 0b0000000000000010 && get_lab_by_val(&labels, b_command.argv[LABEL_BIT]) == -1) {
+            if (ALL_COMMANDS[b_command.sgn.cmd].args_type == 0b0000000000000010 /* BIN VIEW OF JUMP-TYPE */ && get_lab_by_val(&labels, b_command.argv[LABEL_BIT]) == -1) {  // write label if command is jump-type command
                 char name[MAX_ARG_SIZE] = "label_";
                 strcat(name, to_string(labels.labels_count));
 

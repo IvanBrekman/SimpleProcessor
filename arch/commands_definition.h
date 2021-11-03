@@ -4,7 +4,45 @@
 
 #include "DSL/commands_syntax.h"
 
-// break commands
+/*
+This file includes all definitions of processor commands
+
+Each command has:
+    name
+    number code
+    number of minimum args amount
+    number of maximum args amount
+    number, which shows allowed types of arguments **
+    executing code in {}
+
+    ** this number has the form:
+        0bnnnnnnnnnnnnnnnn, where n = 0 or 1
+
+       m-th bit of this number means if the argument can have m-th combination in tryth table of types
+       We can build tryth table from all types of args (let it will be 3 types)
+         ABC
+       0 000
+       1 001
+       2 010
+       3 011
+       4 100
+       5 101
+       6 110
+       7 111
+
+       For exmaple if 3-th bit of number is 1, it means that arguments can have type B and type C arguments
+
+       0b1111110011111100 (allowed RAM, register, number types and their combinations)
+    
+    COMMAND_DEFINITION( name, 37, 0, 2, 0b0101010101010101, {
+        printf("This is test command\n");
+        return OK_;
+    })
+
+You also can use DSL to create your commands or write them directly accessing to processor and other commands
+*/
+
+// Break commands--------------------------------------------------------------
 COMMAND_DEFINITION( hlt,   0, 0, 0, 0b0000000000000000,  {
     return EXIT_;
 })
@@ -12,9 +50,9 @@ COMMAND_DEFINITION( hlt,   0, 0, 0, 0b0000000000000000,  {
 COMMAND_DEFINITION( abrt,  1, 0, 0, 0b0000000000000000,  {
     return BREAK_;
 })
-// --------------
+// ----------------------------------------------------------------------------
 
-// stack commands
+// Stack commands--------------------------------------------------------------
 COMMAND_DEFINITION( push,  2, 1, 1, 0b1111110011111100,  {
     int arg = 0;
     if (HAS_REGISTER) arg += read_from_reg(REG, ARG(0, REGISTER_BIT));
@@ -59,9 +97,9 @@ COMMAND_DEFINITION( prt,   6, 0, 0, 0b0000000000000000,  {
     PRINT;
     return OK_;
 })
-// --------------
+// ----------------------------------------------------------------------------
 
-// Arythmetics commands
+// Arythmetics commands--------------------------------------------------------
 COMMAND_DEFINITION( add,   7, 0, 0, 0b0000000000000000,  {
     PUSH(POP + POP);
     return OK_;
@@ -113,9 +151,9 @@ COMMAND_DEFINITION( abs,  14, 0, 0, 0b0000000000000000,  {
     PUSH(arg1 >= 0 ? arg1 : -arg1);
     return OK_;
 })
-// --------------
+// ----------------------------------------------------------------------------
 
-// IO commands
+// IO commands-----------------------------------------------------------------
 COMMAND_DEFINITION( in,   15, 0, 0, 0b0000000000000000,  {
     printf("Input number..\n");
     
@@ -151,9 +189,9 @@ COMMAND_DEFINITION( outv, 18, 0, 0, 0b0000000000000000,  {
     OUTV;
     return OK_;
 })
-// --------------
+// ----------------------------------------------------------------------------
 
-// jump-types commands
+// Jump-types commands---------------------------------------------------------
 COMMAND_DEFINITION( jmp,  19, 1, 1, 0b0000000000000010,  {
     IP = ARG(0, LABEL_BIT) - 1;
     return IP;
@@ -172,7 +210,7 @@ COMMAND_DEFINITION( name, code, 1, 1, 0b0000000000000010, {                     
 })
 #include "cond_jumps_definition.h"
 #undef COND_JUMP_DEFINITION
-// 25
+/* !NOTE! last command code in cond_jumps_definition.h is       25      !NOTE! */
 
 COMMAND_DEFINITION( call, 26, 1, 1, 0b0000000000000010,  {
     PUSH_C(IP + 1);
@@ -185,9 +223,9 @@ COMMAND_DEFINITION( ret,  27, 0, 0, 0b0000000000000000,  {
     IP = POP_C - 1;
     return IP;
 })
-// --------------
+// ----------------------------------------------------------------------------
 
-// draw commands
+// Draw commands---------------------------------------------------------------
 COMMAND_DEFINITION( draw, 28, 2, 2, 0b1111110011111100,  {
     int arg1 = 0;
     int arg2 = 0;
@@ -200,7 +238,7 @@ COMMAND_DEFINITION( draw, 28, 2, 2, 0b1111110011111100,  {
     if (HAS_NUMBER)   arg2 += ARG(1, NUMBER_BIT);
     if (HAS_RAM)      arg2  = RAM(arg2);
 
-    printf("arg1 - arg2: %d - %d\n", arg1, arg2);
+    LOG1(printf("arg1 - arg2: %d - %d\n", arg1, arg2););
     for (int y = 0; y < arg1; y++) {
         for (int x = 0; x < arg2; x++) {
             printf("%s", RAM(VRAM_START + y * arg2 + x) == 0 ? "**" : "  ");
@@ -235,4 +273,4 @@ COMMAND_DEFINITION( cat,  29, 0, 0, 0b0000000000000000,  {
 
    return OK_;
 })
-// --------------
+// ----------------------------------------------------------------------------

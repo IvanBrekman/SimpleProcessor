@@ -3,7 +3,6 @@
 //
 
 #include <cassert>
-#include <cstdlib>
 #include <cstring>
 #include <cctype>
 #include <cerrno>
@@ -29,15 +28,19 @@ int main(int argc, char** argv) {
     labels_ctor(&labels);
 
     LOG1(printf("First assembly\n"););
-    assembly(argv[1], argv[2], 1);
+    int exit_code = assembly(argv[1], argv[2], 1);
 
     LOG1(printf("\nLabels:\n");
          print_labels(&labels);
          printf("\n");
     )
 
+    if (exit_code != exit_codes::OK) {
+        return exit_code;
+    }
+
     LOG1(printf("Second assembly\n"););
-    int exit_code = assembly(argv[1], argv[2], 0);
+    exit_code = assembly(argv[1], argv[2], 0);
 
     LOG1(printf("------end   assembly------\n\n"););
 
@@ -49,7 +52,7 @@ int assembly(const char* source_file, const char* executable_file, int label_ass
     assert(VALID_PTR(source_file)     && "Incorrect source_file ptr");
     assert(VALID_PTR(executable_file) && "Incorrect executable_file ptr");
 
-    if (!label_assembly) {
+    if (!label_assembly) {                                                  // Checks that all labels has each place to jump
         for (int i = 0; i < labels.labels_count; i++) {
             if (!can_read_label(&labels, i)) {
                 errno = compile_errors::UNKNOWN_LABEL;
@@ -104,13 +107,13 @@ Text*                   get_tcom(Text* data) {
     for (int i = 0; i < data->lines; i++) {
         char* str_command = data->text[i].ptr;
 
-        if (str_command[0] == COMMENT_SYMBOL) {
+        if (str_command[0] == COMMENT_SYMBOL) {                             // If string starts with comment symbol skip this string
             comment_str++;
             continue;
         }
         
         char* com_sym_index = strchr(str_command, COMMENT_SYMBOL);
-        if (com_sym_index != NULL) {
+        if (com_sym_index != NULL) {                                        // If find comment symbol in string (not at start), skip checking least string
             data->text[i].len = (int)(com_sym_index - &str_command[0]);
 
             int spaces = 0;
@@ -142,7 +145,7 @@ Text                  check_tcom(const Text* tcom, int n_commands, int label_ass
 
         int cmd_code = command_type(cmd.text[0].ptr);
 
-        if (cmd_code == UNKNOWN) {
+        if (cmd_code == UNKNOWN) {                                          // Checks for possible label
             if (possible_label(&labels, cmd.text[0].ptr) == -1) {
                 errno = compile_errors::UNKNOWN_COMMAND;
                 return cmd;
@@ -180,7 +183,7 @@ BinCommand* get_mcodes_from_tcom(const Text* commands, int* n_commands) {
         BinCommand cmd = {};
 
         int command_code = command_type(text_cmd.text[0].ptr);
-        if (command_code == UNKNOWN) {
+        if (command_code == UNKNOWN) {                                      // Means that it is label
             String label = text_cmd.text[0];
             label.len--;
             label.ptr[label.len] = '\0';
@@ -203,11 +206,11 @@ BinCommand* get_mcodes_from_tcom(const Text* commands, int* n_commands) {
         LOG1(print_command(&cmd, cmd_index - 1););
     }
 
-    *n_commands -= labels.labels_count;
+    *n_commands -= labels.labels_count;                                     // All labels wouldn`t get in bin commands, so we should change n_commands
     return bit_cmd;
 }
 
-int parse_arg(const char* arg, int* argv, int* real_argc) {
+int parse_arg(const char* arg, int* argv) {
     char      name[MAX_ARG_SIZE] = { };
     char const_val[MAX_ARG_SIZE] = { };
     LOG2(printf("arg: %s\n", arg););
@@ -215,10 +218,10 @@ int parse_arg(const char* arg, int* argv, int* real_argc) {
     Registers reg_tmp = {};
     registers_ctor(&reg_tmp, REG_NAMES);
     
-    int cond    = arg[0] == '[';
+    int cond    = (arg[0] == '[');
     int arg_len = strlen(arg) - 2 * cond;
     int is_ram  = cond << RAM_BIT;
-    arg = arg + cond;
+    arg = arg + cond;                                                       // If arg starts with '[', it is RAM address, with shifting arg ptr to generalize parsing 
 
     int parse_len = 0;
     int argc = sscanf(arg, "%[a-zA-Z_]+%[0-9]%n", name, const_val, &parse_len);
@@ -234,7 +237,6 @@ int parse_arg(const char* arg, int* argv, int* real_argc) {
         if (VALID_PTR(argv)) {
             argv[REGISTER_BIT] = get_reg_by_name(&reg_tmp, name);
             argv[NUMBER_BIT]   = atoi(const_val);
-            if (VALID_PTR(real_argc)) *real_argc = 2;
         }
         return is_ram + (1 << REGISTER_BIT) + (1 << NUMBER_BIT) + 0;
     }
@@ -253,7 +255,6 @@ int parse_arg(const char* arg, int* argv, int* real_argc) {
         if (get_reg_by_name(&reg_tmp, name) != -1) {
             if (VALID_PTR(argv)) {
                 argv[REGISTER_BIT] = get_reg_by_name(&reg_tmp, name);
-                if (VALID_PTR(real_argc)) *real_argc = 1;
             }
             return is_ram + (1 << REGISTER_BIT) + 0 + 0;
         } else {
@@ -262,7 +263,6 @@ int parse_arg(const char* arg, int* argv, int* real_argc) {
                 argv[LABEL_BIT] = value;
                 write_label(&labels, strdup(name), value);
                 LOG1(print_labels(&labels););
-                if (VALID_PTR(real_argc)) *real_argc = 1;
             }
             return is_ram + 0 + 0 + 1;
         }
@@ -281,7 +281,6 @@ int parse_arg(const char* arg, int* argv, int* real_argc) {
     if (argc == 1 && (strlen(const_val) == arg_len)) {
         if (VALID_PTR(argv)) {
             argv[NUMBER_BIT] = atoi(const_val);
-            if (VALID_PTR(real_argc)) *real_argc = 1;
         }
         return is_ram + (0 << REGISTER_BIT) + (1 << NUMBER_BIT) + 0;
     }

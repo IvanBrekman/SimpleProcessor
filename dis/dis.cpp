@@ -3,6 +3,7 @@
 //
 
 #include <cstdlib>
+#include <cassert>
 #include <cstring>
 #include <cerrno>
 
@@ -10,8 +11,8 @@
 #include "../libs/file_funcs.h"
 
 #include "../arch/helper.h"
-#include "../arch/commands.h"
 #include "../arch/labels.h"
+#include "../arch/commands.h"
 
 #include "dis.h"
 
@@ -43,7 +44,7 @@ int disassembly(const char* executable_file, const char* source_file) {
     }
 
     labels_ctor(&labels);
-    Text* tcom = get_tcom_from_mcodes(mcodes, &n_commands);
+    Text* tcom = get_tcom_from_mcodes(mcodes, n_commands);
 
     LOG1(printf("All commands (dis)\n");
         for (int i = 0; i < n_commands; i++) {
@@ -53,7 +54,7 @@ int disassembly(const char* executable_file, const char* source_file) {
 
     int label_text = 0;
     for (int i = 0; i < n_commands; i++) {
-        for (int lab_index = 0; lab_index < labels.labels_count; lab_index++) {
+        for (int lab_index = 0; lab_index < labels.labels_count; lab_index++) {     // Insert label to source_file if need
             if (labels.labels[lab_index] == i) {
                 char ** data = (char**) calloc(2, sizeof(char*));
                 data[0] = (char*)"";
@@ -67,7 +68,7 @@ int disassembly(const char* executable_file, const char* source_file) {
             }
         }
 
-        if (label_text) {
+        if (label_text) {                                                           // if this part of code belongs to some label, insert '\t' before command
             char ** data = (char**) calloc(1, sizeof(char*));
             data[0] = (char*)"\t";
 
@@ -82,10 +83,13 @@ int disassembly(const char* executable_file, const char* source_file) {
     return exit_codes::OK;
 }
 
-Text* get_tcom_from_mcodes(BinCommand* mcodes, int* n_commands) {
-    Text* tcom = (Text*) calloc(*n_commands, sizeof(Text));
+Text* get_tcom_from_mcodes(BinCommand* mcodes, int n_commands) {
+    assert(VALID_PTR(mcodes) && "Invalid ptr to mcodes");
+    assert(n_commands >= 0 && "Negative n_commands value");
 
-    for (int i = 0; i < *n_commands; i++) {
+    Text* tcom = (Text*) calloc(n_commands, sizeof(Text));
+
+    for (int i = 0; i < n_commands; i++) {
         BinCommand mcode = mcodes[i];
         int n_args = 1 + mcode.sgn.argc;
 
@@ -98,7 +102,7 @@ Text* get_tcom_from_mcodes(BinCommand* mcodes, int* n_commands) {
         Text cmd = convert_to_text((const char**)array, n_args);
         tcom[i] = cmd;
 
-        if (ALL_COMMANDS[mcode.sgn.cmd].args_type == 0b0000000000000010 && get_lab_by_val(&labels, mcode.argv[LABEL_BIT]) == -1) {
+        if (ALL_COMMANDS[mcode.sgn.cmd].args_type == 0b0000000000000010 && get_lab_by_val(&labels, mcode.argv[LABEL_BIT]) == -1) {  // if command is jump-type command, add new label
             char name[MAX_ARG_SIZE] = "label_";
             strcat(name, to_string(labels.labels_count));
 
