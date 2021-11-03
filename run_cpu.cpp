@@ -9,6 +9,37 @@
 
 #include "run_cpu.h"
 
+// Array of programs, which time of last change will be checked
+const char* TRACKED_PROGRAMS[] = {
+        "arch/commands.cpp",  "arch/commands.h",
+        "arch/helper.cpp",    "arch/helper.h",
+        "arch/labels.cpp",    "arch/labels.h",
+        "arch/registers.cpp", "arch/registers.h",
+        "arch/commands_definition.h",
+
+        "asm/asm.cpp", "asm/asm.h",
+        "dis/dis.cpp", "dis/dis.h",
+        "CPU/cpu.cpp", "CPU/cpu.h",
+
+        "libs/baselib.cpp",    "libs/baselib.h",
+        "libs/file_funcs.cpp", "libs/file_funcs.h",
+        "libs/stack.cpp",      "libs/stack.h",
+
+        "config.h"
+};
+
+const char* decompile_output = "commands_disassembled.txt";
+const char* compile_strings[] = {
+        "gcc asm/asm.cpp libs/baselib.cpp libs/file_funcs.cpp libs/stack.cpp arch/helper.cpp arch/commands.cpp arch/labels.cpp arch/registers.cpp -lm -o asm/asm.cat",
+        "gcc dis/dis.cpp libs/baselib.cpp libs/file_funcs.cpp libs/stack.cpp arch/helper.cpp arch/commands.cpp arch/labels.cpp arch/registers.cpp -lm -o dis/dis.cat",
+        "gcc CPU/cpu.cpp libs/baselib.cpp libs/file_funcs.cpp libs/stack.cpp arch/helper.cpp arch/commands.cpp arch/labels.cpp arch/registers.cpp -lm -o CPU/cpu.cat"
+};
+const char* execute_strings[] = {
+        "./asm/asm.cat ",
+        "./dis/dis.cat ",
+        "./CPU/cpu.cat "
+};
+
 //! Function compile assembler, disassembler and CPU programs (if it need), then compile and decompile source_file (if it need), and finelly execute executable_file
 //! \param source_file     path to file with asm commands
 //! \param executable_file path to executable file, which will be created (if it need) and exeuted

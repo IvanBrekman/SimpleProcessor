@@ -7,10 +7,8 @@
 
 #define dbg(code) do{ printf("%s:%d\n", __FILE__, __LINE__); code }while(0)
 #define LOCATION(var) { TYPE, #var, __FILE__, __FUNCTION__, __LINE__ }
-#define VALID_PTR(ptr)  (                                                                                                                   \
-                            (ptr) != NULL && (int*)(ptr) != (int*)poisons::UNINITIALIZED_PTR && (int*)(ptr) != (int*)poisons::FREED_PTR &&  \
-                            !isbadreadptr((void*)(ptr))                                                                                     \
-                        )
+#define VALID_PTR(ptr)  !isbadreadptr((const void*)(ptr))
+
 #define FREE_PTR(ptr, type) {                   \
     free((ptr));                                \
     (ptr) = (type*)poisons::UNINITIALIZED_PTR;  \
@@ -26,6 +24,7 @@
     }                       \
 }
 
+// Colors----------------------------------------------------------------------
 #define BLACK       "\033[1;30m"
 #define RED         "\033[1;31m"
 #define GREEN       "\033[1;32m"
@@ -45,6 +44,7 @@
 #define WHITE_UNL   "\033[4;37m"
 
 #define NATURAL     "\033[0m"
+// ----------------------------------------------------------------------------
 
 enum validate_level {
     NO_VALIDATE      = 0, // No checks in program
@@ -75,7 +75,7 @@ enum poisons {
     date = NULL;                                                \
 };
 
-int isbadreadptr(void* ptr);
+int isbadreadptr(const void* ptr);
 char* datetime(char* calendar_date);
 
 int is_number(char* string);
@@ -83,7 +83,7 @@ int digits_number(int number, int radix=10);
 int extract_bit(int number, int bit);
 
 char* bin4(int number);
-char* to_string(int number);
+const char* to_string(int number);
 
 int cmp_int(const void* num1, const void* num2);
 

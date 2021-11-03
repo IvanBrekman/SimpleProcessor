@@ -25,11 +25,11 @@ int replace(char* string, size_t size, char old_symbol, char new_symbol, int n_r
 void free_text(Text* data);
 void free_string(String* string);
 
-int  load_string_pointers(Text* text, int skip_empty_strings=0, int skip_first_last_spaces=0);
-Text convert_to_text(const char** strings, int n_strings);
-
 void print_text(const Text* data, const char* sep=", ", const char* end="\n");
 void print_strings(const char** array, size_t size, const char* sep=", ", const char* end="\n");
+
+int  load_string_pointers(Text* text, int skip_empty_strings=0, int skip_first_last_spaces=0);
+Text convert_to_text(const char** strings, int n_strings);
 
 int  file_size       (const char* filename);
 long file_last_change(const char* filename);

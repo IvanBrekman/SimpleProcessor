@@ -10,8 +10,6 @@
 #include <malloc.h>
 #include "baselib.h"
 
-#define $(code) ( printf("%s:%d >>> %s...\n", __FILE__, __LINE__, #code), code )
-
 #define CANARY 0xDEADA2EA // DEAD AREA
 #define CAP_STEP     8
 #define CAP_BORDER 256
@@ -78,7 +76,7 @@ enum errors {
     INCORRECT_ST_HASH         = -13,
     INCORRECT_ST_DATA_HASH    = -14,
     INCORRECT_ST_INFO_HASH    = -15,
-    };
+};
 
 struct Stack {
     const long long  left_canary = CANARY;

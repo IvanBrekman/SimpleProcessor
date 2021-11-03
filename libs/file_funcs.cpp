@@ -6,7 +6,6 @@
 #include <cstdlib>
 #include <cassert>
 
-#include <cwchar>
 #include <sys/stat.h>
 #include <cstring>
 #include <cctype>
@@ -19,16 +18,16 @@
 //! \param size       size of string
 //! \param old_symbol old symbol
 //! \param new_symbol new symbol
-//! \param n_replace  number or replacements (-1 if you want to replace all old symbols)
+//! \param n_replace  number or replacements (< 0, if you want to replace all old symbols)
 //! \return           number of replacements
 //! \note function need string size, because if you want to
 //!       replace '\0' symbol strlen function wont work correctly
 int replace(char* string, size_t size, char old_symbol, char new_symbol, int n_replace) {
-    assert(VALID_PTR(string));
+    assert(VALID_PTR(string) && "invalid string ptr");
 
     int n_rep = 0;
 
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < (int)size; i++) {
         if (n_rep >= n_replace && n_replace >= 0) {
             break;
         }
@@ -42,10 +41,12 @@ int replace(char* string, size_t size, char old_symbol, char new_symbol, int n_r
 }
 
 void free_text(struct Text* data) {
+    assert(VALID_PTR(data) && "Invalid data ptr");
+
     data->data = NULL;
     data->data_size = -1;
 
-    for (int i = 0; i < data->lines; i++) {
+    for (int i = 0; i < (int)data->lines; i++) {
         free_string(&(data->text[i]));
     }
     data->text = NULL;
@@ -54,6 +55,8 @@ void free_text(struct Text* data) {
     data = NULL;
 }
 void free_string(struct String* string) {
+    assert(VALID_PTR(string) && "Invalid string ptr");
+    
     string->ptr = NULL;
     string->len = -1;
 
@@ -61,44 +64,55 @@ void free_string(struct String* string) {
 }
 
 //! Function prints text from struct
-//! \param data pointer to struct
+//! \param data ptr to struct
+//! \param sep  ptr to separating string (default ", ")
+//! \param end  ptr to ending string (default "\n")
 void print_text(const Text* data, const char* sep, const char* end) {
-    assert(VALID_PTR(data));
+    assert(VALID_PTR(data) && "Invalid data ptr");
+    assert(VALID_PTR(sep)  && "Invalid sep ptr");
+    assert(VALID_PTR(end)  && "Invalid end ptr");
 
     printf("[ ");
-    for (int i = 0; i < data->lines; i++) {
+    for (int i = 0; i < (int)data->lines; i++) {
         printf("\"%s\"", data->text[i].ptr);
-        if (i + 1 < data->lines) printf("%s", sep);
+        if (i + 1 < (int)data->lines) printf("%s", sep);
     }
     printf(" ]%s", end);
 }
+
 //! Function prints array of strings
-//! \param array pointer to array of strings
+//! \param array ptr to array of strings
 //! \param size  size of array
+//! \param sep  ptr to separating string (default ", ")
+//! \param end  ptr to ending string (default "\n")
 void print_strings(const char** array, size_t size, const char* sep, const char* end) {
-    assert(VALID_PTR(array));
+    assert(VALID_PTR(array) && "Invalid array ptr");
+    assert(VALID_PTR(sep)   && "Invalid sep ptr");
+    assert(VALID_PTR(end)   && "Invalid end ptr");
 
     printf("[ ");
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < (int)size; i++) {
         printf("\"%s\"", array[i]);
-        if (i + 1 < size) printf("%s", sep);
+        if (i + 1 < (int)size) printf("%s", sep);
     }
     printf(" ]%s", end);
 }
 
 //! Function load pointers of beginnings of strings to an array
-//! \param text                    pointer to Text object, where string will be written
+//! \param text                    ptr to Text object, where string will be written
 //! \param skip_empty_strings      flag to skip empty strings in text (default 0)
 //! \param skip_first_last_spaces  flag to skip spaces before first letter and after last letter (default 0)
 //! \return                        1
 int load_string_pointers(Text* text, int skip_empty_strings, int skip_first_last_spaces) {
-    assert(VALID_PTR(text->text));
-    assert(VALID_PTR(text->data));
+    assert(VALID_PTR(text->text) && "Invalid text->text ptr");
+    assert(VALID_PTR(text->data) && "Invalid text->data ptr");
+    assert((0 == skip_empty_strings     || skip_empty_strings     == 1) && "Incorrect skip_empty_strings value");
+    assert((0 == skip_first_last_spaces || skip_first_last_spaces == 1) && "Incorrect skip_first_last_spaces value");
 
     int skiped_str = 0, letters_started = 0, spaces_count = 0;
     char* start_ptr = (char*)text->data;
 
-    for (int i = 0, str_index = 0; i < text->data_size && str_index < text->lines; i++) {
+    for (int i = 0, str_index = 0; i < (int)text->data_size && str_index < (int)text->lines; i++) {
         if (text->data[i] == '\0') {
             char* end_ptr = (char*)&(text->data[i]);
 
@@ -151,12 +165,14 @@ int load_string_pointers(Text* text, int skip_empty_strings, int skip_first_last
 
     return 1;
 }
+
 //! Function convert array of strings to Text
 //! \param strings   ptr to array of strings
 //! \param n_strings number of strings
 //! \return          Text representation of array of strings
 Text convert_to_text(const char** strings, int n_strings) {
-    assert(VALID_PTR(strings));
+    assert(VALID_PTR(strings) && "Invalid strings ptr");
+    assert(n_strings > 0 && "Incorrect n_string value");
 
     int sum_length = 0;
     int* lengths = (int*) calloc(n_strings, sizeof(int));
@@ -190,18 +206,19 @@ Text convert_to_text(const char** strings, int n_strings) {
 //! \param filename path to file (absolute or relative)
 //! \return         size of file (in bytes)
 int  file_size       (const char* filename) {
-    assert(VALID_PTR(filename));
+    assert(VALID_PTR(filename) && "Invalid filename ptr");
 
     struct stat buff = {};
     stat(filename, &buff);
 
     return (int)buff.st_size;
 }
+
 //! Function defines last time of changes in file (with big accuracy)
 //! \param  filename path to file (absolute or relative)
 //! \return          time of last changes (in nanoseconds)
 long file_last_change(const char* filename) {
-    assert(VALID_PTR(filename));
+    assert(VALID_PTR(filename) && "Invalid filename ptr");
 
     struct stat buff = {};
     stat(filename, &buff);
@@ -215,19 +232,24 @@ long file_last_change(const char* filename) {
 //! \return         pointer to opened file (FILE*)
 //! \note call assert if function cannot open file on the path filename
 FILE* open_file(const char* filename, const char mode[]) {
-    assert(VALID_PTR(filename));
+    assert(VALID_PTR(filename) && "Invalid filename ptr");
 
     FILE* file = fopen(filename, mode);
 
-    assert(VALID_PTR(file));
+    assert(VALID_PTR(file) && "Can`t open file (not valid ptr)");
 
     return file;
 }
+
 //! Function reads strings from file
-//! \param filename pointer to string of path to file
-//! \return         object of Text structure
+//! \param filename                ptr to string of path to file
+//! \param skip_empty_strings      flag to skip empty strings in text (default 0)
+//! \param skip_first_last_spaces  flag to skip spaces before first letter and after last letter (default 0)
+//! \return                        object of Text structure
 Text get_text_from_file(const char* filename, int skip_empty_strings, int skip_first_last_spaces) {
-    assert(VALID_PTR(filename));
+    assert(VALID_PTR(filename) && "Invalid filename ptr");
+    assert((0 == skip_empty_strings     || skip_empty_strings     == 1) && "Incorrect skip_empty_strings value");
+    assert((0 == skip_first_last_spaces || skip_first_last_spaces == 1) && "Incorrect skip_first_last_spaces value");
 
     FILE* file = open_file(filename, "r");
 
@@ -265,9 +287,11 @@ Text get_text_from_file(const char* filename, int skip_empty_strings, int skip_f
 //! \param text_end string which Text will be ended
 //! \return         number of written strings
 int write_text_to_file(const char* filename, const char mode[], const Text* data, const char* text_sep, const char* text_end) {
-    assert(VALID_PTR(filename));
-    assert(VALID_PTR(mode));
-    assert(VALID_PTR(data));
+    assert(VALID_PTR(filename) && "Invalid filename ptr");
+    assert(VALID_PTR(mode)     && "Invalid mode ptr");
+    assert(VALID_PTR(data)     && "Invalid data ptr");
+    assert(VALID_PTR(text_sep) && "Invalid text_sep ptr");
+    assert(VALID_PTR(text_end) && "Invalid text_end ptr");
 
     FILE* file = open_file(filename, mode);
 
@@ -277,15 +301,16 @@ int write_text_to_file(const char* filename, const char mode[], const Text* data
     }
 
     int n_wr_strings = 0;
-    for (n_wr_strings = 0; n_wr_strings < data->lines; n_wr_strings++) {
+    for (n_wr_strings = 0; n_wr_strings < (int)data->lines; n_wr_strings++) {
         fputs(data->text[n_wr_strings].ptr, file);
-        if (n_wr_strings + 1 < data->lines) fputs(text_sep, file);
+        if (n_wr_strings + 1 < (int)data->lines) fputs(text_sep, file);
     }
     fputs(text_end, file);
 
     fclose(file);
     return n_wr_strings;
 }
+
 //! Function writes strings to file (from Text->buffer)
 //! \param filename pointer to string of path to file (absolute or relative)
 //! \param mode     mode with which open file
@@ -295,9 +320,11 @@ int write_text_to_file(const char* filename, const char mode[], const Text* data
 //! \return         number of written strings
 //! \note '\0' indicates line ending in buffer, so all lines in buffer must end in '\0'
 int write_buffer_to_file(const char* filename, const char mode[], const struct Text* data, const char* buf_sep, const char* buf_end) {
-    assert(VALID_PTR(filename));
-    assert(VALID_PTR(mode));
-    assert(VALID_PTR(data));
+    assert(VALID_PTR(filename) && "Invalid filename ptr");
+    assert(VALID_PTR(mode)     && "Invalid mode ptr");
+    assert(VALID_PTR(data)     && "Invalid data ptr");
+    assert(VALID_PTR(buf_sep)  && "Invalid buf_sep ptr");
+    assert(VALID_PTR(buf_sep)  && "Invalid buf_sep ptr");
 
     FILE* file = open_file(filename, mode);
 
@@ -308,9 +335,9 @@ int write_buffer_to_file(const char* filename, const char mode[], const struct T
 
     int n_wr_strings = 0;
     char* start_ptr = data->data;
-    for (n_wr_strings = 0; n_wr_strings < data->lines; n_wr_strings++) {
+    for (n_wr_strings = 0; n_wr_strings < (int)data->lines; n_wr_strings++) {
         fputs(start_ptr, file);
-        if (n_wr_strings + 1 < data->lines) fputs(buf_sep, file);
+        if (n_wr_strings + 1 < (int)data->lines) fputs(buf_sep, file);
 
         char* end_ptr = strchr(start_ptr, '\0');
         start_ptr = end_ptr + 1;
@@ -320,6 +347,7 @@ int write_buffer_to_file(const char* filename, const char mode[], const struct T
     fclose(file);
     return n_wr_strings;
 }
+
 //! Function writes strings to file (from array of char*)
 //! \param filename  pointer to string of path to file (absolute or relative)
 //! \param mode      mode with which open file
@@ -329,9 +357,11 @@ int write_buffer_to_file(const char* filename, const char mode[], const struct T
 //! \param str_end  string which data strings will be ended
 //! \return          number of written strings
 int write_strings_to_file(const char* filename, const char mode[], const char** data, int n_strings, const char* str_sep, const char* str_end) {
-    assert(VALID_PTR(filename));
-    assert(VALID_PTR(mode));
-    assert(VALID_PTR(data));
+    assert(VALID_PTR(filename) && "Invalid filename ptr");
+    assert(VALID_PTR(mode)     && "Invalid mode ptr");
+    assert(VALID_PTR(data)     && "Invalid data ptr");
+    assert(VALID_PTR(str_sep)  && "Invalid str_sep ptr");
+    assert(VALID_PTR(str_sep)  && "Invalid str_sep ptr");
 
     FILE* file = open_file(filename, mode);
 

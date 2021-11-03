@@ -22,8 +22,8 @@
 //! \return      1, if all is good
 int Stack_ctor_(Stack* stack, const StackInfo* info, int* error) {
     if (VALIDATE_LEVEL >= WEAK_VALIDATE) {
-        assert(VALID_PTR(stack));
-        assert(VALID_PTR(info));
+        assert(VALID_PTR(stack) && "Invalid stack ptr");
+        assert(VALID_PTR(info)  && "Invalid info ptr");
     }
     if (!VALID_PTR(stack) && VALID_PTR(error)) {
         *error = errors::ST_INVALID_PTR;
@@ -57,6 +57,7 @@ int Stack_ctor_(Stack* stack, const StackInfo* info, int* error) {
     CHECK_SOFT_ERROR(stack, Stack, error);
     return 1;
 }
+
 //! Stack destructor
 //! \param stack pointer to stack object
 //! \param error pointer to value, where error will be written (default: NULL)
@@ -148,6 +149,7 @@ int   Stack_error(const Stack* stack) {
 
     return 0;
 }
+
 //! Function with errors description
 //! \param error_code code of error
 //! \return           error description
@@ -192,6 +194,8 @@ const char* Stack_error_desc(int error_code) {
 //! \param stack pointer to stack
 //! \return      stack hash
 unsigned long long Stack_hash_(const Stack* stack) {
+    ASSERT_OK(stack, Stack, "Stack_hash_ failed verifying");
+
     unsigned long long hash = 0;
 
     for (int i = 0 ; i < sizeof(*stack); i++) {
@@ -202,11 +206,14 @@ unsigned long long Stack_hash_(const Stack* stack) {
 
     return hash;
 }
+
 //! Function calculate pointer data hash
 //! \param ptr  pointer to data
 //! \param size size of data
 //! \return     pointer hash
 unsigned long long Stack_hash_ptr_(const void* ptr, size_t size) {
+    assert(VALID_PTR(ptr) && "Invalid ptr ptr");
+    
     unsigned long long hash = 0;
 
     for (int i = 0 ; i < size; i++) {
@@ -240,6 +247,7 @@ int push(Stack* stack, stack_el_t value, int* error) {
     CHECK_SOFT_ERROR(stack, Stack, error);
     return stack->size;
 }
+
 //! Function delete top element from stack
 //! \param stack pointer to stack
 //! \param error pointer to value, where error will be written (default: NULL)
@@ -296,6 +304,7 @@ int  pop(Stack* stack, int* error) {
     CHECK_SOFT_ERROR(stack, Stack, error);
     return del_element;
 }
+
 //! Function get stack top element
 //! \param stack pointer to stack
 //! \param error pointer to value, where error will be written (default: NULL)
@@ -386,6 +395,7 @@ int  print_stack_line(const Stack* stack, const char* sep, const char* end, FILE
 
     return stack->size;
 }
+
 void Stack_dump_(const Stack* stack, const StackInfo* current_info, const char reason[]) {
     printf((ORANGE "|--------------------             Stack  Dump             --------------------|\n" NATURAL));
     PRINT_DATE(BLUE);

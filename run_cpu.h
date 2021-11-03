@@ -8,25 +8,6 @@
 #include "libs/baselib.h"
 #include "libs/file_funcs.h"
 
-// Array of programs, which time of last change will be checked
-static const char* TRACKED_PROGRAMS[] = {
-        "arch/commands.cpp",  "arch/commands.h",
-        "arch/helper.cpp",    "arch/helper.h",
-        "arch/labels.cpp",    "arch/labels.h",
-        "arch/registers.cpp", "arch/registers.h",
-        "arch/commands_definition.h",
-
-        "asm/asm.cpp", "asm/asm.h",
-        "dis/dis.cpp", "dis/dis.h",
-        "CPU/cpu.cpp", "CPU/cpu.h",
-
-        "libs/baselib.cpp",    "libs/baselib.h",
-        "libs/file_funcs.cpp", "libs/file_funcs.h",
-        "libs/stack.cpp",      "libs/stack.h",
-
-        "config.h"
-};
-
 #define CHECK_TRACKED_PROGRAMS(system_call, executable_file) { \
     for (const char* tracked_program : TRACKED_PROGRAMS) {                                                      \
         if (file_last_change(tracked_program) > file_last_change(executable_file)) {                            \
@@ -59,18 +40,6 @@ static const char* TRACKED_PROGRAMS[] = {
     }                                                                                                           \
     if (!updated) printf(ORANGE "Skip system call \"%s\"" NATURAL "\n", #system_call);                          \
 }
-
-static const char* decompile_output = "commands_disassembled.txt";
-static const char* compile_strings[] = {
-        "gcc asm/asm.cpp libs/baselib.cpp libs/file_funcs.cpp libs/stack.cpp arch/helper.cpp arch/commands.cpp arch/labels.cpp arch/registers.cpp -lm -o asm/asm.cat",
-        "gcc dis/dis.cpp libs/baselib.cpp libs/file_funcs.cpp libs/stack.cpp arch/helper.cpp arch/commands.cpp arch/labels.cpp arch/registers.cpp -lm -o dis/dis.cat",
-        "gcc CPU/cpu.cpp libs/baselib.cpp libs/file_funcs.cpp libs/stack.cpp arch/helper.cpp arch/commands.cpp arch/labels.cpp arch/registers.cpp -lm -o CPU/cpu.cat"
-};
-static const char* execute_strings[] = {
-        "./asm/asm.cat ",
-        "./dis/dis.cat ",
-        "./CPU/cpu.cat "
-};
 
 int run_cpu(const char* source_file, const char* executable_file);
 
