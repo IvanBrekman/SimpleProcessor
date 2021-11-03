@@ -99,7 +99,7 @@ COMMAND_DEFINITION( prt,   6, 0, 0, 0b0000000000000000,  {
 })
 // ----------------------------------------------------------------------------
 
-// Arythmetics commands--------------------------------------------------------
+// Arithmetic commands--------------------------------------------------------
 COMMAND_DEFINITION( add,   7, 0, 0, 0b0000000000000000,  {
     PUSH(POP + POP);
     return OK_;
@@ -122,6 +122,11 @@ COMMAND_DEFINITION( div,  10, 0, 0, 0b0000000000000000,  {
     int arg1 = POP;
     int arg2 = POP;
 
+    if (arg1 == 0) {
+        printf(RED "Zero division error\n" NATURAL);
+        return BREAK_;
+    }
+
     PUSH(arg2 / (arg1 * pow(10, -PRECISION_)));
     return OK_;
 })
@@ -140,6 +145,11 @@ COMMAND_DEFINITION( sqr,  12, 0, 0, 0b0000000000000000,  {
 
 COMMAND_DEFINITION( sqrt, 13, 0, 0, 0b0000000000000000,  {
     int arg1 = POP;
+
+    if (arg1 < 0) {
+        printf(RED "Sqrt from negative number error\n" NATURAL);
+        return BREAK_;
+    }
 
     PUSH((int)sqrt(arg1));
     return OK_;

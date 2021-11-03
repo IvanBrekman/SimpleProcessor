@@ -60,7 +60,6 @@ const char* exit_code_desc(int exit_code)  {
 void print_command (BinCommand* cmd, int cmd_num, FILE* log, void* lab) {
     assert(VALID_PTR(cmd) && "Invalid cmd ptr");
     assert(VALID_PTR(log) && "Invalid log ptr");
-    assert(VALID_PTR(lab) && "Invalid lab ptr");
     assert(cmd_num >= 0   && "Incorrect cmd_num value");
 
     fprintf(log, "%04d    ", cmd_num);
