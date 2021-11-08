@@ -1,5 +1,4 @@
 # SimpleProcessor
-
 Project implements work of simple processor.
 
 ## Structure
